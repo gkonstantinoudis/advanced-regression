@@ -1,4 +1,0 @@
-\babel@toc {german}{}
-\beamer@sectionintoc {1}{Classical variable or model selection}{3}{0}{1}
-\beamer@subsectionintoc {1}{1}{Variance explained and ANOVA}{5}{0}{1}
-\beamer@subsectionintoc {1}{2}{Akaike criterion and other likelihood-based measures}{14}{0}{1}

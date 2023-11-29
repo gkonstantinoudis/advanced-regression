@@ -1,8 +1,0 @@
-\babel@toc {german}{}
-\beamer@sectionintoc {1}{Neural networks}{4}{0}{1}
-\beamer@subsectionintoc {1}{1}{Introduction to neural networks}{4}{0}{1}
-\beamer@subsectionintoc {1}{2}{Neural network model formulation}{9}{0}{1}
-\beamer@subsectionintoc {1}{3}{\texttt {neuralnet} function in \texttt {R}}{15}{0}{1}
-\beamer@sectionintoc {2}{Deep learning}{20}{0}{2}
-\beamer@subsectionintoc {2}{1}{Deep learning with the \texttt {keras} package}{20}{0}{2}
-\beamer@sectionintoc {3}{Machine learning resources in \texttt {R}}{29}{0}{3}
