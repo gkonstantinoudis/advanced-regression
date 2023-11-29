@@ -1,0 +1,174 @@
+---
+title: "Lecture 4: The GP example"
+author: "Verena Zuber"
+date: "15/2/2019"
+output: pdf_document
+highlight: tango
+---
+
+
+
+```{r message=FALSE, warning=FALSE}
+library(lme4)
+library(lattice)
+library(ggplot2)
+library(nlme)
+```
+ 
+
+
+```{r message=FALSE, warning=FALSE}
+data.chol = read.csv("Cholesterol.txt", sep=" ")
+dim(data.chol)
+head(data.chol)
+```
+ 
+
+
+## 1. First part: Fitting the model
+
+
+
+
+
+Model 1 (individual level)
+```{r message=FALSE, warning=FALSE}
+model1 = lm(chol ~ age, data=data.chol)summary(model1)
+data.chol$PooledPredictions = fitted(model1)
+plot(data.chol$age,data.chol$chol, xlab = "age", ylab = "total cholesterol", cex = 1.2)
+abline(model1, col = "red", lwd =2)
+```
+
+
+Model 2 (group level)
+```{r message=FALSE, warning=FALSE}
+chol.group = tapply(data.chol$chol,INDEX=data.chol$doctor,FUN=mean)age.group = tapply(data.chol$age,INDEX=data.chol$doctor,FUN=mean)
+Group.Model = lm(chol.group ~ age.group)summary(Group.Model)
+plot(age.group, chol.group,  xlab = "age", ylab = "total cholesterol", cex = 1.2)
+abline(Group.Model, col = "red", lwd =2)
+```
+
+
+
+
+Model 3 (individual regression, one regression model for each group)
+```{r message=FALSE, warning=FALSE, fig.height=6}
+fits = lmList(chol ~ age | doctor, data=data.chol)
+fits
+xyplot(chol ~ age| doctor, data=data.chol, type = c("p", "r"), 
+ col.line = "darkorange", xlab = "age", ylab = "total cholesterol")
+```
+
+
+
+
+Model 4 (fixed effects)
+```{r message=FALSE, warning=FALSE}
+FE.Model = lm(chol ~ age + as.factor(doctor), data=data.chol)
+summary(FE.Model)
+```
+
+
+
+
+Model 5 (random intercept)
+
+```{r message=FALSE, warning=FALSE}
+RandomIntercept = lme( chol ~ age, random = ~ 1 | doctor, data = data.chol )
+summary(RandomIntercept)
+```
+
+
+
+Model 6 (random intercept and slope)
+
+```{r message=FALSE, warning=FALSE}
+RandomSlope = lme( chol ~ age, random = ~ 1+age | doctor, data = data.chol )
+summary(RandomSlope)
+```
+
+
+
+
+
+
+
+## 2. Second part: Using ggplot 
+
+
+
+
+In order to use ggplot we need to add the model fits (fitted()) from the random effects (Model 5-7) to the data sets.
+
+```{r message=FALSE, warning=FALSE}
+data.chol$FixedEffects = fitted(RandomIntercept)
+data.chol$VaryingInterceptPredictions = fitted(RandomIntercept)
+data.chol$VaryingSlopePredictions = fitted(RandomSlope)
+```
+
+
+Pooled prediction and fixed effects 
+```{r message=FALSE, warning=FALSE, fig.height=6}
+gg.fe <- ggplot(data.chol, aes(x = age, y = chol, group = doctor)) +
+    geom_line(aes(y = PooledPredictions), color = "darkgrey") +
+    geom_line(aes(y = FixedEffects), color = "green") +
+    geom_point(alpha = 0.3, size = 2) +
+    xlab("age") + ylab("total cholesterol") +
+    facet_wrap(~doctor) +
+    theme_bw()
+
+print(gg.fe)
+```
+
+
+Pooled prediction and random intercept
+
+```{r message=FALSE, warning=FALSE, fig.height=6}
+gg.intercept <- ggplot(data.chol, aes(x = age, y = chol, group = doctor)) +
+    geom_line(aes(y = PooledPredictions), color = "darkgrey") +
+    geom_line(aes(y = VaryingInterceptPredictions), color = "blue") +
+    geom_point(alpha = 0.3, size = 2) +
+    xlab("age") + ylab("total cholesterol") +
+    facet_wrap(~doctor) +
+    theme_bw()
+
+print(gg.intercept)
+```
+
+
+Pooled prediction and random intercept and slope
+
+
+
+
+```{r message=FALSE, warning=FALSE, fig.height=6}
+gg.slope <- ggplot(data.chol, aes(x = age, y = chol, group = doctor)) +
+    geom_line(aes(y = PooledPredictions), color = "darkgrey") +
+    geom_line(aes(y = VaryingSlopePredictions), color = "red") +
+    geom_point(alpha = 0.3, size = 2) +
+    xlab("age") + ylab("total cholesterol") +
+    facet_wrap(~doctor) +
+    theme_bw()
+
+print(gg.slope)
+```
+
+
+
+
+
+
+
+
+
+<!--
+require(knitr)
+require(markdown)
+require(rmarkdown)
+render("lecture4_GP_example.Rmd")
+-->
+
+
+
+
+
