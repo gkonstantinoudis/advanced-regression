@@ -1,11 +1,10 @@
 ---
 title: "Advanced Regression: Linear and generalised linear models I"
-date: "20-02-2023"
+date: "20-02-2024"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
 editor: visual
-date: 2024-01-14
 date-format: medium
 title-slide-attributes:
   data-background-color: "#f3f4f4"

@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="Lecture1b-p1_files/libs/clipboard/clipboard.min.js"></script>
-<script src="Lecture1b-p1_files/libs/quarto-html/tabby.min.js"></script>
-<script src="Lecture1b-p1_files/libs/quarto-html/popper.min.js"></script>
-<script src="Lecture1b-p1_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="Lecture1b-p1_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="Lecture1b-p1_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="Lecture1b-p1_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="Lecture1b-p1_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="Lecture1c-p1_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Lecture1c-p1_files/libs/quarto-html/tabby.min.js"></script>
+<script src="Lecture1c-p1_files/libs/quarto-html/popper.min.js"></script>
+<script src="Lecture1c-p1_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="Lecture1c-p1_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Lecture1c-p1_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="Lecture1c-p1_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="Lecture1c-p1_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.3.450">
 
   <meta name="author" content="Garyfallos Konstantinoudis">
-  <title>Advanced Regression: Linear and generalised linear models I</title>
+  <title>Advanced Regression: Random effects and hierarchical models I</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="Lecture1b-p1_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="Lecture1b-p1_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="Lecture1c-p1_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="Lecture1c-p1_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -95,13 +95,13 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="Lecture1b-p1_files/libs/revealjs/dist/theme/quarto.css">
-  <link href="Lecture1b-p1_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="Lecture1b-p1_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="Lecture1b-p1_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="Lecture1b-p1_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-  <link href="Lecture1b-p1_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
-  <link href="Lecture1b-p1_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="Lecture1c-p1_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="Lecture1c-p1_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="Lecture1c-p1_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="Lecture1c-p1_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="Lecture1c-p1_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="Lecture1c-p1_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="Lecture1c-p1_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -392,7 +392,7 @@
     <div class="slides">
 
 <section id="title-slide" data-background-color="#f3f4f4" data-background-image="../../assets/bmeh_normal.png" data-background-position="60% 120%" data-background-size="80%" class="quarto-title-block center">
-  <h1 class="title">Advanced Regression: Linear and generalised linear models I</h1>
+  <h1 class="title">Advanced Regression: Random effects and hierarchical models I</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -407,379 +407,350 @@ Garyfallos Konstantinoudis
 
   <p class="date">Aug 2, 2025</p>
 </section>
-<section id="main-goal-of-linear-regression" class="slide level2">
-<h2>Main goal of (linear) regression</h2>
-<p>Regression models are used to investigate association between</p>
+<section id="motivation" class="slide level2">
+<h2>Motivation</h2>
+<p>All methods presented so far assume that the observations are iid.</p>
+<p>iid: Independent and identically distributed</p>
 <ul>
-<li><p>an outcome variable <span class="math inline">\(y\)</span></p></li>
-<li><p>potential explanatory variables (or predictors) <span class="math inline">\(x = (x_1, x_2, ..., x_p)\)</span></p></li>
-</ul>
-<p>The statistical idea is to see if the <span class="math inline">\(x = (x_1, x_2, ..., x_p)\)</span> can give an adequate description of the variability of the outcome y.</p>
-
-<img data-src="Lecture1b-p1_files/figure-revealjs/unnamed-chunk-1-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="motivations" class="slide level2">
-<h2>Motivations</h2>
-<ol type="1">
-<li><strong>Understand</strong> how the predictors affect the outcome.
-<ul>
-<li>Example: We conduct an observational study focusing on type 2 diabetes as outcome. Our aim is to understand which risk factors are associated with the risk of type 2 diabetes.</li>
-</ul></li>
-<li><strong>Predict</strong> the outcome of new observations, where only the predictors are observed, but not the outcome.
-<ul>
-<li>Example: We study type 2 diabetes and want to predict disease progression. Our aim is to identify individuals with poor prognosis and improve their treatment.</li>
-</ul></li>
-</ol>
-</section>
-<section id="the-linear-model" class="slide level2">
-<h2>The linear model</h2>
+<li><p><strong>Independent</strong>: The observations are independent from each other</p>
 <p><span class="math display">\[
-y = \alpha + x\beta + \epsilon
-\]</span></p>
-<ul>
-<li><p><span class="math inline">\(y\)</span>: Outcome, response, dependent variable. Dimension: <span class="math inline">\(n\times1\)</span></p></li>
-<li><p><span class="math inline">\(x\)</span>: Regressors, exposures, covariates, input, explanatory, or independent variables. Dimension: <span class="math inline">\(n\times p\)</span></p></li>
-<li><p><span class="math inline">\(\epsilon\)</span>: Residuals, error. Dimension: <span class="math inline">\(n\times 1\)</span></p></li>
-<li><p><span class="math inline">\(\alpha\)</span>: Intercept. Dimension: <span class="math inline">\(1 \times 1\)</span></p></li>
-<li><p><span class="math inline">\(\beta\)</span>: Regression coefficients. Dimension: <span class="math inline">\(p\times 1\)</span></p></li>
+cor(x_i, x_{i'}) = 0  \text{ for all }  i,i' \in 1,….,n
+\]</span></p></li>
+<li><p><strong>Identically</strong>: All observations have the same distribution. For example when assuming a Normal distribution they all have the same mean and variance.</p></li>
 </ul>
+<p>PS: Exchangeability: Allows for dependence between observations and only states that future observations behave like past ones.</p>
 </section>
-<section id="parameters-to-estimate" class="slide level2">
-<h2>Parameters to estimate:</h2>
+<section id="motivation-how-realistic-is-iid" class="slide level2">
+<h2>Motivation: How realistic is iid?</h2>
 <ul>
-<li><p><span class="math inline">\(\alpha\)</span>: Intercept, Baseline level, the expected mean value of <span class="math inline">\(y\)</span> when all <span class="math inline">\(x = 0\)</span></p></li>
-<li><p><span class="math inline">\(\beta = (\beta_1, ..., \beta_p)\)</span>: vector of regression coefficients.</p></li>
-<li><p><span class="math inline">\(\beta_j\)</span>: : regression coeffcients of variable <span class="math inline">\(x_j\)</span>. The expected change in y for a one-unit change in <span class="math inline">\(x_j\)</span> when the other covariates are held constant.</p></li>
+<li><p>Often our data contains structure depending on how our data was sampled.</p>
+<ul>
+<li><p>Within <span class="math inline">\(K\)</span> boroughs in London we select <span class="math inline">\(n\)</span> participants …</p></li>
+<li><p>From <span class="math inline">\(K\)</span> schools we sample <span class="math inline">\(n\)</span> students …</p></li>
+<li><p>From <span class="math inline">\(K\)</span> hospitals we select <span class="math inline">\(n\)</span> patients …</p></li>
+<li><p>At <span class="math inline">\(K\)</span> stores we sampled <span class="math inline">\(n\)</span> costumers …</p></li>
+</ul></li>
+<li><p><span class="math inline">\(k \in 1,…,K\)</span> group index</p></li>
 </ul>
-<p>Observed data:</p>
+<p><strong>Grouping creates dependence</strong></p>
+<p>Observations within a group are likely to be more similar to each other than to observations from other groups.</p>
+</section>
+<section id="motivation-gp-data" class="slide level2">
+<h2>Motivation: GP data</h2>
 <ul>
-<li><p><span class="math inline">\(y\)</span>: Outcome or response.</p></li>
-<li><p><span class="math inline">\(x\)</span>: Regressors, exposures, covariates, input, explanatory or independent variables</p>
+<li><p>We are interested in the relationship of cholesterol and age and how age impacts cholesterol.</p></li>
+<li><p>Sampling: We take measurements of patients from certain GPs.</p>
 <ul>
-<li><p><span class="math inline">\(i = 1, ..., n\)</span> samples.</p></li>
-<li><p><span class="math inline">\(j = , ..., p\)</span> variables.</p></li>
+<li>Group-level: GPs <span class="math inline">\(K=12\)</span></li>
 </ul></li>
 </ul>
+<p>\texttt{table(data.chol[[“doctor”]])} \\</p>
+<p>\includegraphics[scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-table}</p>
+<p>\item Individual-level: Patients $n=441$</p>
+<p>\end{itemize}</p>
+<p>\end{itemize}</p>
+<p>\texttt{head(data.chol)} \\</p>
+<p>\centering \includegraphics[scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-head}</p>
+<p>}</p>
 </section>
-<section id="estimates-ordinary-least-squares-ols" class="slide level2">
-<h2>Estimates: Ordinary least squares (OLS)</h2>
-<p><span class="math display">\[
-\hat{\beta}_{OLS} = \underbrace{(x^t x)^{(-1)} }_{p \times p}  \underbrace{x^t}_{p \times n} \underbrace{y}_{n \times 1}
-\]</span></p>
+<section id="generalised-linear-model-glm" class="slide level2">
+<h2>Generalised linear model (GLM)</h2>
 <ul>
-<li>Inversion of <span class="math inline">\(\underbrace{(x^t x)^{(-1)} }_{p \times p}\)</span> requires <span class="math inline">\(x^t x\)</span> to be of full rank (Lecture 2b).</li>
-</ul>
-<p>Alternative representation:</p>
+<li><p>Linear models can only model a quantitative outcome.</p></li>
+<li><p>Quantitative outcomes are defined as a real number, taking possible values from <span class="math inline">\(-\inf\)</span> to <span class="math inline">\(+\inf\)</span>.</p></li>
+<li><p>Many important data types can by definition not be modelled using a linear model:</p>
 <ul>
-<li><p><span class="math inline">\(\hat{\beta} = \frac{\hat{cov}(x,y)}{\hat{cov}(x)}\)</span>, where the sample covariance is defined as:</p>
-<ul>
-<li><p><span class="math inline">\(\hat{cov}(x,y)=\frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})\)</span></p></li>
-<li><p><span class="math inline">\(\hat{cov}(x)=\frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})(x_i - \bar{x})\)</span></p></li>
+<li><p>Dichotomous or binary <span class="math inline">\(\rightarrow\)</span> only takes two values, 0 or 1</p></li>
+<li><p>Counts <span class="math inline">\(\rightarrow\)</span> only positive integers (0,1,2,3,…)</p></li>
 </ul></li>
 </ul>
-</section>
-<section id="example-diabetes-data" class="slide level2">
-<h2>Example: Diabetes data</h2>
-<ul>
-<li><p><span class="math inline">\(y\)</span> : quantitative measure of disease progression one year after baseline (vector)</p></li>
-<li><p><span class="math inline">\(x\)</span>: predictor matrix</p></li>
-</ul>
-<pre><code>-   clinical parameters: age, sex, bmi
-
--   map: blood pressure
-
--   tc: total cholesterol
-
--   ldl: low-density lipoprotein
-
--   hdl: high-density lipoprotein
-
--   tch: total cholesterol over hdl
-
--   ltg: triglycerides
-
--   glu: glucose</code></pre>
-<ul>
-<li><span class="math inline">\(n=442\)</span>: sample size</li>
-</ul>
-</section>
-<section id="the-lm-command-in-r" class="slide level2">
-<h2>The lm() command in R</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> age <span class="sc">+</span> sex <span class="sc">+</span> glu <span class="sc">+</span> map <span class="sc">+</span> ltg, <span class="at">data =</span> x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Formula:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> x3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<ul>
-<li><p>left of <span class="math inline">\(\sim\)</span>: outcome</p></li>
-<li><p>right of <span class="math inline">\(\sim\)</span>: predictors</p></li>
-</ul>
-<p>It is also possible to enter a full matrix <span class="math inline">\(x\)</span>, transform by as.matrix(), as multivariable set of predictors:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>y <span class="sc">~</span> x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>An intercept is always included, to turn off add <span class="math inline">\(-1\)</span></p>
-</section>
-<section id="interpreting-the-summary.lm-command" class="slide level2">
-<h2>Interpreting the summary.lm() command</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">library</span>(lars)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb5-3"><a href="#cb5-3"></a></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="fu">data</span>(diabetes)</span>
-<span id="cb5-5"><a href="#cb5-5"></a>x <span class="ot">&lt;-</span> <span class="fu">as.data.frame.matrix</span>(diabetes<span class="sc">$</span>x)</span>
-<span id="cb5-6"><a href="#cb5-6"></a>y <span class="ot">&lt;-</span> diabetes<span class="sc">$</span>y</span>
-<span id="cb5-7"><a href="#cb5-7"></a></span>
-<span id="cb5-8"><a href="#cb5-8"></a><span class="fu">lm</span>(y <span class="sc">~</span> age <span class="sc">+</span> sex <span class="sc">+</span> glu <span class="sc">+</span> map <span class="sc">+</span> ltg, <span class="at">data =</span> x) <span class="sc">%&gt;%</span> <span class="fu">summary.lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = y ~ age + sex + glu + map + ltg, data = x)
-
-Residuals:
-     Min       1Q   Median       3Q      Max
--165.128  -43.025   -5.232   42.446  182.050
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)
-(Intercept)  152.133      2.871  52.990  &lt; 2e-16 ***
-age          -54.227     65.854  -0.823  0.41071
-sex         -166.066     62.903  -2.640  0.00859 **
-glu          175.377     71.671   2.447  0.01480 *
-map          426.532     70.342   6.064 2.89e-09 ***
-ltg          706.395     70.929   9.959  &lt; 2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 60.36 on 436 degrees of freedom
-Multiple R-squared:  0.3939,    Adjusted R-squared:  0.387
-F-statistic: 56.68 on 5 and 436 DF,  p-value: &lt; 2.2e-16</code></pre>
-</div>
-</div>
-</section>
-<section id="difference-between-univariable-and-multivariable-regression" class="slide level2">
-<h2>Difference between univariable and multivariable regression</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> glu, <span class="at">data =</span> x) <span class="sc">%&gt;%</span> <span class="fu">summary.lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = y ~ glu, data = x)
-
-Residuals:
-     Min       1Q   Median       3Q      Max
--153.069  -57.716   -5.466   54.656  186.839
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)
-(Intercept)  152.133      3.392  44.851   &lt;2e-16 ***
-glu          619.223     71.312   8.683   &lt;2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 71.31 on 440 degrees of freedom
-Multiple R-squared:  0.1463,    Adjusted R-squared:  0.1444
-F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
-</div>
-</div>
-<p>Reduction of the regression coeffient from 619 to 175 after conditioning on other covariates <span class="math inline">\(\rightarrow\)</span> attenuation of the effect</p>
-</section>
-<section id="further-estimates" class="slide level2">
-<h2>Further estimates</h2>
-<ul>
-<li><p>Weighted least squares</p>
-<p><span class="math inline">\(\hat{\beta}_{WLS}=\underbrace{(x^twx)}_{p\times p} \underbrace{x^t}_{p\times n} \underbrace{w}_{n \times n}\underbrace{y}_{n \times 1}\)</span></p>
-<p>where <span class="math inline">\(w\)</span> is a <span class="math inline">\(n \times n\)</span> diagonal weight matrix</p></li>
-<li><p>Maximum likelihood</p></li>
-<li><p>Bayesian linear regression (Module: Bayesian Statistics)</p></li>
-</ul>
-</section>
-<section id="fitted-values-and-residuals" class="slide level2">
-<h2>Fitted values and residuals</h2>
-<ul>
-<li>Fitted values</li>
-</ul>
-<p><span class="math inline">\(\hat{y} = x \hat{\beta} = \underbrace{x (x^t x)^{-1} x^t}_{h} y\)</span></p>
-<ul>
-<li><p>Hat matrix <span class="math inline">\(h\)</span></p></li>
-<li><p>Residuals are the difference between the fitted values (predicted by the model) and the actual observed outcome: <span class="math inline">\(r_i = \hat{y}_i - y_i\)</span></p></li>
-<li><p>The residuals are a vector <span class="math inline">\(r=(r_1,…,r_n)\)</span> of length <span class="math inline">\(n\)</span>.</p></li>
-</ul>
-<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout callout-note no-icon callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Tip</strong></p>
+<p><strong>Note</strong></p>
 </div>
 <div class="callout-content">
-<p>Residuals are an important quantity for model diagnostics.</p>
+<p>Flexible generalization of ordinary linear regression that allows for response variables that have error distribution models other than a normal distribution. Residuals are an important quantity for model diagnostics.</p>
 </div>
 </div>
 </div>
 </section>
-<section id="fitted-values-and-residuals-1" class="slide level2">
-<h2>Fitted values and residuals</h2>
+<section id="binary-outcome-and-logistic-regression" class="slide level2">
+<h2>Binary outcome and logistic regression</h2>
+<p>Example: Case-control study</p>
+<p><span class="math display">\[
+y_i =
+\begin{cases}
+1, \text{ If subject $i$ is a case} \\
+0, \text{ If subject $i$ is a control} \\
+\end{cases}
+\]</span></p>
 
-<img data-src="Lecture1b-p1_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"></section>
-<section id="lm-fitted-values-and-residuals" class="slide level2">
-<h2>lm(): Fitted values and residuals</h2>
+<img data-src="Lecture1c-p1_files/figure-revealjs/unnamed-chunk-1-1.png" width="576" class="r-stretch quarto-figure-center"></section>
+<section id="binary-outcome-and-logistic-regression-1" class="slide level2">
+<h2>Binary outcome and logistic regression</h2>
+<p><span class="math display">\[y = \underbrace{\alpha + \beta x}_{\text{Linear predictor}} + \epsilon\]</span></p>
 <ul>
-<li>First fit a linear model and save it in the object <span class="math inline">\(\text{lm0}\)</span></li>
+<li><p>Linear predictor: <span class="math inline">\(\eta=\alpha + \beta x\)</span> is defined from <span class="math inline">\(-\inf\)</span> to <span class="math inline">\(+\inf\)</span>.</p></li>
+<li><p>But <span class="math inline">\(y\)</span> only <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span> <span class="math inline">\(\rightarrow\)</span> The linear regression do not match the data well.</p></li>
 </ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>lm0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> glu, <span class="at">data =</span> x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+
+<img data-src="Lecture1c-p1_files/figure-revealjs/unnamed-chunk-2-1.png" width="576" class="r-stretch quarto-figure-center"></section>
+<section id="how-should-we-model-this-data" class="slide level2">
+<h2>How should we model this data?</h2>
+<p><strong>Key idea 1:</strong> Instead of modelling the outcomes (<span class="math inline">\(y=0\)</span> or <span class="math inline">\(y=1\)</span>) directly, logistic regression models the probability for <span class="math inline">\(y=1\)</span> denotes as</p>
 <ul>
-<li><p>The linear model object <span class="math inline">\(\text{lm0}\)</span> contains</p>
-<ul>
-<li>Regression coefficients</li>
+<li><span class="math inline">\(P(y=1 \mid x)\)</span></li>
 </ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>lm0<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)         glu
-   152.1335    619.2228 </code></pre>
-</div>
-</div>
+<p>Notes on probabilities for binary data:</p>
 <ul>
-<li>Fitted values</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>lm0<span class="sc">$</span>fitted.values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<ul>
-<li>Residuals</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>lm0<span class="sc">$</span>residuals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></li>
+<li><p>Probabilities can take values from 0 to 1</p></li>
+<li><p>Probabilities are symmetric: <span class="math inline">\(P(y=1\mid x) = 1- P(y=0\mid x)\)</span></p></li>
 </ul>
 </section>
-<section id="assumptions" class="slide level2">
-<h2>Assumptions</h2>
+<section id="how-should-we-model-this-data-1" class="slide level2">
+<h2>How should we model this data?</h2>
+<p><strong>Key idea 2:</strong> Transform the linear predictor <span class="math inline">\(\eta= \alpha + \beta x_{i}\)</span> (quantitative, can take values from <span class="math inline">\(-\inf\)</span> to <span class="math inline">\(-inf\)</span>) to lie in the Interval <span class="math inline">\([0,1]\)</span>, which is valid for probabilities.</p>
+<p>This can be achieved using the logit function: <span class="math inline">\(\text{logit}(p) = \log (p/(1-p))\)</span></p>
+
+<img data-src="Lecture1c-p1_files/figure-revealjs/unnamed-chunk-3-1.png" width="480" class="r-stretch quarto-figure-center"></section>
+<section id="logistic-regression" class="slide level2">
+<h2>Logistic regression</h2>
+<p><span class="math display">\[
+\text{logit}(P(y=1 \mid x)) = \log(P(y=1 \mid x))/(1-P(y=1)\mid x) = \alpha + \beta x
+\]</span></p>
+<ul>
+<li><p><strong>Interpretation</strong>: The regression coefficient <span class="math inline">\(\beta\)</span> in logistic regression represents the <strong>log odds ratio</strong> between <span class="math inline">\(y=0\)</span> and <span class="math inline">\(y=1\)</span>.</p></li>
+<li><p><strong>Estimation</strong>: Maximum likelihood</p></li>
+</ul>
+</section>
+<section id="technical-details" class="slide level2">
+<h2>Technical details</h2>
+<ul>
+<li><p>Many important outcome types can be accommodated by GLMs.</p></li>
+<li><p>Each of these distributions has a location parameter, e.g.&nbsp;<span class="math inline">\(\mu\)</span> for the Gaussian, <span class="math inline">\(p\)</span> for the Bernoulli and Binomial.</p></li>
+<li><p>The natural link function between the location parameter and the linear predictor can be derived from the mathematical form of the distribution.</p></li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Response</th>
+<th>Distribution</th>
+<th>E(y)</th>
+<th>Link (g)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Continuous</td>
+<td>Gaussian</td>
+<td><span class="math inline">\(\mu\)</span></td>
+<td><span class="math inline">\(1\)</span> (identity)</td>
+</tr>
+<tr class="even">
+<td>Dichotomous</td>
+<td>Bernoulli</td>
+<td><span class="math inline">\(p\)</span></td>
+<td><span class="math inline">\(\text{logit}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Counts</td>
+<td>Poison</td>
+<td><span class="math inline">\(\lambda\)</span></td>
+<td><span class="math inline">\(\log\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><a href="https://en.wikipedia.org/wiki/Generalized_linear_model" class="uri">https://en.wikipedia.org/wiki/Generalized_linear_model</a></p>
+</section>
+<section id="technical-details-glm" class="slide level2">
+<h2>Technical details: GLM</h2>
+<p>The GLM consists of three elements:</p>
 <ol type="1">
-<li>Linearity: There is a linear relationship between <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>.</li>
-<li>Weak exogeneity: The predictors <span class="math inline">\(x\)</span> are viewed as fixed variables; there is no measurement error on <span class="math inline">\(x\)</span>.</li>
-<li>Constant variance (homoscedasticity): All residuals have the same variance.</li>
-<li>No perfect multicollinearity: No predictor can be expressed as a linear combination of the other predictors (Lecture 2b).</li>
-<li>Independent errors: The residuals are uncorrelated (e.g.&nbsp;in time-series the error of time point <span class="math inline">\(t\)</span> will depend on the error of time point <span class="math inline">\(t-1\)</span>) and independent of <span class="math inline">\(x\)</span>.</li>
+<li>A probability distribution from the exponential family. Note: Only distributions that can be formulated as an exponential family can be modelled as GLM.</li>
+<li>A linear predictor <span class="math inline">\(\eta=x\beta\)</span></li>
+<li>A link function <span class="math inline">\(g\)</span> such that <span class="math inline">\(E(y) = \mu = g^{-1}(\eta)\)</span></li>
 </ol>
 </section>
-<section id="further-assumptions" class="slide level2">
-<h2>Further assumptions</h2>
+<section id="technical-details-exponential-families" class="slide level2">
+<h2>Technical details: Exponential families</h2>
+<p>An exponential family is a set of probability distributions of the following form:</p>
+<p><span class="math display">\[
+f_x(x \mid \theta) = h(x) \exp\{\eta(\theta) \times T(x) - A(\theta)\}
+\]</span></p>
+<p>where</p>
 <ul>
-<li><p>Normal-distributed errors:</p>
-<p>The residuals are normal-distributed.</p>
-<p>Note: This is not required for the OLS estimate, but for the Maximum Likelihood estimation.</p></li>
-<li><p>Outlier: observation point that is distant from other observations.</p>
-<p>It is recommended to check the data for outliers, which can arise because of many reasons:</p>
-<ul>
-<li><p>Measurement error (remove)</p></li>
-<li><p>Errors in the pre-processing steps (fix or remove)</p></li>
-<li><p>“True” biological outliers (follow-up)</p></li>
-</ul></li>
-<li><p>Influential variants: Cook’s distance</p></li>
+<li><p><span class="math inline">\(\theta\)</span> is the parameter of interest.</p></li>
+<li><p><span class="math inline">\(T(x)\)</span> is a sufficient statistic.</p></li>
+<li><p><span class="math inline">\(\eta(\theta)\)</span> is the natural parameter or link function.</p></li>
 </ul>
 </section>
-<section id="diagnostic-plots-linear-relationship" class="slide level2">
-<h2>Diagnostic plots: Linear relationship</h2>
+<section id="gaussian-distribution-as-exponential-distribution" class="slide level2">
+<h2>Gaussian distribution as exponential distribution</h2>
+<p>Gaussian distribution with unknown <span class="math inline">\(\mu\)</span>, but known <span class="math inline">\(\sigma\)</span>:</p>
+<p><span class="math display">\[
+f_{\sigma}(x \mid \mu) =  \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\{ -\frac{(x-\mu)^2}{2\sigma^2} \} =  \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\{ -\frac{x^2}{2\sigma^2} + \frac{x\mu}{\sigma^2} - \frac{\mu^2}{2\sigma^2} \}
+\]</span></p>
 <ul>
-<li>Scatterplot of <span class="math inline">\(y\)</span> against <span class="math inline">\(x\)</span></li>
-</ul>
-
-<img data-src="Lecture1b-p1_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"></section>
-<section id="diagnostic-plots-linear-relationship-1" class="slide level2">
-<h2>Diagnostic plots: Linear relationship</h2>
-<ul>
-<li>Scatterplot of residuals (y-axis) against fitted values (x-axis)</li>
-</ul>
-
-<img data-src="Lecture1b-p1_files/figure-revealjs/unnamed-chunk-13-1.png" width="480" class="r-stretch quarto-figure-center"></section>
-<section id="diagnostic-plots-homoscedasticity" class="slide level2">
-<h2>Diagnostic plots: Homoscedasticity</h2>
-<ul>
-<li>Scatterplot of standardised residuals (y-axis) against fitted values (x-axis)</li>
-</ul>
-
-<img data-src="Lecture1b-p1_files/figure-revealjs/unnamed-chunk-14-1.png" width="480" class="r-stretch quarto-figure-center"></section>
-<section id="diagnostic-plots-normal-distribution-of-residuals" class="slide level2">
-<h2>Diagnostic plots: Normal-distribution of residuals</h2>
-<ul>
-<li>Q-Q plots of observed residuals (y-axis) against theoretical values under the Normal distribution (x-axis)</li>
-</ul>
-
-<img data-src="Lecture1b-p1_files/figure-revealjs/unnamed-chunk-15-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="diagnostic-plots-outliers" class="slide level2">
-<h2>Diagnostic plots: Outliers</h2>
-<ul>
-<li><p>Scatterplot of standardised residuals against Cook’s distance.</p></li>
-<li><p>Cook’s distance measures the effect of deleting a given observation (sum of all the changes in the regression model when observation i is removed).</p></li>
-</ul>
-
-<img data-src="Lecture1b-p1_files/figure-revealjs/unnamed-chunk-16-1.png" width="576" class="r-stretch quarto-figure-center"></section>
-<section id="lm-diagnostics" class="slide level2">
-<h2>lm(): Diagnostics</h2>
-<ul>
-<li><p>Linear relationship and outliers (Scatterplot of y against x)</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">plot</span>(x, y)</span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="fu">abline</span>(mod, <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></li>
-<li><p>Linear relationship and outliers (Residuals against fitted values)</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">plot</span>(mod, <span class="at">which =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></li>
-<li><p>Homoscedasticity (Standardised residuals against fitted values)</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">plot</span>(mod, <span class="at">which =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></li>
-<li><p>Normal-distribution of residuals (Q-Q plots of observed residuals against theoretical values under the Normal distribution)</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">plot</span>(mod, <span class="at">which =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></li>
-<li><p>Influential variants: (Standardised residuals against Cook’s distance)</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">plot</span>(mod, <span class="at">which =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></li>
+<li><p><span class="math inline">\(\theta = \mu\)</span></p></li>
+<li><p><span class="math inline">\(h(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\{ -\frac{x^2}{2\sigma^2} \}\)</span></p></li>
+<li><p><span class="math inline">\(T(x) = \frac{x}{\sigma}\)</span></p></li>
+<li><p><span class="math inline">\(\eta(\mu) = \frac{\mu}{\sigma}\)</span></p></li>
+<li><p><span class="math inline">\(A(\mu) = \frac{\mu^2}{2\sigma^2}\)</span></p></li>
 </ul>
 </section>
-<section id="prediction-using-linear-models" class="slide level2">
-<h2>Prediction using linear models</h2>
-<p>Assume we have a database with <span class="math inline">\(n\)</span> type 2 diabetes cases, where we have measured the following data:</p>
+<section id="logistic-regression-and-binary-outcomes" class="slide level2">
+<h2>Logistic regression and binary outcomes</h2>
+<p>Binomial distribution with known number of trials <span class="math inline">\(n\)</span>, but unknown probability <span class="math inline">\(p\)</span>:</p>
+<p><span class="math display">\[ \begin{align} f(x \mid p) &amp;= {n\choose x} p^x (1-p)^{n-x} = \\ &amp;= {n \choose x} \exp \{x \log (\frac{p}{1-p}) + n\log(1-p)\}  \end{align} \]</span></p>
 <ul>
-<li><p><span class="math inline">\(y\)</span>: quantitative measure of disease progression one year after baseline (vector)</p></li>
-<li><p><span class="math inline">\(x\)</span>: predictor matrix including clinical data (age, sex, bmi), blood pressure and triglycerides</p></li>
-<li><p>This is our training data <span class="math inline">\(y\_{\text{train}}\)</span> and <span class="math inline">\(x\_{\text{train}}\)</span>.</p></li>
+<li><p><span class="math inline">\(\theta = p\)</span></p></li>
+<li><p><span class="math inline">\(h(x) = {n\choose x}\)</span></p></li>
+<li><p><span class="math inline">\(T(x)=x\)</span></p></li>
+<li><p><span class="math inline">\(\eta(p) = \log(\frac{p}{1-p})\)</span></p></li>
+<li><p><span class="math inline">\(A(p) = - n \log(1-p)\)</span></p></li>
 </ul>
-<p>For a new case we only have the predictor matrix <span class="math inline">\(x_{\text{new}}\)</span>, but not <span class="math inline">\(y_{\text{new}}\)</span>.</p>
-<p><strong>Goal</strong>: For each new type 2 diabetes case we want to predict <span class="math inline">\(y_{\text{new}}\)</span>, his/her progression one year later.</p>
 </section>
-<section id="lm-predictions" class="slide level2">
-<h2>lm(): Predictions</h2>
+<section id="logistic-regression-and-binary-outcomes-1" class="slide level2">
+<h2>Logistic regression and binary outcomes</h2>
+<p>Formulate model: Three elements</p>
+<ol type="1">
+<li>Error distribution for response variable</li>
+<li>Linear predictor</li>
+<li>Link function</li>
+</ol>
+<p>The three elements of the logistic regression model are:</p>
+<ol type="1">
+<li>The Bernoulli probability distribution modelling the data: <span class="math inline">\(P( y_i= 1 \mid x_i ) = p_i\)</span></li>
+<li>The linear predictor: <span class="math inline">\(\alpha + \sum_{j=1}^p \beta_j x_{ij}\)</span></li>
+<li>The link function <span class="math inline">\(g\)</span> associating the mean of <span class="math inline">\(y\)</span>, <span class="math inline">\(P( y_i= 1 \mid x_i )\)</span> to the linear predictor: here the link is the <span style="color:red;">logistic link</span> as we set <span class="math inline">\(g(P( y_i= 1 \mid x_i ))=\text{logit}(p_i) = \beta_0 + \sum_{j=1}^p\beta_jx_{ij}\)</span></li>
+</ol>
+</section>
+<section id="glm-in-r" class="slide level2">
+<h2>glm() in R</h2>
 <ul>
-<li><p>Use the linear model to learn a prediction rule from the training data, where both <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are observed on the same individuals.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>lm_train <span class="ot">&lt;-</span></span>
-<span id="cb19-2"><a href="#cb19-2"></a>  <span class="fu">lm</span>(<span class="at">formula =</span> y_train <span class="sc">~</span> age <span class="sc">+</span> sex <span class="sc">+</span> bmi <span class="sc">+</span> map <span class="sc">+</span> ltg, <span class="at">data =</span> x_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></li>
-<li><p>Predict the outcome based on the prediction rule and the predictors of the new data.</p></li>
+<li>GLMs can be called in R just as linear models.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">predict.lm</span>(lm_train, x_new)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(lars)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">data</span>(diabetes)</span>
+<span id="cb1-5"><a href="#cb1-5"></a>x <span class="ot">&lt;-</span> <span class="fu">as.data.frame.matrix</span>(diabetes<span class="sc">$</span>x)</span>
+<span id="cb1-6"><a href="#cb1-6"></a>y <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(diabetes<span class="sc">$</span>y <span class="sc">&gt;</span> <span class="fu">mean</span>(diabetes<span class="sc">$</span>y), <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">glm</span>(y <span class="sc">~</span> age <span class="sc">+</span> sex <span class="sc">+</span> bmi <span class="sc">+</span> map <span class="sc">+</span> ltg, <span class="at">data =</span> x, <span class="at">family =</span> binomial) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = y ~ age + sex + bmi + map + ltg, family = binomial,
+    data = x)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)  -0.3164     0.1190  -2.659  0.00783 **
+age          -1.0206     2.7309  -0.374  0.70860
+sex          -5.4254     2.6315  -2.062  0.03923 *
+bmi          14.5079     3.0223   4.800 1.58e-06 ***
+map          11.8803     2.9652   4.007 6.16e-05 ***
+ltg          18.6940     3.1954   5.850 4.91e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 606.61  on 441  degrees of freedom
+Residual deviance: 434.17  on 436  degrees of freedom
+AIC: 446.17
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
 </div>
 </section>
-<section id="take-away-linear-models" class="slide level2">
-<h2>Take away: Linear models</h2>
+<section id="glm-in-r-1" class="slide level2">
+<h2>glm() in R</h2>
 <ul>
-<li><p>Motivation why to use linear models (To understand and to predict)</p></li>
-<li><p>Model fit using ordinary least squares</p></li>
-<li><p>Interpretation of the regression coefficients</p></li>
-<li><p>Residuals and fitted values</p></li>
-<li><p>Model diagnostics</p></li>
-<li><p>Using the linear model to predict</p></li>
+<li><p>Different types of exponential families can be called using the <span class="math inline">\(\text{family}\)</span> option:</p>
+<ul>
+<li><p><span class="math inline">\(\text{binomial(link = 'logit')}\)</span></p></li>
+<li><p><span class="math inline">\(\text{gaussian(link = 'identity')}\)</span></p></li>
+<li><p><span class="math inline">\(\text{Gamma(link = 'inverse')}\)</span></p></li>
+<li><p><span class="math inline">\(\text{poisson(link='log')}\)</span></p></li>
+</ul></li>
+<li><p>There are similar return values as for the <span class="math inline">\(\text{lm}\)</span> function:</p>
+<ul>
+<li><p>coefficients</p></li>
+<li><p>residuals</p></li>
+<li><p>fitted.values</p></li>
+<li><p>linear.predictors: the linear fit on the link scale</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="making-predictions" class="slide level2">
+<h2>Making predictions</h2>
+<ol type="1">
+<li>Train the prediction rule</li>
+<li>Derive predictions on the linear predictor scale for the new data</li>
+</ol>
+<div class="cell" data-warnings="false">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">library</span>(lars)</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="fu">set.seed</span>(<span class="dv">11</span>)</span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="fu">data</span>(diabetes)</span>
+<span id="cb3-8"><a href="#cb3-8"></a>x <span class="ot">&lt;-</span> <span class="fu">as.data.frame.matrix</span>(diabetes<span class="sc">$</span>x)</span>
+<span id="cb3-9"><a href="#cb3-9"></a>y <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(diabetes<span class="sc">$</span>y <span class="sc">&gt;</span> <span class="fu">mean</span>(diabetes<span class="sc">$</span>y), <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb3-10"><a href="#cb3-10"></a></span>
+<span id="cb3-11"><a href="#cb3-11"></a>glm_predict <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> glu, <span class="at">data =</span> x, <span class="at">family =</span> binomial)</span>
+<span id="cb3-12"><a href="#cb3-12"></a>xnew <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">glu =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">1000</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fl">0.5</span>))</span>
+<span id="cb3-13"><a href="#cb3-13"></a>xnew <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          glu
+1 -0.29551555
+2  0.01329718
+3 -0.75827655
+4 -0.68132667
+5  0.58924458
+6 -0.46707566</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>eta <span class="ot">&lt;-</span> <span class="fu">predict.glm</span>(glm_predict, xnew)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="plot-the-predictions" class="slide level2">
+<h2>Plot the predictions</h2>
+<div class="cell" data-warnings="false">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> eta)) <span class="sc">|</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">exp</span>(eta) <span class="sc">/</span> (<span class="fu">exp</span>(eta) <span class="sc">+</span> <span class="dv">1</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Lecture1c-p1_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"><div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">rbinom</span>(</span>
+<span id="cb7-2"><a href="#cb7-2"></a>  <span class="at">n =</span> <span class="fu">length</span>(eta),</span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="at">size =</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">length</span>(eta)),</span>
+<span id="cb7-4"><a href="#cb7-4"></a>  <span class="at">prob =</span> <span class="fu">exp</span>(eta) <span class="sc">/</span> (<span class="fu">exp</span>(eta) <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb7-5"><a href="#cb7-5"></a>) <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0 0 0 0 1 0</code></pre>
+</div>
+</div>
+</section>
+<section id="take-away-generalised-linear-model" class="slide level2">
+<h2>Take away: Generalised linear model</h2>
+<p>The model formulation in GLMs consists of three elements:</p>
+<ol type="1">
+<li>Error distribution for response variable</li>
+<li>Linear predictor</li>
+<li>Link function</li>
+</ol>
+<p>Most common data types can be modelled using GLMs</p>
+<ul>
+<li><p>Continuous <span class="math inline">\(\rightarrow\)</span> Gaussian distribution</p></li>
+<li><p>Dichotomous or binary <span class="math inline">\(\rightarrow\)</span> Bernoulli distribution</p></li>
+<li><p>Counts <span class="math inline">\(\rightarrow\)</span> Poisson or Binomial (with known number of trial) distribution</p></li>
 </ul>
 
 <img src="../../assets/bmeh_normal.png" class="slide-logo r-stretch"><div class="footer footer-default">
@@ -790,20 +761,20 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="Lecture1b-p1_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="Lecture1c-p1_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="Lecture1b-p1_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="Lecture1b-p1_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="Lecture1b-p1_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="Lecture1b-p1_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="Lecture1b-p1_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
-  <script src="Lecture1b-p1_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="Lecture1c-p1_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="Lecture1c-p1_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="Lecture1c-p1_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="Lecture1c-p1_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="Lecture1c-p1_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="Lecture1c-p1_files/libs/revealjs/plugin/quarto-support/support.js"></script>
 
 
-  <script src="Lecture1b-p1_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="Lecture1b-p1_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="Lecture1b-p1_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="Lecture1b-p1_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="Lecture1c-p1_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="Lecture1c-p1_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="Lecture1c-p1_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="Lecture1c-p1_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>
