@@ -5,15 +5,18 @@ author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
 editor: visual
+date: 2024-01-14
 date-format: medium
 title-slide-attributes:
   data-background-color: "#f3f4f4"
+  data-background-image: "../../assets/bmeh_normal.png"
   data-background-size: 80%
   data-background-position: 60% 120%
 format: 
     revealjs:
-      slide-number: true
       theme: [default, ../../assets/style.scss]
+      logo: "../../assets/bmeh_normal.png"
+      slide-number: true
       incremental: false
       chalkboard:
         buttons: false

@@ -1,0 +1,17 @@
+exclude: '^(renv/)'
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+        exclude_types: [json, binary]
+      - id: check-added-large-files
+        args:
+          - --maxkb=50000
+  - repo: https://github.com/lorenzwalthert/precommit
+    rev: v0.3.2
+    hooks:
+      - id: style-files
+        args: [--style_pkg=styler, --style_fun=tidyverse_style]
+        files: '(\.[rR]profile|\.[rR]|\.[rR]md|\.[rR]nw|\.[qQ]md)$'
