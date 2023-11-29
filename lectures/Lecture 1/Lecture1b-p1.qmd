@@ -1,0 +1,568 @@
+---
+title: "Advanced Regression: Linear and generalised linear models I"
+date: "20-02-2023"
+author: 
+  name: "Garyfallos Konstantinoudis"
+institute: "Imperial College London"
+editor: visual
+date-format: medium
+title-slide-attributes:
+  data-background-color: "#f3f4f4"
+  data-background-size: 80%
+  data-background-position: 60% 120%
+format: 
+    revealjs:
+      slide-number: true
+      theme: [default, ../../assets/style.scss]
+      incremental: false
+      chalkboard:
+        buttons: false
+---
+
+## Main goal of (linear) regression
+
+Regression models are used to investigate association between
+
+-   an outcome variable $y$
+
+-   potential explanatory variables (or predictors) $x = (x_1, x_2, ..., x_p)$
+
+The statistical idea is to see if the $x = (x_1, x_2, ..., x_p)$ can give an adequate description of the variability of the outcome y.
+
+```{r}
+#| echo: false
+#| fig.align: 'center'
+
+library(ggplot2)
+library(dplyr)
+
+set.seed(11)
+x <- rnorm(n = 1000, mean = 0, sd = 0.5)
+y <- 150*x + rnorm(n = 1000, mean = 200, sd = 200)
+coefs <- lm(y~x) %>% coef()
+
+ggplot() + 
+  geom_point(data=data.frame(x=x, y=y), aes(x=x, y=y)) + 
+  geom_abline(intercept = coefs[1], slope = coefs[2], lwd=1.5) + 
+  theme_bw()
+```
+
+## Motivations
+
+1.  **Understand** how the predictors affect the outcome.
+    -   Example: We conduct an observational study focusing on type 2 diabetes as outcome. Our aim is to understand which risk factors are associated with the risk of type 2 diabetes.
+2.  **Predict** the outcome of new observations, where only the predictors are observed, but not the outcome.
+    -   Example: We study type 2 diabetes and want to predict disease progression. Our aim is to identify individuals with poor prognosis and improve their treatment.
+
+## The linear model
+
+$$
+y = \alpha + x\beta + \epsilon
+$$
+
+-   $y$: Outcome, response, dependent variable. Dimension: $n\times1$
+
+-   $x$: Regressors, exposures, covariates, input, explanatory, or independent variables. Dimension: $n\times p$
+
+-   $\epsilon$: Residuals, error. Dimension: $n\times 1$
+
+-   $\alpha$: Intercept. Dimension: $1 \times 1$
+
+-   $\beta$: Regression coefficients. Dimension: $p\times 1$
+
+## Parameters to estimate:
+
+-   $\alpha$: Intercept, Baseline level, the expected mean value of $y$ when all $x = 0$
+
+-   $\beta = (\beta_1, ..., \beta_p)$: vector of regression coefficients.
+
+-   $\beta_j$: : regression coeffcients of variable $x_j$. The expected change in y for a one-unit change in $x_j$ when the other covariates are held constant.
+
+Observed data:
+
+-   $y$: Outcome or response.
+
+-   $x$: Regressors, exposures, covariates, input, explanatory or independent variables
+
+    -   $i = 1, ..., n$ samples.
+
+    -   $j = , ..., p$ variables.
+
+## Estimates: Ordinary least squares (OLS)
+
+$$
+\hat{\beta}_{OLS} = \underbrace{(x^t x)^{(-1)} }_{p \times p}  \underbrace{x^t}_{p \times n} \underbrace{y}_{n \times 1}
+$$
+
+-   Inversion of $\underbrace{(x^t x)^{(-1)} }_{p \times p}$ requires $x^t x$ to be of full rank (Lecture 2b).
+
+Alternative representation:
+
+-   $\hat{\beta} = \frac{\hat{cov}(x,y)}{\hat{cov}(x)}$, where the sample covariance is defined as:
+
+    -   $\hat{cov}(x,y)=\frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})$
+
+    -   $\hat{cov}(x)=\frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})(x_i - \bar{x})$
+
+## Example: Diabetes data
+
+-   $y$ : quantitative measure of disease progression one year after baseline (vector)
+
+-   $x$: predictor matrix
+
+```         
+-   clinical parameters: age, sex, bmi
+
+-   map: blood pressure
+
+-   tc: total cholesterol
+
+-   ldl: low-density lipoprotein
+
+-   hdl: high-density lipoprotein
+
+-   tch: total cholesterol over hdl
+
+-   ltg: triglycerides
+
+-   glu: glucose
+```
+
+-   $n=442$: sample size
+
+## The lm() command in R
+
+```{r}
+#| echo: true
+#| eval: false
+
+lm(y ~ age+sex+glu+map+ltg, data = x)
+```
+
+Formula:
+
+```{r}
+#| echo: true
+#| eval: false
+
+y ~ x1+x2+x3
+```
+
+-   left of $\sim$: outcome
+
+-   right of $\sim$: predictors
+
+It is also possible to enter a full matrix $x$, transform by as.matrix(), as multivariable set of predictors:
+
+```{r}
+#| echo: true
+#| eval: false
+
+y ~ x
+```
+
+An intercept is always included, to turn off add $-1$
+
+## Interpreting the summary.lm() command
+
+```{r}
+#| echo: true
+#| eval: true
+
+library(lars)
+library(dplyr)
+
+data(diabetes)
+x = as.data.frame.matrix(diabetes$x)
+y = diabetes$y
+
+lm(y ~ age+sex+glu+map+ltg, data = x) %>% summary.lm()
+```
+
+## Difference between univariable and multivariable regression
+
+```{r}
+#| echo: true
+#| eval: true
+
+lm(y ~ glu, data = x) %>% summary.lm()
+```
+
+Reduction of the regression coeffient from 619 to 175 after conditioning on other covariates $\rightarrow$ attenuation of the effect
+
+## Further estimates
+
+-   Weighted least squares
+
+    $\hat{\beta}_{WLS}=\underbrace{(x^twx)}_{p\times p} \underbrace{x^t}_{p\times n} \underbrace{w}_{n \times n}\underbrace{y}_{n \times 1}$
+
+    where $w$ is a $n \times n$ diagonal weight matrix
+
+-   Maximum likelihood
+
+-   Bayesian linear regression (Module: Bayesian Statistics)
+
+## Fitted values and residuals
+
+-   Fitted values
+
+$\hat{y} = x \hat{\beta} = \underbrace{x (x^t x)^{-1} x^t}_{h} y$
+
+-   Hat matrix $h$
+
+-   Residuals are the difference between the fitted values (predicted by the model) and the actual observed outcome: $r_i = \hat{y}_i - y_i$
+
+-   The residuals are a vector $r=(r_1,…,r_n)$ of length $n$.
+
+::: callout-tip
+Residuals are an important quantity for model diagnostics.
+:::
+
+## Fitted values and residuals
+
+```{r}
+#| echo: false
+#| eval: true
+
+library(ggplot2)
+library(ggrepel)
+library(pBrackets)
+
+bracketsGrob <- function(...){
+  l <- list(...)
+  e <- new.env()
+  e$l <- l
+  grid:::recordGrob(  {
+    do.call(grid.brackets, l)
+  }, e)
+}
+
+set.seed(11)
+x1 <- rnorm(n = 8, mean = 0, sd = 1)
+y1 <- 0.8*x1 + rnorm(n = 8, mean = 0, sd = 1)
+
+coefs <- lm(y1~x1) %>% coef()
+fitted <- coefs[1] + coefs[2] * x1
+
+br1 <- bracketsGrob(x1=0, y1=0, x2=1, y2=1, h=0.2, lwd=2)
+
+ggplot(data=data.frame(x=x1, y=y1), aes(x=x1, y=y1)) + 
+  geom_abline(intercept = coefs[1], slope = coefs[2], lwd=1, col = "red") + 
+  geom_segment(aes(xend = x1, yend = fitted)) + 
+  geom_point(size = 3) + 
+  geom_point(aes(x=x1, y=fitted), shape = 25, fill = "blue", col = "blue", size = 3) +
+  theme_bw() + ylab("y-axis") + xlab("x-axis") + 
+  annotate("text", x = 0.2, y = 0.1, label = expression(paste(r[i], "=", hat(y)[i],"-", y[i])),size = 8) + 
+  annotate("text", x = 0.9, y = 0.5, label = expression(paste("(", x[i], ", ", y[i], ")")), size = 8) + 
+  annotate("text", x = 0.9, y = -0.4, label = expression(paste("(", x[i], ", ", hat(y)[i], ")")), size = 8) + 
+  annotation_custom(br1,xmin=0.5, xmax=0.501, ymin=-0.35, ymax=0.5) + 
+  theme(text = element_text(size=20))
+```
+
+## lm(): Fitted values and residuals
+
+-   First fit a linear model and save it in the object $\text{lm0}$
+
+```{r}
+#| echo: true
+#| eval: true
+lm0 = lm(y ~ glu, data = x)
+```
+
+-   The linear model object $\text{lm0}$ contains
+
+    -   Regression coefficients
+
+    ```{r}
+    #| echo: true
+    #| eval: true
+    lm0$coefficients
+    ```
+
+    -   Fitted values
+
+    ```{r}
+    #| echo: true
+    #| eval: false
+    lm0$fitted.values
+    ```
+
+    -   Residuals
+
+    ```{r}
+    #| echo: true
+    #| eval: false
+    lm0$residuals
+    ```
+
+## Assumptions
+
+1.  Linearity: There is a linear relationship between $x$ and $y$.
+2.  Weak exogeneity: The predictors $x$ are viewed as fixed variables; there is no measurement error on $x$.
+3.  Constant variance (homoscedasticity): All residuals have the same variance.
+4.  No perfect multicollinearity: No predictor can be expressed as a linear combination of the other predictors (Lecture 2b).
+5.  Independent errors: The residuals are uncorrelated (e.g. in time-series the error of time point $t$ will depend on the error of time point $t-1$) and independent of $x$.
+
+## Further assumptions
+
+-   Normal-distributed errors:
+
+    The residuals are normal-distributed.
+
+    Note: This is not required for the OLS estimate, but for the Maximum Likelihood estimation.
+
+-   Outlier: observation point that is distant from other observations.
+
+    It is recommended to check the data for outliers, which can arise because of many reasons:
+
+    -   Measurement error (remove)
+
+    -   Errors in the pre-processing steps (fix or remove)
+
+    -   "True" biological outliers (follow-up)
+
+-   Influential variants: Cook's distance
+
+## Diagnostic plots: Linear relationship
+
+-   Scatterplot of $y$ against $x$
+
+```{r}
+#| echo: false
+#| eval: true
+#| fig-height: 3.5
+
+library(lars)
+library(dplyr)
+
+data(diabetes)
+
+x = as.data.frame.matrix(diabetes$x)
+y = diabetes$y
+mod <- lm(y ~ age+sex+glu+map+ltg, data = x)
+
+data.frame(
+  Score = rep(y, times = 2), 
+  Predictors = c(x$bmi, x$hdl),
+  type = c(rep("bmi", times = length(x$ldl)), 
+           rep("hdl", times = length(x$hdl)))
+) %>% 
+  ggplot() + geom_point(aes(x=Predictors, y=Score)) + facet_grid(cols = vars(type)) + 
+  theme_bw()
+```
+
+## Diagnostic plots: Linear relationship
+
+-   Scatterplot of residuals (y-axis) against fitted values (x-axis)
+
+```{r}
+#| echo: false
+#| eval: true
+#| fig-width: 5
+#| fig.align: 'center'
+#| warning: false
+
+library(lars)
+library(dplyr)
+library(ggplot2)
+
+# function for diagnostic plots
+x = as.data.frame.matrix(diabetes$x)
+y = diabetes$y
+
+mod <- lm(y ~ age+sex+glu+map+ltg, data = x)
+
+ggplot(mod, aes(.fitted, .resid)) + 
+  geom_point() + 
+  stat_smooth(method="loess") + 
+  geom_hline(yintercept=0, col="red", linetype="dashed") +
+  xlab("Fitted values") + ylab("Residuals") + 
+  ggtitle("Residual vs Fitted Plot") + theme_bw()
+
+```
+
+## Diagnostic plots: Homoscedasticity
+
+-   Scatterplot of standardised residuals (y-axis) against fitted values (x-axis)
+
+```{r}
+#| echo: false
+#| eval: true
+#| fig-width: 5
+#| fig.align: 'center'
+#| warning: false
+
+library(lars)
+library(dplyr)
+library(ggplot2)
+
+# function for diagnostic plots
+x = as.data.frame.matrix(diabetes$x)
+y = diabetes$y
+
+mod <- lm(y ~ age+sex+glu+map+ltg, data = x)
+
+data.frame(
+  fitted = mod$fitted.values,
+  sqrt.res = sqrt(rstandard(mod))
+) %>% 
+  ggplot() + 
+  geom_point(aes(x=fitted, y=sqrt.res)) +
+  xlab("Fitted values") + ylab("sqrt standardized residuals") + 
+  theme_bw()
+
+```
+
+## Diagnostic plots: Normal-distribution of residuals
+
+-   Q-Q plots of observed residuals (y-axis) against theoretical values under the Normal distribution (x-axis)
+
+```{r}
+#| echo: false
+#| eval: true
+#| fig.align: 'center'
+#| warning: false
+
+library(lars)
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+
+# function for diagnostic plots
+x = as.data.frame.matrix(diabetes$x)
+y = diabetes$y
+
+mod <- lm(y ~ age+sex+glu+map+ltg, data = x)
+
+(ggplot(data = mod, aes(qqnorm(.stdresid, plot.it=FALSE)[[1]], .stdresid))+
+    geom_point(na.rm = TRUE) + 
+    geom_abline(slope = 1, intercept = 0, col = "blue") + 
+    xlab("Theoretical Quantiles") +
+    ylab("Standardized Residuals") + 
+    ggtitle("Normal Q-Q") + theme_bw()) |
+  (
+    ggplot() + geom_histogram(aes(x=residuals(mod))) + 
+      theme_bw() + 
+      xlab("Residuals") + ylab("Frequency")
+  )
+```
+
+## Diagnostic plots: Outliers
+
+-   Scatterplot of standardised residuals against Cook's distance.
+
+-   Cook's distance measures the effect of deleting a given observation (sum of all the changes in the regression model when observation i is removed).
+
+```{r}
+#| echo: false
+#| eval: true
+#| fig-width: 6
+#| fig.align: 'center'
+#| warning: false
+
+x = as.data.frame.matrix(diabetes$x)
+y = diabetes$y
+
+mod <- lm(y ~ age+sex+glu+map+ltg, data = x)
+
+
+ggplot(mod, aes(.hat, .stdresid)) + 
+  geom_point(aes(size=.cooksd), na.rm=TRUE) +
+  stat_smooth(method="loess", na.rm=TRUE) + 
+  xlab("Leverage")+ylab("Standardized Residuals") + 
+  ggtitle("Residual vs Leverage Plot") + 
+  scale_size_continuous("Cook's Distance", range=c(1,5)) + 
+  theme_bw() + 
+  theme(legend.position="bottom")
+  
+```
+
+## lm(): Diagnostics
+
+-   Linear relationship and outliers (Scatterplot of y against x)
+
+    ```{r}
+    #| echo: true
+    #| eval: false
+    plot(x,y)
+    abline(mod, col="red")
+    ```
+
+-   Linear relationship and outliers (Residuals against fitted values)
+
+    ```{r}
+    #| echo: true
+    #| eval: false
+    plot(mod, which=1)
+    ```
+
+-   Homoscedasticity (Standardised residuals against fitted values)
+
+    ```{r}
+    #| echo: true
+    #| eval: false
+    plot(mod, which=3)
+    ```
+
+-   Normal-distribution of residuals (Q-Q plots of observed residuals against theoretical values under the Normal distribution)
+
+    ```{r}
+    #| echo: true
+    #| eval: false
+    plot(mod, which=2)
+    ```
+
+-   Influential variants: (Standardised residuals against Cook's distance)
+
+    ```{r}
+    #| echo: true
+    #| eval: false
+    plot(mod, which=5)
+    ```
+
+## Prediction using linear models
+
+Assume we have a database with $n$ type 2 diabetes cases, where we have measured the following data:
+
+-   $y$: quantitative measure of disease progression one year after baseline (vector)
+
+-   $x$: predictor matrix including clinical data (age, sex, bmi), blood pressure and triglycerides
+
+-   This is our training data $y\_{\text{train}}$ and $x\_{\text{train}}$.
+
+For a new case we only have the predictor matrix $x_{\text{new}}$, but not $y_{\text{new}}$.
+
+**Goal**: For each new type 2 diabetes case we want to predict $y_{\text{new}}$, his/her progression one year later.
+
+## lm(): Predictions
+
+-   Use the linear model to learn a prediction rule from the training data, where both $x$ and $y$ are observed on the same individuals.
+
+    ```{r}
+    #| echo: true
+    #| eval: false
+    lm_train =
+      lm(formula=y_train~age+sex+bmi+map+ltg, data=x_train)
+    ```
+
+-   Predict the outcome based on the prediction rule and the predictors of the new data.
+
+```{r}
+#| echo: true
+#| eval: false
+predict.lm(lm_train, x_new)
+```
+
+## Take away: Linear models
+
+-   Motivation why to use linear models (To understand and to predict)
+
+-   Model fit using ordinary least squares
+
+-   Interpretation of the regression coefficients
+
+-   Residuals and fitted values
+
+-   Model diagnostics
+
+-   Using the linear model to predict

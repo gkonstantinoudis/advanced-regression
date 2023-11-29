@@ -1,0 +1,191 @@
+---
+title: "Advanced Regression: Overview of the course"
+date: "20-02-2023"
+author: 
+  name: "Garyfallos Konstantinoudis"
+institute: "Imperial College London"
+editor: visual
+date-format: medium
+title-slide-attributes:
+  data-background-color: "#f3f4f4"
+  data-background-size: 80%
+  data-background-position: 60% 120%
+format: 
+    revealjs:
+      theme: [default, ../../assets/style.scss]
+      slide-number: true
+      incremental: false
+      chalkboard:
+        buttons: false
+---
+
+## Course aims
+
+-   Understand the fundamental concepts of **data science** including high-dimensional statistics and advanced regression
+
+-   Translate these into **real world data problems**:
+
+    -   **Understanding** structure in complex data
+
+    -   **Prediction** of future observations
+
+-   **Evaluate** results of other studies and publications
+
+-   **Design** and conduct analysis of complex datasets
+
+## Topics covered
+
+1.  **Understanding** structure in complex data:
+    -   Linear and generalised linear models
+    -   Hierarchical models
+    -   Non-linear exposures
+    -   Model and variable selection
+2.  **Prediction** of future observations:
+    -   Prediction rules and cross validation
+    -   Penalised regression
+    -   Machine learning (classification, trees, neural networks)
+
+## Module structure
+
+```{r}
+#| echo: false
+
+library(reshape2)
+library(ggplot2)
+
+dfr <- data.frame(
+  name = factor(
+    c("Morning lecture part A", 
+           "Morning lecture part B",
+           "Morning lecture part C", 
+           "Practical"), 
+    levels = c("Practical",
+               "Morning lecture part C",
+               "Morning lecture part B",
+               "Morning lecture part A")
+  ),
+  start = c(
+    "10:00", 
+    "11:00", 
+    "12:00", 
+    "14:00"),
+  end = c(
+    "10:50", 
+    "11:50", 
+    "12:50", 
+    "16:00")
+)
+
+dfr$start <- as.POSIXct(strptime(dfr$start, format="%H:%M"))
+dfr$end <- as.POSIXct(strptime(dfr$end, format="%H:%M"))
+
+mdfr <- melt(dfr, measure.vars = c("start", "end"))
+
+ggplot(mdfr, aes(x = value, y = name)) + 
+  geom_line(size = 8, col = "blue") +
+  scale_x_continuous(breaks = as.POSIXct(strptime(c("10:00", "11:00", 
+                                                    "12:00", "13:00", 
+                                                    "14:00", "15:00",
+                                                    "16:00"), 
+                                                format="%H:%M")), 
+                     labels = c("10:00", "11:00", 
+                                "12:00", "13:00", 
+                                "14:00", "15:00",
+                                "16:00")) + 
+  xlab(NULL) + 
+  ylab(NULL) +
+  theme(text = element_text(size=20))
+```
+
+## Practicals in R
+
+There will be an R practical following each course:
+
+```{r fig.align='center'}
+#| echo: true
+
+x <- rnorm(n = 1000, mean = 0, sd = 1)
+y <- exp(x) + rnorm(n = 1000, mean = 0, sd = 3)
+ggplot2::ggplot() + 
+  ggplot2::geom_point(data = data.frame(x=x, y=y), ggplot2::aes(x=x, y=y)) + 
+  ggplot2::theme_bw()
+```
+
+## Practicals
+
+-   Opportunity to interact with module lead and tutors.
+
+-   Discussion of the solutions.
+
+-   Forum on padlet for support.
+
+-   Solutions will be released after the practical session.
+
+-   Working on the practicals and solving the questions is the best preparation for the exam.
+
+## What is markdown or quarto?
+
+-   When coding in R it is important to document and comment the code.
+
+-   Markdown is an R package that compiles R code into documents (pdf, html, word and many more).
+
+-   <https://cran.r-project.org/web/packages/rmarkdown>.
+
+-   Project page <https://rmarkdown.rstudio.com/>.
+
+Make your code accessible and reproducible.
+
+## Learning outcomes
+
+-   Perform advanced statistical analyses, employing penalised likelihood or non-pararametric regression models.
+
+-   Discuss the theoretical foundations and limitations of the most widely used advanced regression approaches.
+
+-   Use complex regression models in R, understand which methods are suitable for which data and interpret the results.
+
+-   Enjoy data science.
+
+## Drop in sessions
+
+-   Wednesdays (16:00-17:00).
+
+-   In person and/or online.
+
+-   Opportunity to re-discuss and get feedback.
+
+## Exam
+
+2 exams:
+
+1.  An interim exam (30%) during the 3rd week. Not in person, analyse data based on lectures 1 and 2 and 24h deadline.
+2.  A final 1.5h open book exam during the exam period (70%).
+
+The total mark and pass will be calculated after **combining** these two marks.
+
+## AR: The team
+
+-   Module lead: Garyfallos Konstantinoudis
+
+-   Practical facilitators:
+
+    -   Christina Liang
+
+Looking forward to welcoming you to the AR module!
+
+Any questions?
+
+-   [g.konstantinoudis\@imperial.ac.uk](g.konstantinoudis@imperial.ac.uk)
+
+## Next lectures
+
+Linear models and generalised linear models.
+
+-   Revision: The linear model.
+
+-   Generalised linear model.
+
+Random effects models.
+
+-   Motivation: Structured data.
+
+-   Fixed and random effects.

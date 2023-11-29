@@ -1,0 +1,9 @@
+\frametitle{Case-study: Chicago - Temperature and mortality}
+\begin{itemize}
+		\item What do you observe?
+		\item Why curves similar?
+		\item Is \textcolor{red}{independence} a valid assumption?
+	\end{itemize}
+		\begin{figure}
+		\includegraphics[width = 8cm]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/p28.png}
+	\end{figure}

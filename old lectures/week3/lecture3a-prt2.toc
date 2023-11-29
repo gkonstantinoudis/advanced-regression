@@ -1,0 +1,11 @@
+\babel@toc {german}{}
+\beamer@sectionintoc {1}{What are singularity and multicollinearity?}{7}{0}{1}
+\beamer@sectionintoc {2}{How to detect singularity and multicollinearity?}{9}{0}{2}
+\beamer@subsectionintoc {2}{1}{Correlation and covariance matrix}{10}{0}{2}
+\beamer@subsectionintoc {2}{2}{The rank of a matrix}{15}{0}{2}
+\beamer@subsectionintoc {2}{3}{Variance inflation factor}{19}{0}{2}
+\beamer@subsectionintoc {2}{4}{Singular value decomposition and condition number}{22}{0}{2}
+\beamer@sectionintoc {3}{How to prevent multicollinearity?}{30}{0}{3}
+\beamer@subsectionintoc {3}{1}{Grouping}{31}{0}{3}
+\beamer@subsectionintoc {3}{2}{Partial least squares}{32}{0}{3}
+\beamer@subsectionintoc {3}{3}{Pre-whitening}{33}{0}{3}

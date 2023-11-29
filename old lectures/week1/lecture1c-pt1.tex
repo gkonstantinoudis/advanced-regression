@@ -1,0 +1,648 @@
+\documentclass{beamer}
+
+\usetheme{Montpellier}
+%\usetheme{CambridgeUS}
+
+
+\usepackage[OT1]{fontenc}
+\usepackage[utf8x]{inputenc}
+
+
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+\usepackage[german]{babel}
+\usepackage{booktabs,bm, color, enumerate, hyperref, pgf, url, soul, tikz}
+\usepackage{amssymb, amsmath}
+\usepackage{graphicx}
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+\newcommand*{\Resize}[2]{\resizebox{#1}{!}{$#2$}}%
+
+%\usepackage{hyperref}
+
+\usepackage{appendixnumberbeamer}
+
+
+\bibliographystyle{apalike}
+
+
+
+%\input{abbreviations}
+
+
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+%\usepackage{appendixnumberbeamer}
+
+
+
+%\subject{2015}
+
+
+
+
+\title{Advanced Regression: 1c Random effects and hierarchical models (Part I)}
+
+
+
+\author{Garyfallos Konstantinoudis}
+\institute{Epidemiology and Biostatistics, Imperial College London}
+
+
+
+
+\date{21st February 2023}
+
+
+\setlength{\unitlength}{0.9cm}
+\linethickness{1.1pt}
+
+
+
+
+
+
+
+
+\begin{document}
+
+
+\frame{
+\titlepage
+}
+
+
+
+\frame{
+\tableofcontents
+}
+
+
+
+%\section{Motivation}
+%\section{Fixed effect analysis}
+%\section{Random effect analysis}
+%\section{Linear mixed models}
+%\section{Model comparison and interpretation}
+%\section{Linear mixed models in practice:  lme4}
+
+
+
+\section{Motivation}
+\subsection{Structured data}
+
+
+\frame{
+\frametitle{Motivation} 
+
+All methods presented so far assume that the observations are  iid.
+
+\begin{block}{iid: Independent and identically distributed}{
+\begin{itemize}
+\item \textbf{Independent}: The observations are independent from each other 
+\begin{equation}
+cor(x_i, x_{i'}) = 0  \text{ for all }  i,i' \in 1,....,n \nonumber
+\end{equation}
+\item \textbf{Identically}: All observations have the same distribution. For example when assuming a Normal distribution they all have the same mean and variance.
+\end{itemize}
+}
+\end{block}
+
+\vspace{0.4cm}
+PS: Exchangeability: Allows for dependence between observations and only states that future observations behave like past ones.
+
+}
+
+
+\frame{
+\frametitle{Motivation: How realistic is iid?} 
+
+\begin{itemize}
+\item Often our data contains structure depending on how our data was sampled.
+\begin{itemize}
+\item[$\diamond$] Within $K$ boroughs in London we select $n$ participants ...
+\item[$\diamond$] From $K$ schools we sample $n$ students ...
+\item[$\diamond$] From $K$ hospitals we select $n$ patients ...
+\item[$\diamond$] At $K$ stores we sampled $n$ costumers ...
+\end{itemize}
+\item $k \in 1,...,K $ group index
+\end{itemize}
+
+\begin{block}{Grouping creates dependence}{
+Observations within a group are likely to be more similar to each other than to observations from other groups.
+
+}
+\end{block}
+
+}
+
+
+\frame{
+\frametitle{Motivation: GP data} 
+
+\begin{itemize}
+\item We are interested in the relationship of cholesterol and age and how age impacts cholesterol.
+\item Sampling: We take measurements of patients from certain GPs.
+\begin{itemize}
+\item Group-level: GPs $K=12$
+\texttt{table(data.chol[["doctor"]])} \\
+\includegraphics[scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-table}
+\item Individual-level: Patients $n=441$
+\end{itemize}
+\end{itemize}
+\texttt{head(data.chol)} \\
+
+\centering \includegraphics[scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-head}
+
+}
+
+
+\frame{
+\frametitle{Pooled analysis} 
+
+Linear model using all $i = 1,...,n$ observations ignoring the grouping
+\begin{equation}
+y_i = \alpha_0 + \beta x_i  + \epsilon_i \nonumber
+\end{equation}
+
+\underline{Assumptions}
+\begin{itemize}
+\item All observations independent (incorrect).
+\end{itemize}
+\underline{Consequences}
+\begin{itemize}
+\item Estimated errors on regression coefficients are too small.
+\item Overstate significance of association.
+\end{itemize}
+
+}
+
+
+
+
+
+\frame{
+\frametitle{GP data: Pooled analysis} 
+
+\texttt{Pooled.Model = lm(chol $\sim$ age,  data=data.chol)}
+
+\centering \includegraphics[scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-lm}
+
+
+}
+
+\frame{
+\frametitle{GP data: Pooled analysis} 
+
+\texttt{Pooled.Model = lm(chol $\sim$ age,  data=data.chol)} \\
+\texttt{summary(Pooled.Model)}
+
+ \includegraphics[scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-lmsummary}
+
+}
+
+
+\frame{
+\frametitle{GP data: Pooled analysis} 
+
+\texttt{xyplot(chol$\sim$age, groups = doctor,  data=data.chol, pch = 21)} \\
+\vspace{-0.4cm}
+\centering \includegraphics[scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-xyplot}
+
+
+}
+
+
+\frame{
+\frametitle{GP data: Pooled analysis} 
+
+\texttt{ggplot(data.chol, aes(x = age, y = chol, group = doctor)) + facet$\_$wrap($\sim$doctor) } 
+
+\centering \includegraphics[scale=0.38]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-gg1}
+
+
+}
+
+
+
+
+
+
+
+\frame{
+%\frametitle{Motivation: Hierarchical and random effects model} 
+
+\begin{block}{Ignoring dependence }{
+\begin{itemize}
+\item standard errors too small
+\item $p-$values too small / confidence intervals too narrow 
+\item over-estimate significance 
+\end{itemize}
+}
+\end{block}
+
+
+
+\begin{block}{Intuitively, there is less information in the data than an independent sample.}{
+This has to be taken into account in our models:
+\begin{enumerate}
+\item Perform analysis for each group separately.
+\item  Calculate summary measures for each group and use standard analysis (Group-level analysis).
+\item Fixed effects model to account for group structures.
+\item Use random effects models that explicitly model the similarity of observations in a group.
+%\item Bayesian hierarchical models (Bayesian Analysis Module).
+\end{enumerate}
+}
+\end{block}
+
+
+}
+
+
+
+\subsection{Individual-level and group-level} 
+
+\frame{
+\frametitle{Motivation: Individual-level and group-level} 
+
+
+
+\centering \includegraphics[scale=0.36]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/multilevel}
+
+
+
+
+\begin{itemize}
+\item Observations are grouped with grouping information known.
+\item Multi-level: Multiple levels of groupings, e.g. classrooms within schools within districts.
+\item Variables can be measured on the individual and group level.
+\end{itemize}
+
+
+
+}
+
+%\frame{
+%\frametitle{Examples: Individual level and group level} 
+%}
+
+
+
+
+\frame{
+\frametitle{1. Separate analysis} 
+
+
+\underline{How to?}
+\begin{itemize}
+\item Estimate separate regression coefficients for each group.
+\end{itemize}
+
+\underline{Assumptions}
+\begin{itemize}
+\item Independence between groups.
+\end{itemize}
+\underline{Consequences}
+\begin{itemize}
+\item This is a reasonable approach to exploratory analysis.
+\item If the number of individuals in each group is small, we will get imprecise estimates.
+\item Multiple testing is an issue.
+\end{itemize}
+
+}
+
+
+\frame{
+\frametitle{GP data: Separate analysis} 
+
+\texttt{xyplot(chol $\sim$ age $\mid$ doctor, data=data.chol)}
+
+
+\centering \includegraphics[scale=0.36]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/GP-SeparateRegression}
+
+
+
+}
+
+
+
+
+\frame{
+\frametitle{2. Group-level analysis} 
+
+
+\underline{How to?}
+\begin{itemize}
+\item Summarise outcome and predictors for each group $k$, e.g. using mean or median. \\
+\texttt{chol.group = tapply(data.chol$\$$chol,INDEX=data.chol$\$$doctor,FUN=mean) \\
+age.group = tapply(data.chol$\$$age,INDEX=data.chol$\$$doctor,FUN=mean)}
+\item Treat the group summaries as observations. \\
+\texttt{Group.Model = lm(chol.group $\sim$ age.group)\\
+summary(Group.Model)}
+\end{itemize}
+
+
+
+
+\underline{Assumptions}
+\begin{itemize}
+\item One regression line fit: Associations between outcome and predictors are the same for each group.% (may or may not be reasonable).
+\item Independence between groups.  %(ok).
+\item All groups are treated equal, irrespective of size.
+\end{itemize}
+
+
+}
+
+
+
+
+\frame{
+\frametitle{GP data: Group level analysis} 
+
+\centering \includegraphics[scale=0.45]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/GP-groupfit}
+
+}
+
+
+\frame{
+\frametitle{GP data: Group level analysis} 
+
+ \includegraphics[scale=0.36]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/GP-groupsummary}
+
+
+\underline{Consequences}
+\begin{itemize}
+\item This model lacks power as the number of data points used is the number of groups ($k<n$) %(may be much less than the number of actual observations ($k<n$)).
+\item Regression coefficients will be averaged over all groups  $\rightarrow$ real within-group effects may be diluted.
+\item Regression coefficients will only be significant if there are similar significant association effects across all groups.
+\end{itemize}
+
+
+}
+
+
+
+
+\frame{
+\frametitle{Inverse variance weighted (IVW) meta-analysis} 
+
+\begin{block}{Each random variable is weighted in inverse proportion to its variance. }{
+Assume we have independent observations $y_k$ with variance $\sigma_k$. Then the IVW estimate is defined as
+
+\begin{equation}
+\hat{y}_{\text{IVW}}  = \frac{\sum_{k=1}^{K} y_k/\sigma_k}{\sum_{k=1}^{K} 1/\sigma_k} \nonumber
+\end{equation}
+
+
+}
+\end{block}
+
+\begin{block}{Weighted regression over groups}{
+Assume $y_k$ is a vector of group summaries, $x_k$  is a $k \times p$ matrix of group summaries. Assume $w$ is a diagonal matrix with $w[k,k] = \frac{1}{\sigma_k^2}$, then the weighted least squares estimate is defined as
+
+\begin{equation}
+\hat{\beta}_w = (x_k^t w x_k)^{-1} x^t_k w y_k\nonumber
+\end{equation}
+
+
+}
+\end{block}
+
+
+
+}
+
+
+
+
+
+
+\section{Fixed effect analysis}
+
+\subsection{Definition of fixed effects}
+
+\frame{
+\frametitle{3. Fixed effects} 
+
+Motivation:
+\begin{itemize}
+\item  Keep the idea of modelling within groups: Allow associations to differ across groups.
+\item But now we model all the data ($n$ observations) together: Maximise the power to detect associations.
+\end{itemize}
+
+
+\begin{block}{Joint model with group-specific intercept}{
+\begin{equation}
+y_i = {\color{red}{\alpha_k}} + \beta x_i  + \epsilon_i \nonumber 
+\end{equation}
+where \textcolor{red}{$\alpha_k$} is a \textcolor{red}{fixed effect}. 
+
+}
+\end{block}
+\begin{itemize}
+\item $\alpha_k$ captures the effect of unobserved group specific confounders.
+\item Residual errors $\epsilon_i, i \in 1,...,n$ are assumed independent.
+\end{itemize}
+
+}
+
+
+
+\frame{
+\frametitle{Fixed effects} 
+
+\underline{How to?}
+\begin{itemize}
+\item A fixed effects model is fit in the same way as the simple linear model including the group as a covariate.
+\end{itemize}
+\underline{Assumptions}
+\begin{itemize}
+\item Information on $\alpha_k$  comes from observations in group $k$ only.
+\end{itemize}
+\underline{Consequences}
+\begin{itemize}
+\item By including group effects we have controlled for group characteristics.
+\item But introduced a large number of parameters (one for each group).
+\item May be a problem if there are few observations in some groups.
+\end{itemize}
+
+
+}
+
+
+\subsection{Fixed effects in R}
+
+\frame{
+\frametitle{R: Fixed effects in lm()} 
+\begin{itemize}
+\item Fixed effects in \texttt{R} can be computed using the \texttt{lm()} model.
+\item Fixed effects are essentially categorical covariates (\texttt{as.factor())}.
+\item There are two different types of fixed effect:
+\begin{enumerate}
+\item Group-specific intercept $\alpha_k$
+\begin{equation}
+y_i = {\color{red}{\alpha_k}} + \beta x_i  + \epsilon_i \nonumber 
+\end{equation}
+\item Group-specific slope $\beta_k$
+\begin{equation}
+y_i = \alpha_0 + {\color{red}{\beta_k}} x_i  + \epsilon_i \nonumber 
+\end{equation}
+%\item Group-specific intercept and slope
+%\begin{equation}
+%y_i = {\color{red}{\alpha_k + \beta_k}} x_i  + \epsilon_i \nonumber 
+%\end{equation}
+\end{enumerate}
+\end{itemize}
+
+}
+
+
+\frame{
+\frametitle{R:  Group-specific intercept in lm()} 
+
+\begin{enumerate}
+\item Group-specific intercept
+\begin{equation}
+y_i = {\color{red}{\alpha_k}} + \beta x_i  + \epsilon_i \nonumber 
+\end{equation}
+\end{enumerate}
+
+\begin{itemize}
+\item  Add the group variable as additional categorical (\texttt{as.factor()}) covariate.
+\item \texttt{Varying.Intercept.Model = lm(chol $\sim$ age + as.factor(doctor),  data=data.chol)}
+\end{itemize}
+
+
+
+}
+
+
+
+\frame{
+\frametitle{R:  Group-specific intercept in lm()} 
+
+\texttt{summary(Varying.Intercept.Model)}
+
+\centering \includegraphics[scale=0.27]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-fe-summary}
+
+
+}
+
+\frame{
+\frametitle{R:  Group-specific intercept in lm()} 
+
+\centering \includegraphics[scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-ggintercept}
+
+}
+
+
+
+\frame{
+\frametitle{R: Group-specific slope in lm()} 
+
+\begin{enumerate}
+\item[2.] Group-specific slope
+\begin{equation}
+y_i = \alpha_0 + {\color{red}{\beta_k}} x_i  + \epsilon_i \nonumber 
+\end{equation}
+\end{enumerate}
+
+\begin{itemize}
+\item  Add the group variable as an interaction with the predictor of interest.
+\item \texttt{lm(chol $\sim$ age : as.factor(doctor),  data=data.chol)}
+\item $:$ only adds the interaction.
+\end{itemize}
+
+}
+
+\frame{
+\frametitle{R: Group-specific slope in lm()} 
+
+\centering \includegraphics[scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-ggslope}
+
+}
+
+
+
+
+\frame{
+\frametitle{R: Fixed effects in  lm()} 
+
+
+How to specify formulas in the \texttt{lm()} function?
+\begin{itemize}
+\item Main formula: \texttt{y $\sim$ x}, where $y$ is the outcome and $x$ the predictor(s)
+\item Predictors can be added as: \\ 
+\begin{table}
+\begin{tabular}{ c | c }
+  $+$ &  main effect\\
+  $:$ & interaction only \\
+  $\star$ & main effect and intercept \\
+\end{tabular}
+\end{table}
+\end{itemize}
+
+Values:
+\begin{itemize}
+\item summary()
+\item coef()
+\item fitted()
+\end{itemize}
+}
+
+
+
+
+
+
+\frame{
+\frametitle{Fixed effects: Disadvantages} 
+
+\begin{itemize}
+\item Fixed effects account for \textbf{any} unobserved group-specific confounders 
+$\rightarrow$ Including both a group-specific intercept and slope is not identifiable.
+\begin{itemize}
+\item[$\diamond$]  When the intercept $\alpha_k$ is group-specific, then the slope is assumed to be the same for all groups.
+\item[$\diamond$] When slope $\beta_k$ is group-specific, then the intercept is assumed to be the same for all groups.
+\end{itemize}
+\item If we add new groups to the dataset we may not consistently estimate $\alpha_k$:
+\begin{itemize}
+\item[$\diamond$] Consider $\alpha_1$, the intercept for the first group.  
+\item[$\diamond$] When we add new groups, the slope may vary.
+\item[$\diamond$] Changing slope will change the intercept, also  $\alpha_1$.
+\end{itemize}
+\item Information on $\alpha_k$  or $\beta_k$ comes only from observations in group $k$ and we need to estimate one parameter per group.
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Take away: Structured Data} 
+
+ 
+\begin{itemize}
+\item Most statistical methods are developed for independent and identically distributed (iid) data.
+\item But often in practice we observe structured data, where there is an intrinsic group structure.
+\item Grouping creates dependence: Observations within a group are likely to be more similar to each other than to observations from other groups.
+\item Ignoring the group structure can lead to over-confident results or even false positives.
+\item Analysing each group separately, we do not assume any shared mechanisms and need to fit a model on the samples within a group only.  
+\item Aggregating and working only on the group-level drastically reduces the sample size $k$.
+\end{itemize}
+
+
+
+
+}
+
+
+
+
+
+
+\end{document}
+
+
+
+
+
+

@@ -1,0 +1,6 @@
+\babel@toc {german}{}
+\beamer@sectionintoc {1}{Generalised linear model}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Basic definition}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Technical details on exponential families and GLMs}{9}{0}{1}
+\beamer@subsectionintoc {1}{3}{Logistic regression and binary outcomes}{13}{0}{1}
+\beamer@subsectionintoc {1}{4}{Generalised linear models in R}{15}{0}{1}

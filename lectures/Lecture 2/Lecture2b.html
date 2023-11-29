@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="Lecture2b_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Lecture2b_files/libs/quarto-html/tabby.min.js"></script>
+<script src="Lecture2b_files/libs/quarto-html/popper.min.js"></script>
+<script src="Lecture2b_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="Lecture2b_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Lecture2b_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="Lecture2b_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="Lecture2b_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.3.353">
+
+  <meta name="author" content="Garyfallos Konstantinoudis">
+  <title>Advanced Regression: Bias and variance trade off and penalised splines</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="Lecture2b_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="Lecture2b_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="Lecture2b_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="Lecture2b_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="Lecture2b_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="Lecture2b_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="Lecture2b_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="Lecture2b_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="Lecture2b_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+
+  .callout {
+    margin-top: 1em;
+    margin-bottom: 1em;  
+    border-radius: .25rem;
+  }
+
+  .callout.callout-style-simple { 
+    padding: 0em 0.5em;
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+    display: flex;
+  }
+
+  .callout.callout-style-default {
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+  }
+
+  .callout .callout-body-container {
+    flex-grow: 1;
+  }
+
+  .callout.callout-style-simple .callout-body {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-style-default .callout-body {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-titled.callout-style-simple .callout-body {
+    margin-top: 0.2em;
+  }
+
+  .callout:not(.callout-titled) .callout-body {
+      display: flex;
+  }
+
+  .callout:not(.no-icon).callout-titled.callout-style-simple .callout-content {
+    padding-left: 1.6em;
+  }
+
+  .callout.callout-titled .callout-header {
+    padding-top: 0.2em;
+    margin-bottom: -0.2em;
+  }
+
+  .callout.callout-titled .callout-title  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+    
+  .callout.callout-titled.callout-style-simple .callout-content  p {
+    margin-top: 0;
+  }
+
+  .callout.callout-titled.callout-style-default .callout-content  p {
+    margin-top: 0.7em;
+  }
+
+  .callout.callout-style-simple div.callout-title {
+    border-bottom: none;
+    font-size: .9rem;
+    font-weight: 600;
+    opacity: 75%;
+  }
+
+  .callout.callout-style-default  div.callout-title {
+    border-bottom: none;
+    font-weight: 600;
+    opacity: 85%;
+    font-size: 0.9rem;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-default div.callout-content {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-simple .callout-icon::before {
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+  }
+
+  .callout.callout-style-default .callout-icon::before {
+    height: 0.9rem;
+    width: 0.9rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 0.9rem 0.9rem;
+  }
+
+  .callout-title {
+    display: flex
+  }
+    
+  .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  .callout.no-icon::before {
+    display: none !important;
+  }
+
+  .callout.callout-titled .callout-body > .callout-content > :last-child {
+    margin-bottom: 0.5rem;
+  }
+
+  .callout.callout-titled .callout-icon::before {
+    margin-top: .5rem;
+    padding-right: .5rem;
+  }
+
+  .callout:not(.callout-titled) .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  /* Callout Types */
+
+  div.callout-note {
+    border-left-color: #4582ec !important;
+  }
+
+  div.callout-note .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
+  }
+
+  div.callout-note.callout-style-default .callout-title {
+    background-color: #dae6fb
+  }
+
+  div.callout-important {
+    border-left-color: #d9534f !important;
+  }
+
+  div.callout-important .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-important.callout-style-default .callout-title {
+    background-color: #f7dddc
+  }
+
+  div.callout-warning {
+    border-left-color: #f0ad4e !important;
+  }
+
+  div.callout-warning .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-warning.callout-style-default .callout-title {
+    background-color: #fcefdc
+  }
+
+  div.callout-tip {
+    border-left-color: #02b875 !important;
+  }
+
+  div.callout-tip .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-tip.callout-style-default .callout-title {
+    background-color: #ccf1e3
+  }
+
+  div.callout-caution {
+    border-left-color: #fd7e14 !important;
+  }
+
+  div.callout-caution .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
+  }
+
+  div.callout-caution.callout-style-default .callout-title {
+    background-color: #ffe5d0
+  }
+
+  </style>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-color="#f3f4f4" data-background-position="60% 120%" data-background-size="80%" class="quarto-title-block center">
+  <h1 class="title">Advanced Regression: Bias and variance trade off and penalised splines</h1>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Garyfallos Konstantinoudis 
+</div>
+        <p class="quarto-title-affiliation">
+            Imperial College London
+          </p>
+    </div>
+</div>
+
+  <p class="date">Aug 2, 2024</p>
+</section>
+<section id="principles-of-non-linear-regression" class="slide level2">
+<h2>Principles of non-linear regression</h2>
+<p>Concepts we cover in this lecture:</p>
+<ul>
+<li><p>The basics of cross validation</p></li>
+<li><p>Bias-variance trade-off in prediction</p></li>
+<li><p>Penalised splines</p></li>
+</ul>
+</section>
+<section id="a-clarification" class="slide level2">
+<h2>A clarification</h2>
+<div class="callout callout-note no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p><strong>Aim of prediction</strong>: Define a prediction rule that is accurate, but also generalises to new data.</p>
+</div>
+</div>
+</div>
+<p>When performing prediction we split the data into the following three subsets:</p>
+<ul>
+<li><p>Training data to fit the models</p></li>
+<li><p>Validation data to estimate extra parameters of the prediction rule</p></li>
+<li><p>Test data to assess the generalisation properties</p></li>
+</ul>
+</section>
+<section id="training-and-test-data" class="slide level2">
+<h2>Training and test data</h2>
+<p>Assume we have the following data:</p>
+<ul>
+<li><p>Training data</p>
+<ul>
+<li><p><span class="math inline">\(y_i\)</span>, where <span class="math inline">\(i\in1, …, n\)</span></p></li>
+<li><p><span class="math inline">\(x_i\)</span>, vector of <span class="math inline">\(j\in 1, …, p\)</span> predictors for observation <span class="math inline">\(k\)</span></p></li>
+</ul></li>
+<li><p>Test data</p>
+<ul>
+<li><p><span class="math inline">\(y_k^{\text{Test}}\)</span>, where <span class="math inline">\(k\in1, …, m\)</span></p></li>
+<li><p><span class="math inline">\(x_k^{\text{Test}}\)</span>, vector of <span class="math inline">\(j\in 1, …, p\)</span> predictors for observation <span class="math inline">\(k\)</span></p></li>
+</ul></li>
+<li><p>We assume the following general model to hold for both training and test data</p></li>
+</ul>
+<p><span class="math display">\[y = f(x)  + \epsilon\]</span></p>
+</section>
+<section id="measuring-the-quality-of-fit" class="slide level2">
+<h2>Measuring the quality of fit</h2>
+<ol type="1">
+<li>Based on the training data we build a prediction rule <span class="math inline">\(\hat{f}(x)\)</span></li>
+</ol>
+<p><span class="math display">\[\hat{y}_i=\hat{f}(x_i)\]</span></p>
+<p>For example the ordinary least squares prediction rule is defined as</p>
+<p><span class="math display">\[\hat{y} = h y = x(x^t x)^{-1}x^t y = x \beta.\]</span></p>
+<ol start="2" type="1">
+<li>We evaluate the prediction rule <span class="math inline">\(\hat{f}(x)\)</span> (derived from the training data) on the test data <span class="math inline">\(x_k^{Test}\)</span> and obtain the prediction <span class="math inline">\(\hat{y}_k^{Test}\)</span></li>
+</ol>
+<p><span class="math display">\[\hat{y}_k^{Test} = \hat{f}(x_k^{Test}).\]</span></p>
+</section>
+<section id="mean-squared-error-mse" class="slide level2">
+<h2>Mean squared error (MSE)</h2>
+<ul>
+<li><p>It is easy to derive the MSE on the training data, this is equivalent to the residual sum of squares.</p></li>
+<li><p>The residual sum of squares do not tell us how well the prediction rule generalises to new data, the test data.</p></li>
+</ul>
+<p><strong>MSE evaluated on the test data</strong></p>
+<p><span class="math display">\[MSE =\frac{1}{m} \sum_{k=1}^{m} \left( \underbrace{y_k^{Test}}_{\text{Observed}} - \underbrace{\hat{f}(x_k^{Test})}_{\text{Predicted}} \right)^2\]</span></p>
+</section>
+<section id="decomposition-into-bias-and-variance" class="slide level2">
+<h2>Decomposition into bias and variance</h2>
+<p><span class="math inline">\(\begin{align}E(MSE) &amp; = E (\frac{1}{m} \sum_{k=1}^{m} \left( y_k^{Test}- \hat{f}(x_k^{Test}) \right)^2 )\\ &amp; = \underbrace{\sigma^2}_{\text{Noise}} + \underbrace{E[\hat{f}(x_k^{\text{Test}}) - E(\hat{f}(x_k^{\text{Test}}))]^2}_{\text{Variance}} + \\&amp; + [E(\hat{f}(x_k^{\text{Test}})) - \hat{f}(x_k^{\text{Test}})]^2 \end{align}\)</span></p>
+<ul>
+<li><p>Noise or irreducible error <span class="math inline">\(\sigma^2\)</span></p></li>
+<li><p>Variance <span class="math inline">\(E [\hat{f}(x_k^{Test} - E(\hat{f}(x_k^{Test}))]^2\)</span></p></li>
+<li><p>Bias <span class="math inline">\([E(\hat{f}(x_k^{Test})) - \hat{f}(x_k^{Test})]\)</span></p></li>
+</ul>
+</section>
+<section id="bias-variance-trade-off-in-prediction" class="slide level2">
+<h2>Bias-variance trade-off in prediction</h2>
+<ul>
+<li><p><strong>Bias</strong>: The error that is introduced by fitting the model.</p>
+<ul>
+<li><p>More variables reduce the residual sum of squares.</p></li>
+<li><p>We can reduce bias by adding more variables (higher complexity).</p></li>
+</ul></li>
+<li><p><strong>Variance</strong>: The amount by which <span class="math inline">\(\hat{f}(x)\)</span> would change if we estimated it using a different training data set.</p>
+<ul>
+<li><p>The more variables we include, the more likely <span class="math inline">\(\hat{f}(x)\)</span> will differ for a new training data</p></li>
+<li><p>We can reduce variance by removing variables (lower complexity)</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="overfitting" class="slide level2">
+<h2>Overfitting</h2>
+<ul>
+<li><p>Training MSE: We can always reduce the MSE by adding more variables (higher complexity).</p></li>
+<li><p>Test MSE: After the model is saturated, we will increase the MSE by adding more variables.</p></li>
+</ul>
+
+<img data-src="Figures/overfitting.jpg" class="r-stretch quarto-figure-center"></section>
+<section id="the-problem-of-overfitting" class="slide level2">
+<h2>The problem of overfitting</h2>
+<p><strong>Overfitting the data</strong></p>
+<ul>
+<li><p>Complex models may be too precise and tailored only to the specific data used as training data.</p></li>
+<li><p>They follow the error or noise too closely.</p></li>
+<li><p>Complex models may provide perfect fit and very low MSE on the training data.</p></li>
+<li><p>But when used to build a prediction rule for new data they will have a high MSE on the test data.</p></li>
+<li><p>Thus, they do not generalise well to new data and do not provide a good prediction rule.</p></li>
+</ul>
+</section>
+<section id="measuring-the-quality-of-fit-binary-outcome" class="slide level2">
+<h2>Measuring the quality of fit: Binary outcome</h2>
+<ul>
+<li><p>Quantitative outcomes: Mean squared error (MSE)</p></li>
+<li><p>Binary outcome (Lecture 4):</p>
+<ul>
+<li><p>Sensitivity and specificity</p></li>
+<li><p>Misclassification error rate: Proportion of misclassified observations</p></li>
+<li><p>Positive predictive value (PPV)</p></li>
+</ul></li>
+</ul>
+<p><span class="math inline">\(\begin{align} \text{PPV} &amp; = \frac{\text{Number of true positives}}{\text{Number of true positives + Number of false positives}} \\ &amp; = \frac{\text{Number of true positives}}{\text{Number of positive calls}}\end{align}\)</span></p>
+</section>
+<section id="bias-variance-trade-off-in-estimation" class="slide level2">
+<h2>Bias-variance trade-off in estimation</h2>
+<ul>
+<li><p>Consider an estimate <span class="math inline">\(\hat{\theta}\)</span> for a parameter <span class="math inline">\(\theta\)</span>.</p></li>
+<li><p>Examples:</p>
+<ul>
+<li><p>Sample mean <span class="math inline">\(\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i\)</span> for the population mean.</p></li>
+<li><p>Sample variance <span class="math inline">\(s^2 = \frac{1}{n-1} \sum_{i=1}^{n} (x_i - \bar{x})^2\)</span> for the population variance.</p></li>
+</ul></li>
+</ul>
+<p><strong>Bias of an estimate</strong></p>
+<p><span class="math inline">\(Bias (\hat{\theta}) = E \left( \hat{\theta} - \theta \right) \nonumber\)</span></p>
+</section>
+<section id="bias-variance-trade-off-in-estimation-1" class="slide level2">
+<h2>Bias-variance trade-off in estimation</h2>
+<p>Mean squared error (MSE) of an estimate <span class="math inline">\(\hat{\theta}\)</span>:</p>
+<p>MSE is the squared average difference between an estimate <span class="math inline">\(\hat{\theta}\)</span> and the true parameter <span class="math inline">\(\theta\)</span>.</p>
+<p><span class="math inline">\(\begin{align}MSE (\hat{\theta}) &amp; = E \left( \hat{\theta} - \theta \right)^2 \\&amp; = ( E(\hat{\theta}^2) - 2 E(\hat{\theta})\theta + \theta^2 ) \\&amp; = ( E(\hat{\theta}^2) - \underbrace{E(\hat{\theta})^2 + E(\hat{\theta})^2}_0 - 2 E(\hat{\theta})\theta + \theta^2 ) \\&amp; = ( E(\hat{\theta}^2) - E(\hat{\theta})^2) + (E(\hat{\theta})^2 - 2 E(\hat{\theta})\theta + \theta^2 ) \\&amp; = Var (\hat{\theta}) + \left(Bias (\hat{\theta}) \right)^2 \end{align}\)</span></p>
+</section>
+<section id="bias-variance-trade-off-in-estimation-2" class="slide level2">
+<h2>Bias-variance trade-off in estimation</h2>
+<p>Also in estimation there is a trade-off between bias and variance</p>
+<p><span class="math display">\[MSE (\hat{\theta})  =  Var (\hat{\theta})  +  \left(Bias (\hat{\theta}) \right)^2\]</span></p>
+<p>where</p>
+<ul>
+<li><p><span class="math inline">\(Var (\hat{\theta}) = E(\hat{\theta}^2) - E(\hat{\theta})^2\)</span></p></li>
+<li><p><span class="math inline">\(Bias (\hat{\theta}) = E(\hat{\theta}) - \theta = E(\hat{\theta} - \theta)\)</span></p></li>
+</ul>
+<p>Many classical techniques are designed to be unbiased (BLUE) or consistent (Maximum Likelihood).</p>
+</section>
+<section id="recall-previous-problem" class="slide level2">
+<h2>Recall previous problem</h2>
+<ul>
+<li><p>Can you identify issues with bias and variance?</p></li>
+<li><p>How can we select the best fit?</p></li>
+</ul>
+
+<img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-1-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="generic-considerations" class="slide level2">
+<h2>Generic considerations</h2>
+<p>In regression splines, the smoothness of the fitted curve is determined by:</p>
+<ul>
+<li><p>the degree of the spline</p></li>
+<li><p>the specific parameterization</p></li>
+<li><p>the number of knots</p></li>
+<li><p>the location of knots</p></li>
+</ul>
+<p>No general selection method for number and position of knots</p>
+</section>
+<section id="notice" class="slide level2">
+<h2>Notice</h2>
+<p>The type of splines we have seen so far allow the use of standard estimation methods, derived by minimizing the usual least square objective:</p>
+<p><span class="math display">\[\sum_i\Bigg(Y_i - \beta_0 - f(x;\beta) + \sum_p\gamma_pz_p\Bigg)^2,\]</span></p>
+<p>where <span class="math inline">\(f(x;\beta) = \sum_j\beta_jb_j(x_i)\)</span> the splines basis function, <span class="math inline">\(z\)</span> a set of other covariates with corresponding coefficients <span class="math inline">\(\gamma\)</span>.</p>
+</section>
+<section id="a-penalised-approach" class="slide level2">
+<h2>A penalised approach</h2>
+<p>A general framework of smoothing methods is offered by generalized additive models (GAMs).</p>
+<p>GAMs extends traditional GLMs by allowing the linear predictor to depend linearly on unknown smooth functions. In the linear case:</p>
+<p><span class="math display">\[Y_i = \beta_0 + f(x;\beta) + \sum_p\gamma_pz_p + \epsilon_i\]</span></p>
+<p>The idea is to define a flexible function and control the smoothness through a penalty term, usually on the second derivative.</p>
+</section>
+<section id="curvature" class="slide level2">
+<h2>Curvature</h2>
+<p>The second derivative of a function corresponds to the curvature or concavity of the graph. What do you observe?</p>
+
+<img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch quarto-figure-center"><p>So if <span class="math inline">\(f(x;\beta)\)</span> is the spline basis function we defined, then we need to somehow introduce its second derivative <span class="math inline">\(d^2f(x;\beta)/dx = f''(x; \beta)\)</span> in the problem and `scale` it so we have the `best` fit.</p>
+</section>
+<section id="penalized-splines" class="slide level2">
+<h2>Penalized splines</h2>
+<p>The objective now is to minimise the `augmented` sum of squares error:</p>
+<p><span class="math display">\[\sum_i\Bigg(Y_i - \beta_0 - f(x;\beta) + \sum_p\gamma_pz_p\Bigg)^2 + \lambda \int [f''(x; \beta)]^2dx\]</span></p>
+<p>with <span class="math inline">\(\lambda\)</span> being the smoothing parameter (variance-bias trade off).</p>
+</section>
+<section id="smoothers" class="slide level2">
+<h2>Smoothers</h2>
+<p>Alternative smoothers available, differing by parameterization and penalty:</p>
+<ul>
+<li><p>Thin-plane splines</p></li>
+<li><p>Cubic splines</p></li>
+<li><p>P-splines</p></li>
+<li><p>Random effects</p></li>
+<li><p>Markov random fields</p></li>
+<li><p>kernels</p></li>
+<li><p>Soap film smooths</p></li>
+<li><p>…</p></li>
+</ul>
+</section>
+<section id="selecting-smoothness" class="slide level2">
+<h2>Selecting smoothness</h2>
+<p>There are different ways of selecting/estimating <span class="math inline">\(\lambda\)</span></p>
+<ul>
+<li><p>The ordinary cross-validation (OCV) criterion, also known as the leave-one-out cross-validation (LOO-CV) criterion, seeks to find the <span class="math inline">\(\lambda\)</span> that minimizes:<span class="math display">\[\text{OCV}(\lambda) = \frac{1}{n}\sum_i(Y_i - g_{\lambda}^{[i]}(x_i))^2\]</span></p></li>
+<li><p>The generalised cross-validation (GCV) criterion (an improvement of the OCV)</p></li>
+<li><p>AIC and BIC</p></li>
+<li><p>REML and ML</p></li>
+</ul>
+</section>
+<section id="example-1" class="slide level2">
+<h2>Example 1</h2>
+<p>A data frame giving a series of measurements of head acceleration in a simulated motorcycle accident, used to test crash helmets.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">data</span>(mcycle)</span>
+<span id="cb1-5"><a href="#cb1-5"></a>mcycle <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  times accel
+1   2.4   0.0
+2   2.6  -1.3
+3   3.2  -2.7
+4   3.6   0.0
+5   4.0  -2.7
+6   6.2  -2.7</code></pre>
+</div>
+</div>
+</section>
+<section id="example-1-1" class="slide level2">
+<h2>Example 1</h2>
+
+<img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch quarto-figure-center"><p>Any ideas?</p>
+</section>
+<section id="example-1-2" class="slide level2">
+<h2>Example 1</h2>
+<p>I will use the <span class="math inline">\(\text{pspline}\)</span> package to showcase how the selection of <span class="math inline">\(\lambda\)</span> with GVC works:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">library</span>(pspline)</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">1</span>, <span class="at">to =</span> <span class="dv">100</span>, <span class="at">length.out =</span> <span class="dv">100</span>) <span class="ot">-&gt;</span> loop.i</span>
+<span id="cb3-3"><a href="#cb3-3"></a>gcv <span class="ot">&lt;-</span>  <span class="fu">numeric</span>(<span class="fu">length</span>(loop.i))</span>
+<span id="cb3-4"><a href="#cb3-4"></a></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(loop.i)){</span>
+<span id="cb3-6"><a href="#cb3-6"></a>    <span class="fu">smooth.Pspline</span>(mcycle<span class="sc">$</span>times, mcycle<span class="sc">$</span>accel, <span class="at">df =</span> <span class="dv">4</span>, </span>
+<span id="cb3-7"><a href="#cb3-7"></a>        <span class="at">spar =</span> loop.i[i], <span class="at">method =</span> <span class="dv">1</span>) <span class="ot">-&gt;</span> mod.loop</span>
+<span id="cb3-8"><a href="#cb3-8"></a>    gcv[i] <span class="ot">&lt;-</span> mod.loop<span class="sc">$</span>gcv</span>
+<span id="cb3-9"><a href="#cb3-9"></a>}</span>
+<span id="cb3-10"><a href="#cb3-10"></a></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span> loop.i, <span class="at">y =</span> gcv), <span class="at">cex =</span> <span class="fl">1.3</span>) <span class="sc">+</span> </span>
+<span id="cb3-12"><a href="#cb3-12"></a>    <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> loop.i[gcv <span class="sc">%&gt;%</span> <span class="fu">which.min</span>()], <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">cex =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb3-13"><a href="#cb3-13"></a>    <span class="fu">theme_bw</span>() <span class="ot">-&gt;</span> p1</span>
+<span id="cb3-14"><a href="#cb3-14"></a></span>
+<span id="cb3-15"><a href="#cb3-15"></a><span class="fu">smooth.Pspline</span>(mcycle<span class="sc">$</span>times, mcycle<span class="sc">$</span>accel, <span class="at">df =</span> <span class="dv">4</span>, <span class="at">spar =</span> loop.i[gcv <span class="sc">%&gt;%</span> <span class="fu">which.min</span>()],</span>
+<span id="cb3-16"><a href="#cb3-16"></a>        <span class="at">method =</span> <span class="dv">1</span>) <span class="ot">-&gt;</span> mod.loop</span>
+<span id="cb3-17"><a href="#cb3-17"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb3-18"><a href="#cb3-18"></a>    <span class="fu">geom_point</span>(<span class="at">data =</span> mcycle, <span class="fu">aes</span>(<span class="at">x =</span> times, <span class="at">y =</span> accel), <span class="at">cex =</span> <span class="fl">1.3</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb3-19"><a href="#cb3-19"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>mcycle<span class="sc">$</span>times, <span class="at">y=</span>mod.loop<span class="sc">$</span>ysmth), <span class="at">cex =</span> <span class="dv">1</span>) <span class="ot">-&gt;</span> p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="example-1-3" class="slide level2">
+<h2>Example 1</h2>
+
+<img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="example-1-using-gam" class="slide level2">
+<h2>Example 1 using GAM</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>mgcv<span class="sc">::</span><span class="fu">gam</span>(accel <span class="sc">~</span> <span class="fu">s</span>(times), <span class="at">data =</span> mcycle) <span class="ot">-&gt;</span> mod.gam</span>
+<span id="cb4-2"><a href="#cb4-2"></a>mod.gam <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: gaussian 
+Link function: identity 
+
+Formula:
+accel ~ s(times)
+
+Parametric coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  -25.546      1.956  -13.06   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Approximate significance of smooth terms:
+           edf Ref.df     F p-value    
+s(times) 8.691  8.972 53.13  &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+R-sq.(adj) =  0.782   Deviance explained = 79.7%
+GCV = 548.58  Scale est. = 508.61    n = 133</code></pre>
+</div>
+</div>
+</section>
+<section id="example-1-using-gam-1" class="slide level2">
+<h2>Example 1 using GAM</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>mod.gam <span class="sc">%&gt;%</span> <span class="fu">plot</span>(<span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">residuals =</span> <span class="cn">TRUE</span>, <span class="at">cex =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="example-1-using-gam-2" class="slide level2">
+<h2>Example 1 using GAM</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>mgcv<span class="sc">::</span><span class="fu">gam</span>(accel <span class="sc">~</span> <span class="fu">s</span>(times), <span class="at">data =</span> mcycle) <span class="ot">-&gt;</span> mod.gam</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="fu">predict</span>(mod.gam, <span class="fu">data.frame</span>(<span class="at">times =</span> mcycle<span class="sc">$</span>times), <span class="at">se.fit =</span> <span class="cn">TRUE</span>) <span class="ot">-&gt;</span> preds</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a>UL <span class="ot">&lt;-</span> preds<span class="sc">$</span>fit <span class="sc">+</span> <span class="fl">1.96</span><span class="sc">*</span>preds<span class="sc">$</span>se.fit</span>
+<span id="cb7-5"><a href="#cb7-5"></a>LL <span class="ot">&lt;-</span> preds<span class="sc">$</span>fit <span class="sc">-</span> <span class="fl">1.96</span><span class="sc">*</span>preds<span class="sc">$</span>se.fit</span>
+<span id="cb7-6"><a href="#cb7-6"></a></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb7-8"><a href="#cb7-8"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> mcycle, <span class="fu">aes</span>(<span class="at">x =</span> times, <span class="at">y =</span> accel), <span class="at">cex =</span> <span class="fl">1.3</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>mcycle<span class="sc">$</span>times, <span class="at">y=</span>preds<span class="sc">$</span>fit), <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb7-10"><a href="#cb7-10"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin=</span>LL,<span class="at">ymax=</span>UL,<span class="at">x=</span>mcycle<span class="sc">$</span>times), <span class="at">fill=</span><span class="st">"blue"</span>, <span class="at">alpha=</span><span class="fl">0.1</span>) <span class="sc">+</span> </span>
+<span id="cb7-11"><a href="#cb7-11"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-9-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="case-study-chicago---temperature-and-mortality" class="slide level2">
+<h2>Case-study: Chicago - Temperature and mortality</h2>
+<ul>
+<li><p>Temperature is known to increase all-cause mortality rates</p></li>
+<li><p>In such studies, we need to carefully account for the temporal aspect (long-term trends and seasonality)</p></li>
+<li><p>We also need to properly account for factors that could confound the observed relationship.</p></li>
+</ul>
+<p><strong>GOAL</strong>: Use GAMs to explore the effect of temperature on mortality counts in Chicago.</p>
+</section>
+<section id="case-study-chicago---temperature-and-mortality-1" class="slide level2">
+<h2>Case-study: Chicago - Temperature and mortality</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">library</span>(dlnm)</span>
+<span id="cb8-2"><a href="#cb8-2"></a></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="fu">data</span>(chicagoNMMAPS)</span>
+<span id="cb8-4"><a href="#cb8-4"></a>chicagoNMMAPS <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        date time year month doy      dow death cvd resp       temp   dptp
+1 1987-01-01    1 1987     1   1 Thursday   130  65   13 -0.2777778 31.500
+2 1987-01-02    2 1987     1   2   Friday   150  73   14  0.5555556 29.875
+3 1987-01-03    3 1987     1   3 Saturday   101  43   11  0.5555556 27.375
+4 1987-01-04    4 1987     1   4   Sunday   135  72    7 -1.6666667 28.625
+5 1987-01-05    5 1987     1   5   Monday   126  64   12  0.0000000 28.875
+6 1987-01-06    6 1987     1   6  Tuesday   130  63   12  4.4444444 35.125
+    rhum     pm10       o3
+1 95.500 26.95607 4.376079
+2 88.250       NA 4.929803
+3 89.500 32.83869 3.751079
+4 84.500 39.95607 4.292746
+5 74.500       NA 4.751079
+6 77.375 40.95607 6.334412</code></pre>
+</div>
+</div>
+</section>
+<section id="case-study-chicago---temperature-and-mortality-2" class="slide level2">
+<h2>Case-study: Chicago - Temperature and mortality</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">data =</span> chicagoNMMAPS, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> death), <span class="at">cex =</span> <span class="fl">1.3</span>) <span class="sc">+</span> </span>
+<span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-11-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="case-study-chicago---temperature-and-mortality-3" class="slide level2">
+<h2>Case-study: Chicago - Temperature and mortality</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>mgcv<span class="sc">::</span><span class="fu">gam</span>(death <span class="sc">~</span> <span class="fu">s</span>(temp) <span class="sc">+</span> </span>
+<span id="cb11-2"><a href="#cb11-2"></a>            <span class="fu">s</span>(time) <span class="sc">+</span> <span class="fu">s</span>(month) <span class="sc">+</span> dow, </span>
+<span id="cb11-3"><a href="#cb11-3"></a>          <span class="at">data =</span> chicagoNMMAPS, <span class="at">family =</span> <span class="st">"poisson"</span>) <span class="ot">-&gt;</span> res.mod</span>
+<span id="cb11-4"><a href="#cb11-4"></a></span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="fu">summary</span>(res.mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: poisson 
+Link function: log 
+
+Formula:
+death ~ s(temp) + s(time) + s(month) + dow
+
+Parametric coefficients:
+             Estimate Std. Error  z value Pr(&gt;|z|)    
+(Intercept)  4.727980   0.003476 1360.069  &lt; 2e-16 ***
+dowMonday    0.034849   0.004874    7.150 8.71e-13 ***
+dowTuesday   0.027304   0.004884    5.590 2.27e-08 ***
+dowWednesday 0.010857   0.004904    2.214  0.02683 *  
+dowThursday  0.013197   0.004899    2.694  0.00707 ** 
+dowFriday    0.019705   0.004891    4.029 5.61e-05 ***
+dowSaturday  0.022413   0.004888    4.585 4.54e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Approximate significance of smooth terms:
+           edf Ref.df Chi.sq p-value    
+s(temp)  8.332  8.847  238.9  &lt;2e-16 ***
+s(time)  7.705  8.573  330.6  &lt;2e-16 ***
+s(month) 8.504  8.934  524.2  &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+R-sq.(adj) =  0.256   Deviance explained = 27.4%
+UBRE = 0.41407  Scale est. = 1         n = 5114</code></pre>
+</div>
+</div>
+</section>
+<section id="case-study-chicago---temperature-and-mortality-4" class="slide level2">
+<h2>Case-study: Chicago - Temperature and mortality</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>gratia<span class="sc">::</span><span class="fu">draw</span>(res.mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch"></section>
+<section id="case-study-chicago---temperature-and-mortality-5" class="slide level2">
+<h2>Case-study: Chicago - Temperature and mortality</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>gratia<span class="sc">::</span><span class="fu">smooth_estimates</span>(res.mod) <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a>  gratia<span class="sc">::</span><span class="fu">add_confint</span>() <span class="sc">%&gt;%</span> <span class="fu">filter</span>(smooth <span class="sc">==</span> <span class="st">"s(temp)"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href="#cb14-3"></a>  <span class="fu">mutate</span>(<span class="at">est =</span> <span class="fu">exp</span>(est), <span class="at">lower_ci =</span> <span class="fu">exp</span>(lower_ci), <span class="at">upper_ci =</span> <span class="fu">exp</span>(upper_ci), </span>
+<span id="cb14-4"><a href="#cb14-4"></a>         <span class="at">temp =</span> <span class="fu">round</span>(temp, <span class="at">digits =</span> <span class="dv">2</span>), <span class="at">rr =</span> est<span class="sc">/</span>est[temp <span class="sc">==</span> <span class="fl">10.30</span>], </span>
+<span id="cb14-5"><a href="#cb14-5"></a>         <span class="at">rr_upper =</span> upper_ci<span class="sc">/</span>est[temp <span class="sc">==</span> <span class="fl">10.30</span>], <span class="at">rr_lower =</span> lower_ci<span class="sc">/</span>est[temp <span class="sc">==</span> <span class="fl">10.30</span>]) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-6"><a href="#cb14-6"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(temp, rr)) <span class="sc">+</span> </span>
+<span id="cb14-7"><a href="#cb14-7"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x=</span>temp, <span class="at">ymin=</span>rr_lower, <span class="at">ymax=</span>rr_upper), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">col =</span> <span class="cn">NA</span>) <span class="sc">+</span> <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
+<span id="cb14-8"><a href="#cb14-8"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Mortality risk"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Temperature"</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-14-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="case-study-chicago---temperature-and-mortality-6" class="slide level2">
+<h2>Case-study: Chicago - Temperature and mortality</h2>
+<p>How is the intercept interpreted? How the daily effect?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>mgcv<span class="sc">::</span><span class="fu">gam</span>(death <span class="sc">~</span> <span class="fu">s</span>(temp) <span class="sc">+</span> </span>
+<span id="cb15-2"><a href="#cb15-2"></a>            <span class="fu">s</span>(time) <span class="sc">+</span> <span class="fu">s</span>(month) <span class="sc">+</span> dow <span class="sc">+</span> <span class="fu">s</span>(pm10), </span>
+<span id="cb15-3"><a href="#cb15-3"></a>          <span class="at">data =</span> chicagoNMMAPS, <span class="at">family =</span> <span class="st">"poisson"</span>) <span class="ot">-&gt;</span> res.mod1</span>
+<span id="cb15-4"><a href="#cb15-4"></a></span>
+<span id="cb15-5"><a href="#cb15-5"></a>res.mod1 <span class="sc">%&gt;%</span> summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: poisson 
+Link function: log 
+
+Formula:
+death ~ s(temp) + s(time) + s(month) + dow + s(pm10)
+
+Parametric coefficients:
+             Estimate Std. Error  z value Pr(&gt;|z|)    
+(Intercept)  4.731117   0.003637 1300.968  &lt; 2e-16 ***
+dowMonday    0.030381   0.005079    5.982 2.21e-09 ***
+dowTuesday   0.021400   0.005066    4.224 2.40e-05 ***
+dowWednesday 0.007126   0.005095    1.399  0.16186    
+dowThursday  0.007744   0.005087    1.522  0.12792    
+dowFriday    0.015253   0.005094    2.994  0.00275 ** 
+dowSaturday  0.019715   0.005043    3.909 9.25e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Approximate significance of smooth terms:
+           edf Ref.df Chi.sq p-value    
+s(temp)  8.314  8.840  172.7 &lt; 2e-16 ***
+s(time)  7.817  8.639  310.0 &lt; 2e-16 ***
+s(month) 8.475  8.926  431.9 &lt; 2e-16 ***
+s(pm10)  1.001  1.002   22.5 1.8e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+R-sq.(adj) =  0.256   Deviance explained = 27.5%
+UBRE = 0.4123  Scale est. = 1         n = 4863</code></pre>
+</div>
+</div>
+</section>
+<section id="case-study-chicago---temperature-and-mortality-7" class="slide level2">
+<h2>Case-study: Chicago - Temperature and mortality</h2>
+<p>Let’s add the effect of air-pollution (PM10):</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>gratia<span class="sc">::</span><span class="fu">smooth_estimates</span>(res.mod1) <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a>  gratia<span class="sc">::</span><span class="fu">add_confint</span>() <span class="sc">%&gt;%</span> <span class="fu">filter</span>(smooth <span class="sc">==</span> <span class="st">"s(pm10)"</span>)  <span class="sc">%&gt;%</span> </span>
+<span id="cb17-3"><a href="#cb17-3"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(pm10, est), <span class="at">lwd=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb17-4"><a href="#cb17-4"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x=</span>pm10, <span class="at">ymin=</span>lower_ci, <span class="at">ymax=</span>upper_ci), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">col =</span> <span class="cn">NA</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Mortality risk"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"PM10"</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-16-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="case-study-chicago---temperature-and-mortality-8" class="slide level2">
+<h2>Case-study: Chicago - Temperature and mortality</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>res.mod1 <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Family: poisson 
+Link function: log 
+
+Formula:
+death ~ s(temp) + s(time) + s(month) + dow + s(pm10)
+
+Parametric coefficients:
+             Estimate Std. Error  z value Pr(&gt;|z|)    
+(Intercept)  4.731117   0.003637 1300.968  &lt; 2e-16 ***
+dowMonday    0.030381   0.005079    5.982 2.21e-09 ***
+dowTuesday   0.021400   0.005066    4.224 2.40e-05 ***
+dowWednesday 0.007126   0.005095    1.399  0.16186    
+dowThursday  0.007744   0.005087    1.522  0.12792    
+dowFriday    0.015253   0.005094    2.994  0.00275 ** 
+dowSaturday  0.019715   0.005043    3.909 9.25e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Approximate significance of smooth terms:
+           edf Ref.df Chi.sq p-value    
+s(temp)  8.314  8.840  172.7 &lt; 2e-16 ***
+s(time)  7.817  8.639  310.0 &lt; 2e-16 ***
+s(month) 8.475  8.926  431.9 &lt; 2e-16 ***
+s(pm10)  1.001  1.002   22.5 1.8e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+R-sq.(adj) =  0.256   Deviance explained = 27.5%
+UBRE = 0.4123  Scale est. = 1         n = 4863</code></pre>
+</div>
+</div>
+</section>
+<section id="case-study-chicago---temperature-and-mortality-9" class="slide level2">
+<h2>Case-study: Chicago - Temperature and mortality</h2>
+<p><strong>Lag effect</strong></p>
+<p>The effect of an exposure might not only affect the same day’s health outcome, but also the health outcome in the subsequent days.</p>
+<p>Lets explore the temperature lags <span style="color:red;"> independently </span> in Chicago.</p>
+</section>
+<section id="case-study-chicago---temperature-and-mortality-10" class="slide level2">
+<h2>Case-study: Chicago - Temperature and mortality</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>k <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>)</span>
+<span id="cb20-2"><a href="#cb20-2"></a>res_store <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb20-3"><a href="#cb20-3"></a></span>
+<span id="cb20-4"><a href="#cb20-4"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(k)){</span>
+<span id="cb20-5"><a href="#cb20-5"></a>  chicagoNMMAPS<span class="sc">$</span>temperature_laggeg <span class="ot">&lt;-</span> <span class="fu">lag</span>(chicagoNMMAPS<span class="sc">$</span>temp, <span class="at">n =</span> k[i])</span>
+<span id="cb20-6"><a href="#cb20-6"></a>  </span>
+<span id="cb20-7"><a href="#cb20-7"></a>  mgcv<span class="sc">::</span><span class="fu">gam</span>(death <span class="sc">~</span> <span class="fu">s</span>(temperature_laggeg) <span class="sc">+</span> </span>
+<span id="cb20-8"><a href="#cb20-8"></a>              <span class="fu">s</span>(time) <span class="sc">+</span> <span class="fu">s</span>(month) <span class="sc">+</span> dow <span class="sc">+</span> pm10, </span>
+<span id="cb20-9"><a href="#cb20-9"></a>            <span class="at">data =</span> chicagoNMMAPS, <span class="at">family =</span> <span class="st">"poisson"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-10"><a href="#cb20-10"></a>    gratia<span class="sc">::</span><span class="fu">smooth_estimates</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-11"><a href="#cb20-11"></a>    gratia<span class="sc">::</span><span class="fu">add_confint</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb20-12"><a href="#cb20-12"></a>    <span class="fu">filter</span>(smooth <span class="sc">==</span> <span class="st">"s(temperature_laggeg)"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-13"><a href="#cb20-13"></a>    <span class="fu">mutate</span>(<span class="at">est =</span> <span class="fu">exp</span>(est), </span>
+<span id="cb20-14"><a href="#cb20-14"></a>           <span class="at">lower_ci =</span> <span class="fu">exp</span>(lower_ci), </span>
+<span id="cb20-15"><a href="#cb20-15"></a>           <span class="at">upper_ci =</span> <span class="fu">exp</span>(upper_ci), </span>
+<span id="cb20-16"><a href="#cb20-16"></a>           <span class="at">temperature_laggeg =</span> <span class="fu">round</span>(temperature_laggeg, <span class="at">digits =</span> <span class="dv">2</span>),</span>
+<span id="cb20-17"><a href="#cb20-17"></a>           <span class="at">rr =</span> est<span class="sc">/</span>est[temperature_laggeg <span class="sc">==</span> <span class="fl">10.30</span>], </span>
+<span id="cb20-18"><a href="#cb20-18"></a>           <span class="at">rr_upper =</span> upper_ci<span class="sc">/</span>est[temperature_laggeg <span class="sc">==</span> <span class="fl">10.30</span>], </span>
+<span id="cb20-19"><a href="#cb20-19"></a>           <span class="at">rr_lower =</span> lower_ci<span class="sc">/</span>est[temperature_laggeg <span class="sc">==</span> <span class="fl">10.30</span>], </span>
+<span id="cb20-20"><a href="#cb20-20"></a>           <span class="at">lag =</span> <span class="fu">paste0</span>(<span class="st">"lag"</span>, k[i])) <span class="ot">-&gt;</span> res_store[[i]]</span>
+<span id="cb20-21"><a href="#cb20-21"></a>}</span>
+<span id="cb20-22"><a href="#cb20-22"></a></span>
+<span id="cb20-23"><a href="#cb20-23"></a></span>
+<span id="cb20-24"><a href="#cb20-24"></a><span class="fu">do.call</span>(rbind, res_store) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-25"><a href="#cb20-25"></a>  <span class="fu">mutate</span>(<span class="at">lag =</span> <span class="fu">factor</span>(lag, <span class="at">levels =</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">"lag"</span>, k)))) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-26"><a href="#cb20-26"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(temperature_laggeg, rr, <span class="at">col =</span> lag), <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb20-27"><a href="#cb20-27"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x=</span>temperature_laggeg, <span class="at">ymin=</span>rr_lower, <span class="at">ymax=</span>rr_upper, <span class="at">fill =</span> lag), <span class="at">alpha =</span> <span class="fl">0.3</span>,  <span class="at">col =</span> <span class="cn">NA</span>) <span class="sc">+</span> </span>
+<span id="cb20-28"><a href="#cb20-28"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb20-29"><a href="#cb20-29"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Mortality risk"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Temperature"</span>) <span class="sc">+</span> <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="fl">0.7</span>, <span class="fl">1.7</span>)) <span class="sc">+</span> </span>
+<span id="cb20-30"><a href="#cb20-30"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"C"</span>) <span class="sc">+</span> <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"C"</span>) <span class="ot">-&gt;</span> p28</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="case-study-chicago---temperature-and-mortality-11" class="slide level2">
+<h2>Case-study: Chicago - Temperature and mortality</h2>
+<ul>
+<li><p>What do you observe?</p></li>
+<li><p>Why curves are similar?</p></li>
+<li><p>Is independence a valid assumption?</p></li>
+</ul>
+
+<img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-19-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="summary" class="slide level2">
+<h2>Summary</h2>
+<ul>
+<li><p>Introduction to bias and variance trade off</p></li>
+<li><p>Theory and application of penalised splines</p></li>
+<li><p>How can we model lags properly?</p></li>
+</ul>
+<p>Questions?</p>
+<div class="footer footer-default">
+
+</div>
+</section>
+    </div>
+  </div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="Lecture2b_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="Lecture2b_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="Lecture2b_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="Lecture2b_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="Lecture2b_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="Lecture2b_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="Lecture2b_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="Lecture2b_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="Lecture2b_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="Lecture2b_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="Lecture2b_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'smaller': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":false},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button', {
+        text: function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+      });
+      clipboard.on('success', function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      });
+      function tippyHover(el, contentFn) {
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start'
+        };
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          return note.innerHTML;
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>

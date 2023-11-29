@@ -1,0 +1,809 @@
+\documentclass{beamer}
+
+\usetheme{Montpellier}
+%\usetheme{CambridgeUS}
+
+
+\usepackage[OT1]{fontenc}
+\usepackage[utf8x]{inputenc}
+
+
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+\usepackage[german]{babel}
+\usepackage{booktabs,bm, color, enumerate, hyperref, pgf, url, soul, tikz}
+\usepackage{amssymb, amsmath}
+\usepackage{graphicx}
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+\newcommand*{\Resize}[2]{\resizebox{#1}{!}{$#2$}}%
+\usepackage{listings}
+%\usepackage{hyperref}
+
+\usepackage{appendixnumberbeamer}
+
+
+\bibliographystyle{apalike}
+
+
+
+%\input{abbreviations}
+
+
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+%\usepackage{appendixnumberbeamer}
+
+
+
+%\subject{2015}
+
+
+
+
+\title{Advanced Regression: 2b Bias and variance trade off and penalised splines}
+
+
+
+\author{Garyfallos Konstantinoudis}
+\institute{Epidemiology and Biostatistics, Imperial College London}
+
+
+
+\date{28th February 2023}
+
+\setlength{\unitlength}{0.9cm}
+\linethickness{1.1pt}
+
+
+
+
+
+
+
+
+\begin{document}
+
+
+\frame{
+\titlepage
+}
+
+
+
+\frame{
+\tableofcontents
+}
+
+
+
+\section{Cross validation}
+\frame{
+\frametitle{Principles of non-linear regression} 
+
+Concepts we cover in this lecture:
+\begin{itemize}
+	\item The basics of cross validation
+	\item Bias-variance trade-off in prediction
+	\item Penalised splines
+\end{itemize}
+
+
+}
+
+
+
+\frame{
+\frametitle{Training and test data} 
+
+\begin{block}{Aim of prediction}{
+Define a prediction rule that is accurate, but also generalises to new data.
+}
+\end{block}
+
+When performing prediction we split the data into the following three subsets:
+\begin{itemize}
+\item Training data to fit the models.
+\item (Validation data to estimate extra parameters of the prediction rule.)
+\item Test data to assess the generalization properties.
+\end{itemize}
+
+}
+
+
+\frame{
+\frametitle{Training and test data} 
+
+Assume we have the following data:
+\begin{itemize}
+\item Training data 
+\begin{itemize}
+\item $y_i$, where $i \in 1,...,n$.
+\item $x_i$, vector of $j \in 1,...,p$ predictors for observation $i$
+\end{itemize}
+\item Test data
+\begin{itemize}
+\item $y_k^{Test}$, where $k \in 1,...,m$.
+\item $x_k^{Test}$, vector of $j \in 1,...,p$ predictors for observation $k$
+\end{itemize}
+\item We assume the following general model to hold for both training and test data
+\begin{equation}
+y  = f(x) + \epsilon \nonumber
+\end{equation}
+\end{itemize}
+
+
+}
+
+
+\frame{
+\frametitle{Measuring the quality of fit} 
+
+
+\begin{enumerate}
+\item Based on the training data we build a prediction rule $\hat{f}(x)$
+\begin{equation}
+\hat{y}_i = \hat{f}(x_i). \nonumber
+\end{equation}
+For example the ordinary least squares prediction rule is defined as 
+\begin{equation}
+\hat{y} = h y = x(x^t x)^{-1}x^t y = x \beta. \nonumber
+\end{equation}
+\item We evaluate the prediction rule  $\hat{f}(x)$ (derived from the training data) on the test data $x_k^{Test}$ and obtain the prediction $\hat{y}_k^{Test}$
+\begin{equation}
+\hat{y}_k^{Test} = \hat{f}(x_k^{Test}). \nonumber
+\end{equation}
+\end{enumerate}
+
+
+
+}
+
+
+
+\frame{
+\frametitle{Mean squared error (MSE)} 
+
+
+\begin{itemize}
+\item It is easy to derive the MSE on the training data, this is equivalent to the residual sum of squares.
+\item The residual sum of squares do not tell us how well the prediction rule generalises to new data, the test data.
+\end{itemize}
+
+
+\begin{block}{MSE evaluated on the test data}{
+\begin{equation}
+MSE =\frac{1}{m} \sum_{k=1}^{m} \left( \underbrace{y_k^{Test}}_{\text{Observed}} - \underbrace{\hat{f}(x_k^{Test})}_{\text{Predicted}} \right)^2 \nonumber
+\end{equation}
+}
+\end{block}
+
+
+
+
+
+}
+
+
+
+
+
+
+\frame{
+\frametitle{Decomposition into bias and variance} 
+
+\begin{eqnarray}
+E(MSE) & = & E (\frac{1}{m} \sum_{k=1}^{m} \left( y_k^{Test}- \hat{f}(x_k^{Test}) \right)^2 ) \nonumber \\
+       & = & \underbrace{\sigma^2}_{\text{Noise}}  + \underbrace{E [\hat{f}(x_k^{Test}) - E(\hat{f}(x_k^{Test}))]^2}_{\text{Variance}}  \nonumber \\
+	&  &  + \underbrace{[E(\hat{f}(x_k^{Test})) - \hat{f}(x_k^{Test})]^2}_{\text{Bias}^2} \nonumber
+\end{eqnarray}
+
+\begin{itemize}
+\item[$\diamond$] Noise or irreducible error $\sigma^2$  
+\item[$\diamond$] Variance $E [\hat{f}(x_k^{Test} - E(\hat{f}(x_k^{Test}))]^2 $
+\item[$\diamond$] Bias $ [E(\hat{f}(x_k^{Test})) - \hat{f}(x_k^{Test})]$
+\end{itemize}
+
+%https://towardsdatascience.com/mse-and-bias-variance-decomposition-77449dd2ff55
+
+}
+
+
+
+\frame{
+\frametitle{Bias-variance trade-off in prediction} 
+
+
+.
+
+\begin{itemize}
+\item \textbf{Bias}: The error that is introduced by fitting the model.
+\begin{itemize}
+\item[$\rightarrow$] More variables  reduce the residual sum of squares.
+\item[$\rightarrow$] We can reduce bias by adding more variables \\ (higher complexity).
+\end{itemize}
+\item \textbf{Variance}: The amount by which $\hat{f}(x)$ would change if we estimated it using a different training data set. 
+\begin{itemize}
+\item[$\rightarrow$] The more variables we include, the more likely $\hat{f}(x)$ will differ for a new training data
+\item[$\rightarrow$] We can reduce variance by removing variables \\ (lower complexity).
+\end{itemize}
+\end{itemize}
+
+
+
+}
+
+
+
+\section{Overfitting}
+
+
+\frame{
+\frametitle{Overfitting} 
+
+
+\centering \includegraphics[scale=0.28]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/test-train-error}
+
+
+\begin{itemize}
+\item Training MSE: We can always reduce the MSE by adding more variables (higher complexity).
+\item Test MSE: After the model is saturated, we will increase the MSE by adding more variables.
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{The problem of overfitting} 
+
+\begin{block}{Overfitting the data}{
+\begin{itemize}
+\item Complex models may be too precise and tailored only to the specific data used as training data.
+\item They follow the error or noise too closely.
+\item Complex models may provide perfect fit and very low MSE on the training data.
+\item But when used to build a prediction rule for new data they will have a high MSE on the test data.
+\item Thus, they do not generalise well to new data and do not provide a good prediction rule.
+\end{itemize}}
+\end{block}
+
+}
+
+
+
+\frame{
+\frametitle{Measuring the quality of fit: Binary outcome} 
+\begin{itemize}
+\item  Quantitative outcomes: Mean squared error (MSE)
+\item Binary outcome (Lecture 4): 
+\begin{itemize}
+\item  Sensitivity and specificity	
+\item  Misclassification error rate: Proportion of misclassified observations
+\item  Positive predictive value (PPV)
+ \begin{eqnarray}
+\text{PPV} & = & \frac{\text{Number of true positives}}{\text{Number of true positives + Number of false positives}} \nonumber \\
+ & = &  \frac{\text{Number of true positives}}{\text{Number of positive calls}}\nonumber
+\end{eqnarray}
+\end{itemize} 
+\end{itemize}
+
+}
+
+\section{Bias-variance trade-off}
+
+\frame{
+\frametitle{Bias-variance trade-off in estimation} 
+
+
+\begin{itemize}
+\item Consider an estimate $\hat{\theta}$ for a parameter $\theta$.
+\item Examples:
+\begin{itemize}
+\item[$\diamond$] Sample mean $\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i$ for the population mean.
+\item[$\diamond$] Sample variance $s^2 = \frac{1}{n-1} \sum_{i=1}^{n} (x_i - \bar{x})^2 $ for the population variance.
+\end{itemize}
+
+\end{itemize}
+
+\begin{block}{Bias of an estimate}{
+\begin{equation}
+Bias (\hat{\theta}) = E \left( \hat{\theta} - \theta \right) \nonumber
+\end{equation}
+}
+\end{block}
+
+%https://en.wikipedia.org/wiki/Bias_of_an_estimator
+
+}
+
+
+\frame{
+\frametitle{Bias-variance trade-off in estimation} 
+
+\begin{block}{Mean squared error (MSE) of an estimate $\hat{\theta}$}{
+ MSE is the squared average difference between an estimate $\hat{\theta}$ and the true parameter $\theta$.
+}
+\end{block}
+
+
+\begin{eqnarray}
+MSE (\hat{\theta}) & = & E \left( \hat{\theta} - \theta \right)^2 \nonumber \\
+ & = & ( E(\hat{\theta}^2) - 2 E(\hat{\theta})\theta  + \theta^2 ) \nonumber \\
+ & = & ( E(\hat{\theta}^2) - \underbrace{E(\hat{\theta})^2 + E(\hat{\theta})^2}_0  - 2 E(\hat{\theta})\theta + \theta^2 ) \nonumber \\
+ & = & ( E(\hat{\theta}^2) - E(\hat{\theta})^2)  +  (E(\hat{\theta})^2  - 2 E(\hat{\theta})\theta + \theta^2 ) \nonumber \\
+ & = &  Var (\hat{\theta})  +  \left(Bias (\hat{\theta}) \right)^2 \nonumber 
+\end{eqnarray}
+
+
+
+
+}
+
+
+
+\frame{
+\frametitle{Bias-variance trade-off in estimation} 
+
+
+Also in estimation there is a trade-off between bias and variance
+\begin{equation}
+MSE (\hat{\theta})  =  Var (\hat{\theta})  +  \left(Bias (\hat{\theta}) \right)^2 \nonumber 
+\end{equation}
+where
+\begin{itemize}
+\item[$\diamond$] $Var (\hat{\theta}) =  E(\hat{\theta}^2) - E(\hat{\theta})^2$
+\item[$\diamond$] $Bias (\hat{\theta}) = E(\hat{\theta}) - \theta = E(\hat{\theta} - \theta) $
+\end{itemize}
+
+\begin{itemize}
+\item Many classical techniques are designed to be unbiased (BLUE) or consistent (Maximum Likelihood).
+\end{itemize}
+
+
+}
+
+
+\frame{
+	\frametitle{Recall previous problem} 
+	\begin{itemize}
+	  \item Can you identify issues with bias and variance?
+	  \item How can we select the best fit?
+	\end{itemize}
+	\begin{columns}
+		\column{.5\textwidth}
+	\includegraphics[width = 6cm]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/p18.png}
+		\column{.5\textwidth}
+	\includegraphics[width = 6cm]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/p17.png}
+	\end{columns}
+	
+}
+
+
+\frame{
+	\frametitle{Generic considerations} 
+	In regression splines, the smoothness of the fitted curve is
+	determined by:
+	\begin{itemize}
+		\item the degree of the spline
+		\item the specific parameterization
+		\item the number of knots
+		\item the location of knots
+	\end{itemize}
+
+No general selection method for number and position of knots
+}
+
+
+\frame{
+	\frametitle{Notice} 
+	
+	The type of splines we have seen so far allow the use of standard estimation
+	methods, derived by minimizing the usual least square objective:
+	
+	$$\sum_i\Bigg(Y_i - \beta_0 - f(x;\beta) + \sum_p\gamma_pz_p\Bigg)^2,$$
+	
+	\noindent where $f(x;\beta) = \sum_j\beta_jb_j(x_i)$ the splines basis function, $z$  a set of other covariates with corresponding coefficients $\gamma$.
+	}
+
+\section{Penalised regression}
+
+\frame{
+	\frametitle{A penalised approach} 
+
+	A general framework of smoothing methods is offered by generalized additive models (GAMs) \\
+	
+	
+	GAMs extends traditional GLMs by allowing the linear predictor to depend linearly on unknown smooth functions. In the linear case:
+	
+	$$Y_i = \beta_0 + f(x;\beta) + \sum_p\gamma_pz_p + \epsilon_i$$
+	
+	The idea is to define a flexible function and control the smoothness through a penalty term, usually on the second derivative. 
+}
+
+
+\frame{
+	\frametitle{Curvature} 
+	
+	The second derivative of a function corresponds to the curvature or concavity of the graph. What do you observe?
+	
+	\begin{figure}
+			\includegraphics[width = 7cm]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/p19.png}
+	\end{figure}
+	
+	So if $f(x;\beta)$ is the spline basis function we defined, then we need to somehow introduce its second derivative $d^2f(x;\beta)/dx = f''(x; \beta)$ in the problem and `scale` it so we have the `best` fit. 
+}
+
+
+\frame{
+	\frametitle{Penalized splines} 
+	
+	The objective now is to minimise the `augmented` sum of squares error:
+	
+	$$\sum_i\Bigg(Y_i - \beta_0 - f(x;\beta) + \sum_p\gamma_pz_p\Bigg)^2 + \lambda \int [f''(x; \beta)]^2dx$$
+	
+	\noindent with $\lambda$ being the smoothing parameter (variance-bias trade off). 
+}
+
+\frame{
+	\frametitle{Smoothers} 
+	
+	Alternative smoothers available, differing by parameterization and penalty:
+	\begin{itemize}
+		\item Thin-plane splines
+		\item Cubic splines
+		\item P-splines
+		\item Random effects
+		\item Markov random fields
+		\item kernels
+		\item Soap film smooths
+		\item ...
+	\end{itemize}
+}
+
+\frame{
+	\frametitle{Selecting smoothness} 
+	
+	There are different ways of selecting/estimating $\lambda$
+	\begin{itemize}
+		\item The ordinary cross-validation (OCV) criterion, also known as the leave-one-out cross-validation (LOO-CV) criterion, seeks to find the $\lambda$ that minimizes:
+		
+		$$\text{OCV}(\lambda) = \frac{1}{n}\sum_i(Y_i - g_{\lambda}^{[i]}(x_i))^2$$
+		\item The generalised cross-validation (GCV) criterion (an improvement of the OCV)
+		\item AIC and BIC
+		\item REML and ML
+	\end{itemize}
+}
+
+\begin{frame}[fragile]{Example 1}
+	\texttt{?mcycle}: A data frame giving a series of measurements of head acceleration in a simulated motorcycle accident, used to test crash helmets. 
+	
+	\begin{lstlisting}[language=R, basicstyle=\scriptsize]
+mcycle %>% head()
+  times accel
+1   2.4   0.0
+2   2.6  -1.3
+3   3.2  -2.7
+4   3.6   0.0
+5   4.0  -2.7
+6   6.2  -2.7
+	\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Example}
+		\begin{figure}
+		\includegraphics[width = 7cm]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/p20.png}
+	\end{figure}
+
+Any ideas?
+\end{frame}
+
+\begin{frame}[fragile]{Example}
+	I will use the \texttt{pspline} package to showcase how the selection of $\lambda$ with GVC works: \\
+\begin{lstlisting}[language=R, basicstyle=\tiny]
+mcycle$times <- mcycle$times + rnorm(sd = 0.1, n = nrow(dat))
+mcycle %>% arrange(times) -> mcycle
+
+seq(from = 1, to = 100, length.out = 100) -> loop.i
+gcv <-  numeric(length(loop.i))
+
+for(i in 1:length(loop.i)){
+	smooth.Pspline(mcycle$times, mcycle$accel, df = 4, 
+		spar = loop.i[i], method = 1) -> mod.loop
+	gcv[i] <- mod.loop$gcv
+}
+
+ggplot() + geom_point(aes(x= loop.i, y = gcv), cex = .6) + 
+	geom_vline(xintercept = loop.i[gcv %>% which.min()], col = "red", cex = .5) + 
+	theme_bw() -> p1
+
+smooth.Pspline(mcycle$times, mcycle$accel, df = 4, spar = loop.i[gcv %>% which.min()],
+        method = 1) -> mod.loop
+ggplot() + 
+	geom_point(data = mcycle, aes(x = times, y = accel), cex = .6) + theme_bw() + 
+	geom_line(aes(x=mcycle$times, y=mod.loop$ysmth), cex = .5) -> p2
+p1|p2
+\end{lstlisting}
+\end{frame}
+
+\section{Generalised additive models in R}
+
+\begin{frame}[fragile]{Example 1}
+	\begin{figure}
+		\includegraphics[width = 11cm]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/p21.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Example using \texttt{GAM}}
+	\begin{lstlisting}[language=R, basicstyle=\tiny]
+mgcv::gam(accel ~ s(times), data = mcycle) -> mod.gam
+Family: gaussian 
+Link function: identity 
+
+Formula:
+accel ~ s(times)
+
+Parametric coefficients:
+Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  -25.546      1.951   -13.1   <2e-16 ***
+
+Approximate significance of smooth terms:
+           edf Ref.df     F p-value    
+s(times) 8.693  8.972 53.52  <2e-16 ***
+
+R-sq.(adj) =  0.783   Deviance explained = 79.8%
+GCV = 545.78  Scale est. = 506       n = 133
+	\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{Example using \texttt{GAM}}
+	\begin{lstlisting}[language=R, basicstyle=\tiny]
+mod.gam %>% plot(se = TRUE, residuals = TRUE, cex = 0.5)
+# or
+mgcv::gam(accel ~ s(times), data = mcycle) -> mod.gam
+predict(mod.gam, data.frame(times = mcycle$times), se.fit = TRUE) -> preds
+
+UL <- preds$fit + 1.96*preds$se.fit
+LL <- preds$fit - 1.96*preds$se.fit
+
+ggplot() + 
+geom_point(data = mcycle, aes(x = times, y = accel), cex = .6) + theme_bw() + 
+geom_line(aes(x=mcycle$times, y=preds$fit), linewidth = .5) + 
+geom_ribbon(aes(ymin=LL,ymax=UL,x=mcycle$times), fill="blue", alpha=0.1)
+	\end{lstlisting}
+	\begin{columns}
+	\column{.5\textwidth}
+		\includegraphics[width = 6cm]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/p23.png}
+	\column{.5\textwidth}
+		\includegraphics[width = 5cm]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/p22.png}
+\end{columns}
+\end{frame}
+
+
+\section{Case study: Chicago}
+\begin{frame}{Case-study: Chicago - Temperature and mortality}
+\begin{itemize}
+	\item Temperature is known to increase all-cause mortality rates
+	\item In such studies, we need to carefully account for the temporal aspect (long-term trends and seasonality)
+	\item We also need to properly account for factors that could confound the observed relationship. 
+\end{itemize}
+
+GOAL: Use GAMs to explore the effect of temperature on mortality counts in Chicago. 
+\end{frame}	
+
+\begin{frame}[fragile]{Case-study: Chicago - Temperature and mortality}
+	\begin{lstlisting}[language=R, basicstyle=\tiny]
+> chicagoNMMAPS %>% head()
+        date time year month doy      dow death cvd resp  temp   dptp   rhum   pm10       
+1987-01-01    1 1987     1   1 Thursday   130  65   13 -0.2777 31.500 95.500 26.956 
+1987-01-02    2 1987     1   2   Friday   150  73   14  0.5555 29.875 88.250 NA 
+1987-01-03    3 1987     1   3 Saturday   101  43   11  0.5555 27.375 89.500 32.838 
+1987-01-04    4 1987     1   4   Sunday   135  72    7 -1.6666 28.625 84.500 39.956 
+1987-01-05    5 1987     1   5   Monday   126  64   12  0.0000 28.875 74.500 NA 
+1987-01-06    6 1987     1   6  Tuesday   130  63   12  4.4444 35.125 77.375 40.956 
+	\end{lstlisting}
+		\begin{figure}
+		\includegraphics[width = 7cm]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/p24.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Case-study: Chicago - Temperature and mortality}
+	\begin{lstlisting}[language=R, basicstyle=\tiny]
+mgcv::gam(death ~ s(temp) + 
+		s(time) + s(month) + dow, 
+		data = chicagoNMMAPS, family = "poisson") -> res.mod
+
+library(gratia)
+gratia::draw(res.mod)
+	\end{lstlisting}
+	\begin{figure}
+		\includegraphics[width = 7cm]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/p25.png}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}[fragile]{Case-study: Chicago - Temperature and mortality}
+	\begin{lstlisting}[language=R, basicstyle=\tiny]
+sm <- gratia::smooth_estimates(res.mod) %>% add_confint()
+sm %>% filter(smooth == "s(temp)") %>% 
+	mutate(est = exp(est), 
+		lower_ci = exp(lower_ci), 
+		upper_ci = exp(upper_ci), 
+		temp = round(temp, digits = 2),
+		rr = est/est[temp == 10.30], 
+		rr_upper = upper_ci/est[temp == 10.30], 
+		rr_lower = lower_ci/est[temp == 10.30]) %>% 
+	ggplot() + geom_line(aes(temp, rr)) + 
+		geom_ribbon(aes(x=temp, ymin=rr_lower, ymax=rr_upper), alpha = 0.3, 
+		fill = "blue", col = NA) + 
+		geom_hline(yintercept = 1, col = "red", linetype = "dashed") + 
+		theme_bw() + ylab("Mortality risk") + xlab("Temperature")
+	\end{lstlisting}
+	\begin{figure}
+		\includegraphics[width = 4cm]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/p26.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Case-study: Chicago - Temperature and mortality}
+	
+	\begin{itemize}
+		\item How is the intercept interpreted? How the daily effect?
+	\end{itemize}
+	\begin{lstlisting}[language=R, basicstyle=\tiny]
+Family: poisson 
+Link function: log 
+
+Formula:
+death ~ s(temp) + s(time) + s(month) + dow
+
+Parametric coefficients:
+             Estimate Std. Error  z value Pr(>|z|)    
+(Intercept)  4.727980   0.003476 1360.069  < 2e-16 ***
+dowMonday    0.034849   0.004874    7.150 8.71e-13 ***
+dowTuesday   0.027304   0.004884    5.590 2.27e-08 ***
+dowWednesday 0.010857   0.004904    2.214  0.02683 *  
+dowThursday  0.013197   0.004899    2.694  0.00707 ** 
+dowFriday    0.019705   0.004891    4.029 5.61e-05 ***
+dowSaturday  0.022413   0.004888    4.585 4.54e-06 ***
+
+Approximate significance of smooth terms:
+edf Ref.df Chi.sq p-value    
+s(temp)  8.332  8.847  238.9  <2e-16 ***
+s(time)  7.705  8.573  330.6  <2e-16 ***
+s(month) 8.504  8.934  529.1  <2e-16 ***
+
+R-sq.(adj) =  0.256   Deviance explained = 27.4%
+UBRE = 0.41407  Scale est. = 1         n = 5114
+	\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]{Case-study: Chicago - Temperature and mortality}
+	Let's add the effect of air-pollution (PM10):
+	\begin{lstlisting}[language=R, basicstyle=\tiny]
+mgcv::gam(death ~ s(temp) + s(time) + s(month) + dow + s(pm10), 
+	data = chicagoNMMAPS, family = "poisson") -> res.mod1
+
+gratia::smooth_estimates(res.mod1) %>%
+	add_confint() %>% filter(smooth == "s(pm10)")  %>% 
+	ggplot() + geom_line(aes(pm10, est)) + 
+      geom_ribbon(aes(x=pm10, ymin=lower_ci, ymax=upper_ci), 
+		alpha = 0.3, fill = "blue", col = NA)+
+		theme_bw() + ylab("Mortality risk") + xlab("PM10")
+	\end{lstlisting}
+
+	\begin{figure}
+	\includegraphics[width = 5cm]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/p27.png}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}[fragile]{Case-study: Chicago - Temperature and mortality}
+	\begin{lstlisting}[language=R, basicstyle=\tiny]
+> res.mod1 %>% summary()
+
+Family: poisson 
+Link function: log 
+
+Formula:
+death ~ s(temp) + s(time) + s(month) + dow + s(pm10)
+
+Parametric coefficients:
+             Estimate Std. Error  z value Pr(>|z|)    
+(Intercept)  4.731117   0.003637 1300.968  < 2e-16 ***
+dowMonday    0.030381   0.005079    5.982 2.20e-09 ***
+dowTuesday   0.021400   0.005066    4.224 2.40e-05 ***
+dowWednesday 0.007127   0.005095    1.399  0.16185    
+dowThursday  0.007744   0.005087    1.522  0.12791    
+dowFriday    0.015253   0.005094    2.994  0.00275 ** 
+dowSaturday  0.019715   0.005043    3.909 9.25e-05 ***
+
+Approximate significance of smooth terms:
+             edf Ref.df Chi.sq  p-value    
+s(temp)  8.314  8.840  172.7  < 2e-16 ***
+s(time)  7.817  8.639  310.0  < 2e-16 ***
+s(month) 8.477  8.927  437.4  < 2e-16 ***
+s(pm10)  1.001  1.002   22.5 1.81e-06 ***
+
+R-sq.(adj) =  0.256   Deviance explained = 27.5%
+UBRE = 0.4123  Scale est. = 1  n = 4863
+	\end{lstlisting}
+	
+\end{frame}
+
+
+\begin{frame}[fragile]{Case-study: Chicago - Temperature and mortality}
+	
+	\begin{block}{Lag effect}
+	 The effect of an exposure might not only affect the same day's health outcome, but also the health outcome in the subsequent days.
+	\end{block}
+
+Lets explore the temperature lags \textcolor{red}{independently} in Chicago. 
+	
+	
+\end{frame}
+
+
+\begin{frame}[fragile]{Case-study: Chicago - Temperature and mortality}
+	\begin{lstlisting}[language=R, basicstyle=\tiny]
+k <- c(0, 1, 3, 5, 10, 20)
+res_store <- list()
+
+for(i in 1:length(k)){
+chicagoNMMAPS$temperature_laggeg <- lag(chicagoNMMAPS$temp, n = k[i])
+
+mgcv::gam(death ~ s(temperature_laggeg) + s(time) + s(month) + dow + pm10, 
+	data = chicagoNMMAPS, family = "poisson") %>% 
+		gratia::smooth_estimates() %>%
+		add_confint() %>% 
+		filter(smooth == "s(temperature_laggeg)") %>% 
+		mutate(est = exp(est), 
+			lower_ci = exp(lower_ci), 
+			upper_ci = exp(upper_ci), 
+			temperature_laggeg = round(temperature_laggeg, digits = 2),
+			rr = est/est[temperature_laggeg == 10.30], 
+			rr_upper = upper_ci/est[temperature_laggeg == 10.30], 
+			rr_lower = lower_ci/est[temperature_laggeg == 10.30], 
+			lag = paste0("lag", k[i])) -> res_store[[i]]
+}
+
+do.call(rbind, res_store) %>% 
+	mutate(lag = factor(lag, levels = c(paste0("lag", k)))) %>% 
+	ggplot() + geom_line(aes(temperature_laggeg, rr, col = lag)) + 
+		geom_ribbon(aes(x=temperature_laggeg, ymin=rr_lower, ymax=rr_upper, 
+		fill = lag), alpha = 0.3,  col = NA) + geom_hline(yintercept = 1, 
+		col = "red", linetype = "dashed") + 
+		theme_bw() + ylab("Mortality risk") + xlab("Temperature") + ylim(c(0.7, 1.7)) + 
+		scale_fill_viridis_d(option = "C") + scale_color_viridis_d(option = "C")
+	\end{lstlisting}
+	
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Case-study: Chicago - Temperature and mortality}
+	\begin{itemize}
+		\item What do you observe?
+		\item Why curves similar?
+		\item Is \textcolor{red}{independence} a valid assumption?
+	\end{itemize}
+		\begin{figure}
+		\includegraphics[width = 8cm]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/p28.png}
+	\end{figure}
+\end{frame}
+
+\section{Summary}
+\begin{frame}{Summary}
+	\begin{itemize}
+		\item Introduction to bias and variance trade off
+		\item Theory and application of penalised splines
+		\item How can we model lags properly?
+	\end{itemize}
+	Questions?
+\end{frame}
+
+\end{document}
+
+
+
+
+
+
+

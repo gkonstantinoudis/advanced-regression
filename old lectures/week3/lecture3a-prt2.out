@@ -1,0 +1,10 @@
+\BOOKMARK [2][]{Outline0.1}{What are singularity and multicollinearity?}{}% 1
+\BOOKMARK [2][]{Outline0.2}{How to detect singularity and multicollinearity?}{}% 2
+\BOOKMARK [3][]{Outline0.2.1.10}{Correlation and covariance matrix}{Outline0.2}% 3
+\BOOKMARK [3][]{Outline0.2.2.15}{The rank of a matrix}{Outline0.2}% 4
+\BOOKMARK [3][]{Outline0.2.3.19}{Variance inflation factor}{Outline0.2}% 5
+\BOOKMARK [3][]{Outline0.2.4.22}{Singular value decomposition and condition number}{Outline0.2}% 6
+\BOOKMARK [2][]{Outline0.3}{How to prevent multicollinearity?}{}% 7
+\BOOKMARK [3][]{Outline0.3.1.31}{Grouping}{Outline0.3}% 8
+\BOOKMARK [3][]{Outline0.3.2.32}{Partial least squares}{Outline0.3}% 9
+\BOOKMARK [3][]{Outline0.3.3.33}{Pre-whitening}{Outline0.3}% 10

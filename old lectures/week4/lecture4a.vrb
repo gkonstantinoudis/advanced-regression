@@ -1,0 +1,23 @@
+\frametitle{\texttt {lda} in the \texttt {MASS} package: Iris}
+\begin{lstlisting}[language=R, basicstyle=\scriptsize]
+Call:
+lda(Species ~ ., data = train)
+
+Prior probabilities of groups:
+setosa    versicolor  virginica
+0.3207547  0.3207547  0.3584906
+
+Group means:
+              Sepal.Length Sepal.Width Petal.Length Petal.Width
+setosa       -1.0397484   0.8131654   -1.2891006  -1.2570316
+versicolor    0.1820921  -0.6038909    0.3403524   0.2208153
+virginica     0.9582674  -0.1919146    1.0389776   1.1229172
+
+Coefficients of linear discriminants:
+              LD1        LD2
+Sepal.Length  0.7922820  0.5294210
+Sepal.Width   0.5710586  0.7130743
+Petal.Length -4.0762061 -2.7305131
+Petal.Width  -2.0602181  2.6326229
+
+\end{lstlisting}

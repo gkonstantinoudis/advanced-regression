@@ -1,0 +1,6 @@
+\babel@toc {german}{}
+\beamer@sectionintoc {1}{Introduction to non-linear regression}{3}{0}{1}
+\beamer@sectionintoc {2}{Basis Expansions}{7}{0}{2}
+\beamer@sectionintoc {3}{Splines}{25}{0}{3}
+\beamer@sectionintoc {4}{Cubic splines}{31}{0}{4}
+\beamer@sectionintoc {5}{Natural splines}{34}{0}{5}

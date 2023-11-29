@@ -1,0 +1,451 @@
+\documentclass{beamer}
+
+\usetheme{Montpellier}
+%\usetheme{CambridgeUS}
+
+
+\usepackage[OT1]{fontenc}
+\usepackage[utf8x]{inputenc}
+
+
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+\usepackage[german]{babel}
+\usepackage{booktabs,bm, color, enumerate, hyperref, pgf, url, soul, tikz}
+\usepackage{amssymb, amsmath}
+\usepackage{graphicx}
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+\newcommand*{\Resize}[2]{\resizebox{#1}{!}{$#2$}}%
+
+%\usepackage{hyperref}
+
+\usepackage{appendixnumberbeamer}
+
+
+\bibliographystyle{apalike}
+
+
+
+%\input{abbreviations}
+
+
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+%\usepackage{appendixnumberbeamer}
+
+
+
+%\subject{2015}
+
+
+
+
+\title{Advanced Regression: 4b Machine learning: Ensemble methods}
+
+
+
+\author{Garyfallos Konstantinoudis}
+\institute{Epidemiology and Biostatistics, Imperial College London}
+
+
+
+\date{14th March 2023}
+
+\setlength{\unitlength}{0.9cm}
+\linethickness{1.1pt}
+
+
+
+
+
+
+
+
+\begin{document}
+
+
+\frame{
+\titlepage
+}
+
+
+
+\frame{
+\tableofcontents
+}
+
+
+\frame{
+\frametitle{Decision trees and ensemble methods}
+
+\begin{itemize}
+\item \textbf{Decision tree}: A single tree
+\item \textbf{Bagging}: A meta-algorithm over trees 
+\item \textbf{Random forest}: A meta-algorithm over random trees
+\item \textbf{Boosting}: A meta-algorithm over sequential trees
+\end{itemize}
+
+}
+
+
+
+\section{Decision trees}
+
+\subsection{Motivation for decision trees}
+
+\frame{
+\frametitle{Decision trees: An introduction}
+
+\begin{center}  
+\includegraphics [scale=0.48]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/diabetes-tree.jpg} \\
+\end{center}
+
+}
+
+\frame{
+\frametitle{Decision trees: An introduction}
+
+\begin{itemize}
+\item Decision trees are drawn upside down.
+\end{itemize}
+
+
+\begin{center}  
+\includegraphics [scale=0.58]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/treesA} 
+\includegraphics [scale=0.58]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/treesB}
+\end{center}
+
+}
+
+
+
+\frame{
+\frametitle{Decision trees: An introduction}
+
+Notation:
+\begin{itemize}
+\item \textbf{Nodes or splits}: Points along the tree where the predictor space is split. 
+\item \textbf{Leaves}: Terminal nodes
+\item \textbf{Branch}: Segments of a tree that connect the nodes
+\end{itemize}
+
+Outcomes:
+\begin{itemize}
+\item \textbf{Quantitative}: Regression trees
+\item \textbf{Categorical}: Classification trees\\
+Considering $k=K$ categories  
+\end{itemize}
+
+}
+
+
+\frame{
+	\frametitle{Decision trees: An introduction}
+	
+	\begin{center} 
+	\includegraphics [width=0.7\textwidth]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/CARTClassificationAndRegressionTree.jpg} 
+\end{center}
+	
+}
+
+
+
+\frame{
+	\frametitle{Decision trees: Another example}
+	Idea: Create dummies for deciles of $x_i$
+	
+	\begin{center} 
+	\includegraphics [width=0.7\textwidth]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/regtreeex.png} 
+	\end{center}
+
+	Problem: How to select the partition?
+
+
+	
+	
+}
+
+
+\subsection{Technical definition}
+
+
+\frame{
+\frametitle{How to fit a decision tree?}
+
+\begin{enumerate}
+\item Divide the predictor space ($x_1, x_2,..., x_p$) into $J$ distinct and non-overlapping regions, $r_1,r_m, ..., r_M$, where $m \in 1,...,M$.
+\item For every observation that falls in the same region $r_m$ we make the same prediction based on the mean (median) of all observations in region $r_m$.
+\item Define regions $r_1,r_2, ..., r_M$ to minimise the residual sum of squares
+ \begin{equation}
+RSS =  \sum_{m =1 }^M \sum_{i \in m} (y_i-\bar{y}_m)^2 \nonumber
+\end{equation}
+\begin{itemize}
+\item Algorithm: Recursive binary splitting 
+\end{itemize}
+\end{enumerate}
+
+}
+
+
+\frame{
+	\frametitle{Exercise: Reconstruct the tree}
+	
+	\begin{columns}
+		\begin{column}{0.6\textwidth}
+			\begin{center} 
+				\includegraphics [width=0.99\textwidth]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/Rs} 
+			\end{center}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\begin{itemize}
+				\item Assume we have two variables, $x_1$ on the $x$-axis and $x_2$ on the $y$-axis.
+				\item $r_1$ to $r_5$ map out a partition.
+				\item $t_1$ to $t_4$ are the split values.
+				\item Reconstruct the respective tree.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	
+	
+}
+
+\frame{
+	\frametitle{Exercise: Reconstruct the tree}
+	
+	\begin{columns}
+		\begin{column}{0.6\textwidth}
+			\begin{center} 
+				\includegraphics [width=0.99\textwidth]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/Rs} 
+			\end{center}
+		\end{column}
+		\begin{column}{0.4\textwidth}
+			\includegraphics [width=0.99\textwidth]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/nodes (2)}
+		\end{column}
+	\end{columns}
+	
+	
+}
+
+\frame{
+	\frametitle{Implementation}
+	\begin{itemize}
+		\item  For each variable $x_k$
+		\begin{itemize}
+			\item Find the optimal cutoff point $t$:
+			$$\text{min}_s \text{MSE}(y_i|x_{ik}<t) + \text{MSE}(y_i|x_{ik}\geq t)$$
+		\end{itemize}
+		\item  Choose variable yielding lowest MSE
+		\item Stop when MSE gain is too small
+	\end{itemize}
+	\begin{center}
+		\includegraphics [width=0.5\textwidth]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/nodes (2)}
+	\end{center}
+	
+}
+
+
+
+
+
+
+
+
+\frame{
+	\frametitle{Example 1}
+			\includegraphics [width=0.8\textwidth]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/dectree1.PNG}
+	
+}
+
+\frame{
+	\frametitle{Example 1}
+	\includegraphics [width=0.8\textwidth]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/dectree2.PNG}
+	
+}
+
+\frame{
+	\frametitle{Example 1}
+	\includegraphics [width=0.8\textwidth]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/dectree3.PNG}
+	
+}
+
+\frame{
+	\frametitle{Example 2}
+	\centering
+	\includegraphics [width=0.8\textwidth]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/treeex2}
+	
+}
+
+
+\frame{
+\frametitle{Measures for model fit (node impurity)}
+
+\begin{itemize}
+\item Classification trees:
+\begin{itemize}
+\item  \textbf{Gini index} of leaf $m$:
+\begin{equation}
+G_m =  \sum_{k=1}^K p_{mk}(1-p_{mk}), \nonumber
+\end{equation} 
+$p_{mk}$: proportion of observations in region $R_m$ of class $k$ 
+\item \textbf{Entropy} of leaf $m$
+\begin{equation}
+D_m =  - \sum_{k=1}^K p_{mk} \log(p_{mk}) \nonumber
+\end{equation} 
+\end{itemize}
+\item Regression trees: \textbf{Deviance} in leaf $m$
+ \begin{equation}
+dev_m =  \sum_{i \in m} (y_i-\mu_m)^2 \nonumber
+\end{equation} 
+\vspace{-0.1cm}
+where
+\begin{itemize}
+\item $i \in m$: Individuals in leaf $m$
+\item $\mu_m$: Mean in leaf $m$  
+\end{itemize}
+\end{itemize}
+
+}
+
+
+\frame{
+\frametitle{Overfitting}
+
+\begin{center}  
+\includegraphics [scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/diabetes-tree-unpruned.jpg} \\
+\end{center}
+\vspace{-1cm}
+\begin{itemize}
+\item Regression trees tend to overfit.
+\item In principle they could assign each observation to one leaf.
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Tree pruning}
+
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+%\item Regression trees tend to overfit.
+%\item In principle they could assign each observation to one leaf.
+\item A smaller tree with fewer splits may generalise better to new observations.
+\item Solution: Pruning
+\item Cost complexity pruning or weakest link pruning: Find tree $T$
+ \begin{equation}
+\underset{T}{argmin} \sum_{m=1}^{\mid T \mid }  \sum_{i \in m} (y_i-\mu_m)^2 + \alpha \mid T \mid   \nonumber
+\end{equation} 
+where $\mid T \mid$ is the number of leaves and $\alpha$ a regularisation parameter.
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{center} 
+\includegraphics [width=0.99\textwidth]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/prune} 
+\end{center}
+\end{column}
+\end{columns}
+
+}
+
+
+\frame{
+\frametitle{Tree pruning}
+
+\begin{itemize}
+\item Select the regularisation parameter $\alpha$  that produces the tree with the lowest node impurity (measured by deviance below) as evaluated by cross-validation.
+\end{itemize}
+
+\begin{center}  
+\includegraphics [scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/cv-diabetes-tree.jpg} \\
+\end{center}
+
+
+}
+
+
+
+
+
+
+\subsection{Decision trees in \texttt{R}}
+
+\frame{
+\frametitle{\texttt{tree} function in \texttt{library(tree)}}
+ 
+
+\begin{itemize}
+\item Tree fit:  \texttt{tree.out = tree(y $\sim $ x) \\
+plot(tree.out) \\
+text(tree.out)} \\
+\item Parameters for tree: \texttt{tree.control(nobs, mincut = 5, minsize = 10, mindev = 0.01)}
+\end{itemize}
+
+\includegraphics [width=0.45\textwidth]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/diabetes-tree-unpruned}
+
+}
+
+
+
+\frame{
+\frametitle{\texttt{tree} function in \texttt{library(tree)}}
+ 
+
+\begin{itemize}
+\item Cross-validation: \\
+\texttt{cv.tree(tree.out)}
+
+\includegraphics [width=0.7\textwidth]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/cv_tree}
+
+\item Pruning by keeping only \texttt{best} leaves:  \\
+\texttt{prune.tree(tree.out, best)}
+\item Pruning by cost parameter $k$:  \\
+\texttt{prune.tree(tree.out, k)}
+\end{itemize}
+
+}
+
+
+\frame{
+\frametitle{Overview decision trees}
+
+Advantage:
+\begin{itemize}
+\item Interpretability
+\item Intuitive, mirror human decision making
+\item Allowing for non-linear effects
+\end{itemize}
+Disadvantages:
+\begin{itemize}
+\item Overfitting is an issue	
+\item Highly instable and variable, small changes in the input data can cause big changes in the tree structure
+\item Minimal bias, but high variance
+\end{itemize}
+
+\begin{block}{Ensemble methods}
+\begin{itemize}
+\item Fit not one, but multiple trees.
+\end{itemize}
+\end{block}
+
+}
+
+
+
+
+
+
+
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+

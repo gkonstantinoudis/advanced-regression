@@ -1,0 +1,12 @@
+\babel@toc {german}{}
+\beamer@sectionintoc {1}{Motivation for penalised regression}{3}{0}{1}
+\beamer@sectionintoc {2}{Penalised regression}{7}{0}{2}
+\beamer@subsectionintoc {2}{1}{Ridge regression}{10}{0}{2}
+\beamer@subsectionintoc {2}{2}{Lasso}{21}{0}{2}
+\beamer@subsectionintoc {2}{3}{Elastic net}{25}{0}{2}
+\beamer@subsectionintoc {2}{4}{How to tune the regularisation parameter?}{27}{0}{2}
+\beamer@subsectionintoc {2}{5}{Prediction using penalised regression}{28}{0}{2}
+\beamer@sectionintoc {3}{Penalised regression in R}{29}{0}{3}
+\beamer@sectionintoc {4}{Application}{33}{0}{4}
+\beamer@subsectionintoc {4}{1}{Diabetes data}{33}{0}{4}
+\beamer@subsectionintoc {4}{2}{Breast cancer data}{37}{0}{4}

@@ -1,0 +1,6 @@
+\babel@toc {german}{}
+\beamer@sectionintoc {1}{The linear model}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Basic definition}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Assumptions}{16}{0}{1}
+\beamer@subsectionintoc {1}{3}{Diagnostic plots in the linear model}{18}{0}{1}
+\beamer@subsectionintoc {1}{4}{Prediction using linear models}{24}{0}{1}

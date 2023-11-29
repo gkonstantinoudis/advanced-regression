@@ -1,0 +1,13 @@
+\frametitle{Example 4: Extension to space}
+Warm temperatures and COPD hospitalisations in England: A nationwide case-crossover study during 2007-2018.
+    \begin{columns}
+	\column{.5\textwidth}
+	\begin{itemize}
+		\item 3$^{\text{rd}}$ cause of death, 3.17 million deaths in 2015 globally.
+		\item In England, 115,000 emergency admissions and 24,000 deaths per year.
+		\item COPD exacerbations: Bacteria, viruses and air-pollution.
+		\item The role of temperature is unclear.
+	\end{itemize}
+	\column{.5\textwidth}
+	\includegraphics[width = 6cm]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/COPD_HES.jpg}
+\end{columns}

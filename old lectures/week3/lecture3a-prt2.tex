@@ -1,0 +1,701 @@
+\documentclass{beamer}
+
+\usetheme{Montpellier}
+%\usetheme{CambridgeUS}
+
+
+\usepackage[OT1]{fontenc}
+\usepackage[utf8x]{inputenc}
+
+
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+\usepackage[german]{babel}
+\usepackage{booktabs,bm, color, enumerate, hyperref, pgf, url, soul, tikz}
+\usepackage{amssymb, amsmath}
+\usepackage{graphicx}
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+\newcommand*{\Resize}[2]{\resizebox{#1}{!}{$#2$}}%
+
+%\usepackage{hyperref}
+
+\usepackage{appendixnumberbeamer}
+
+
+\bibliographystyle{apalike}
+
+
+
+%\input{abbreviations}
+
+
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+%\usepackage{appendixnumberbeamer}
+
+
+
+%\subject{2015}
+
+
+
+
+\title{Advanced Regression: 3a Variable selection - Part 2}
+
+
+
+\author{Garyfallos Konstantinoudis}
+\institute{Epidemiology and Biostatistics, Imperial College London}
+
+
+
+
+\date{7th March 2023}
+
+
+\setlength{\unitlength}{0.9cm}
+\linethickness{1.1pt}
+
+
+
+
+
+
+
+
+\begin{document}
+
+
+\frame{
+\titlepage
+}
+
+
+
+\frame{
+\tableofcontents
+}
+
+%\section{What is collinearity}
+%\section{How to detect collinearity?}
+%\subsection{The rank of a matrix}
+%\subsection{Variance inflation factor}
+%\section{How to prevent collinearity}
+%\section{Example: ???}
+
+
+\frame{
+We consider again the diabetes outcome looking at the outcome disease progression $y$ and we try to fit the following linear model
+
+\begin{equation}
+y = \alpha + age + male + female + map + ltg  \nonumber
+\end{equation}
+
+\begin{itemize}
+\item age: age of the subject
+\item male: binary indicator if male
+\item female: binary indicator if female
+\item map: blood pressure
+\item ltg: triglycerides
+\end{itemize}
+
+
+
+\centering \includegraphics [scale=0.7]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/lm_co1}
+
+
+}
+
+\frame{
+\begin{itemize}
+\item Visualise the correlation structure using \texttt{corrplot()}
+\end{itemize}
+\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/corrplot_co}
+
+}
+
+\frame{
+\centering \includegraphics [scale=0.3]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/lm_co2}
+\begin{itemize}
+\item Option in lm() function: singular.ok = TRUE automatically removes `female'.
+\end{itemize}
+
+\centering \includegraphics [scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/lm_co3}
+
+}
+
+
+\frame{
+\begin{itemize}
+\item The lm() function checks for singularities in the design matrix $x$, but not all methods have this safety check.
+\item Example: Ridge regression 
+ \includegraphics [scale=0.36]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/ridge_co}
+\item Example: Lasso regression 
+\includegraphics [scale=0.36]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/lasso_co}
+
+\end{itemize}
+
+}
+
+
+\section{What are singularity and multicollinearity?}
+
+\frame{
+\frametitle{What are singularity and multicollinearity?} 
+
+
+\begin{block}{Singularity}{
+One predictor variable in a multiple regression model can be exactly explained by the other $p-1$ predictor variables.
+}
+\end{block}
+
+\begin{block}{Multicollinearity}{
+One predictor variable in a multiple regression model can be linearly explained by the other $p-1$ predictor variables with high accuracy.
+}
+\end{block}
+
+
+What can cause singularity?
+\begin{itemize}
+\item Dummy-coding of categorical variables. Make sure not to add redundant information. 
+\item Do not include multiple measurements that are measured on different scales (e.g. mol and mmol).
+\end{itemize}
+
+}
+
+
+
+\frame{
+\frametitle{What is the impact of multicollinearity?} 
+
+\begin{block}{True biological processes}{
+do not cause singularity (because they are random, not deterministic), but can cause multicollinearity.
+}
+\end{block}
+\begin{itemize}
+\item The computation of the ordinary least squares estimate requires an inversion of the $p\times p$-dimensional correlation matrix $x^t x$.
+\item  $x^t x$ cannot be inverted when the $x^t x$ is singular.
+\item When there is multicollinearity, $x^t x$ can be inverted, but the estimate will show a high variance and will be highly instable.
+\item Multicollinearity can distort a linear model and impact the interpretation. 
+\end{itemize}
+
+}
+
+
+
+
+\section{How to detect singularity and multicollinearity?}
+
+\frame{
+	%\frametitle{} 
+	
+	
+	
+	
+	\begin{block}{How to inspect correlation structures?}{
+			\begin{itemize}
+				\item Correlation and covariance matrix
+			\end{itemize}
+		}
+	\end{block}
+	
+	\begin{block}{How to detect singularity?}{
+			\begin{itemize}
+				\item Rank of a matrix
+			\end{itemize}
+		}
+	\end{block}
+	
+	\begin{block}{How to detect multicollinearity?}{
+			\begin{itemize}
+				\item Variance inflation factor
+				\item Condition number based on the ratio of largest over smallest singular value
+			\end{itemize}
+		}
+	\end{block}
+	
+	
+}
+
+\subsection{Correlation and covariance matrix}
+
+\frame{
+	\frametitle{Covariance matrix} 
+	Computing the sample covariance matrix using matrix multiplication
+	\begin{equation}
+	\hat{cov}(x) = \frac{1}{n-1} \underbrace{x^t_c}_{p \times n} \underbrace{x_c}_{n \times p} \nonumber
+	\end{equation}
+	\begin{itemize}
+		\item $x_c$ is centred (mean is zero) $x_c = x- 1_n \bar{x} = cx$
+		\begin{itemize}
+			\item where $\bar{x}=(\bar{x}_1, ..., \bar{x}_p)$ is the vector of means
+			\item and $1_n$ is a vector of ones
+			\item and $c=I_n - \frac{1}{n}1_n 1_n^t$
+			\item and $I_n$ is the $n \times n$ identity matrix with ones on the diagonal
+		\end{itemize}
+		\item $x$ predictor matrix of $n$ rows and $p$ columns
+		\item $x^t$ transposed predictor matrix of $p$ rows and $n$ columns
+	\end{itemize}
+	
+	
+}
+
+
+\frame{
+	\frametitle{Matrix multiplication} 
+	
+	Matrix multiplication: $\underbrace{c}_{n \times p} = \underbrace{a}_{n \times m} \underbrace{b}_{m \times p}$
+	\begin{equation}
+	c_{ij} =  \sum_{k=1}^m a_{ik}b_{kj} \nonumber
+	\end{equation}
+	
+	\begin{itemize}
+		\item $a$  is a $n \times m$ and $b$ is a $m \times p$ matrix
+		\item $c$ is a $n \times m \times m \times p =  n  \times p$ matrix 
+		\item Make sure your matrices have the correct dimensions, number of columns of the left matrix must be equal to the number of rows on the right.
+		\item Can be computed in R using the $\%*\%$ command.
+	\end{itemize}
+	
+}
+
+
+
+\frame{
+	\frametitle{Correlation matrix} 
+	
+	Computing the sample correlation matrix using matrix multiplication
+	\begin{equation}
+	\hat{cor}(x) = \frac{1}{n-1} \underbrace{x^t_s}_{p \times n} \underbrace{x_s}_{n \times p} \nonumber
+	\end{equation}
+	where $x_s$ is a centred and scaled matrix $x_s=cxd^{-1}$
+	\begin{itemize}
+		\item where $d=diag(s)$ is a diagonal matrix 
+		\item with the sample standard deviation $s$ on the diagonal.  
+	\end{itemize}
+	This is equivalent to writing
+	\begin{equation}
+	\hat{cor}(x_j, x_k) = \frac{\sum_{i=1}^n (x_{ij}-\bar{x}_j)(x_{ik} - \bar{x}_k) }{ \sqrt{\sum_{i=1}^n (x_{ij}-\bar{x}_j)^2 } \sqrt{\sum_{i=1}^n (x_{ik} - \bar{x}_k)^2 }} \nonumber
+	\end{equation}
+	
+	
+}
+
+
+\frame{
+	\frametitle{Correlation matrix} 
+	\begin{itemize}
+		\item Correlation matrices are symmetric and have a vector of $1$'s on the diagonal.
+	\end{itemize}
+	
+	\centering \includegraphics [scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/cor_mat}
+	
+	\begin{itemize}
+		\item Note the following correlation matrix captures the correlation between the samples and is of dimension $n \times n$
+	\end{itemize}
+	\begin{equation}
+	\hat{cor}(x^t) = \frac{1}{p-1} \underbrace{x_s}_{n \times p} \underbrace{x_s^t}_{p \times n} \nonumber
+	\end{equation}
+}
+
+
+
+
+\frame{
+	\frametitle{Correlation matrix} 
+	
+	R commands
+	\begin{itemize}
+		\item \texttt{cov()} sample covariance matrix
+		\item \texttt{cor()} sample correlation matrix
+		\item \texttt{corrplot()} to visualise 
+	\end{itemize}
+	
+	\centering \includegraphics [scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/corrplot_co}
+	
+}
+
+
+
+
+\subsection{The rank of a matrix}
+
+\frame{
+	\frametitle{The rank of a matrix} 
+	
+	\begin{itemize}
+		\item Consider a matrix $x$ of dimension $n \times p$.
+		\begin{equation}
+		\underbrace{x}_{n \times p} \nonumber
+		\end{equation}
+		\item The rank of matrix $x$ is the minimum of $n$ and $p$.
+		\item If we have more samples than variables ($n>p$) the rank is $p$.
+		\item If we have less samples than variables ($n<p$) the rank is $n$.
+	\end{itemize}
+	
+}
+
+
+
+
+\frame{
+	\frametitle{The rank of the correlation matrix} 
+	
+	\begin{itemize}
+		\item Let us consider again the correlation matrix
+		\begin{equation}
+		\hat{cor}(x) = \frac{1}{n-1} \underbrace{x^t_s}_{p \times n} \underbrace{x_s}_{n \times p} \nonumber
+		\end{equation}
+		\item The theoretical rank of the correlation matrix is \\
+		the minimum of $n$ and $p$.
+		\item To test the rank of a matrix in R: \texttt{rankMatrix()} in the \texttt{Matrix} package
+	\end{itemize}
+	
+	\begin{block}{}{
+			If the rank of a correlation matrix is smaller than $min(n,p)$ the correlation matrix is singular and thus cannot be inverted.
+		}
+	\end{block}
+	
+}
+
+
+\frame{
+	\frametitle{The rank of the correlation matrix in \texttt{R}} 
+	
+	
+	\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/rankMatrix2}
+	
+	
+	\begin{itemize}
+		\item Interpretation: The correlation matrix of the design matrix with $5$ predictors is of dimension $5 \times 5$, yet the rank is 4 which indicates singularity.  
+	\end{itemize}
+	
+	
+	
+}
+
+
+\frame{
+	\frametitle{Outlook: Big data ($n<<p$)} 
+	
+	\begin{itemize}
+		\item Assume we are considering a big data set with much more variables than observations $n<<p$
+		\begin{equation}
+		\hat{cor}(x) = \frac{1}{n-1} \underbrace{x^t_s}_{p \times n} \underbrace{x_s}_{n \times p} \nonumber
+		\end{equation}
+		\item The theoretical rank of the correlation matrix is \\
+		the minimum of $n$ and $p$ ($min(n,p)$).
+		\item In case of big data, the rank of the matrix is $n$, which is much smaller than $p$.
+		\item Thus the correlation matrix (and also $x^t_s x_s$) are singular and cannot be inverted.
+		\item It is not possible to compute the ordinary least squares estimate for big data.
+	\end{itemize}
+	
+	
+}
+
+
+
+\subsection{Variance inflation factor}
+
+\frame{
+	\frametitle{Variance inflation factor (VIF)} 
+	\begin{itemize}
+		\item The VIF is the ratio of the variance of $\beta_j$ when fitting the full model divided by the variance of $\beta_{UNI}(j)$ in a unvariable linear model.
+		\item Lowest possible value is 1 (no collinearity).
+		\item Rule of thumb: If VIF $> 10$, this indicates strong multicollinearity, but already smaller VIF can impact the analysis.
+		\item It provides an indication how much the variance of an estimated regression coefficient is increased because of multicollinearity. 
+	\end{itemize}
+	
+}
+
+\frame{
+	\frametitle{Variance inflation factor (VIF)} 
+	
+	Consider the following linear model including $p$ predictors with inde $j \in 1,...,p$
+	\begin{equation}
+	y =  \alpha + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_j x_j + ... + \beta_p x_p + \epsilon. \nonumber
+	\end{equation}
+	\begin{enumerate}
+		\item For the first variable $j=1$ fit a linear model, where $x_1$ is the outcome and all other variables $x_{-1}$ are the predictors
+		\begin{equation}
+		x_1 = \alpha +  \beta_2 x_2 + ... + \beta_j x_j + ... + \beta_p x_p + \epsilon.  \nonumber
+		\end{equation}
+		\item Estimate $R_2(1)$, the proportion of variance of $x_1$ explained by the other predictors $x_{-1}$.
+		\item The VIF for variable $1$ is defined as 
+		\begin{equation}
+		VIF_1 =   \frac{1}{1-R_2(1)}  \nonumber
+		\end{equation}
+		\item Repeat for the other $j \in 2,...,p$. 
+	\end{enumerate}
+	
+}
+
+
+
+
+
+\frame{
+	\frametitle{Variance inflation factor} 
+	
+	R commands
+	\begin{itemize}
+		\item \texttt{vif()}  in the $R$-package \texttt{car}
+		\item Computes variance-inflation and generalized variance-inflation factors for linear and generalized linear models.
+	\end{itemize}
+	
+	\centering \includegraphics [scale=0.6]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/vif2}
+	
+	\begin{itemize}
+		\item Interpretation: No variable has a VIF $>10$, with around $1$ they are rather low and there is no indication of multicollinearity. 
+	\end{itemize}
+	
+}
+
+
+
+\subsection{Singular value decomposition and condition number}
+
+\frame{
+	\frametitle{Singular value decomposition and condition number} 
+	
+	Singular value decomposition of a matrix $m$ (dimension $n\times p$) is defined as
+	\begin{equation}
+	m = u \Sigma v \nonumber
+	\end{equation}
+	\begin{itemize}
+		\item $\Sigma$: Matrix of singular values (dimension $n\times p$)
+		\item $u$:  Left-singular vectors (dimension $n\times n$)
+		\item $v$:  Right-singular vectors  (dimension $p\times p$)
+	\end{itemize}
+	
+	
+	
+}
+
+\frame{
+	\frametitle{Singular value decomposition and condition number} 
+	
+	\begin{itemize}
+		\item A singular value decomposition of the sample correlation matrix produces $p$ singular values $d_1$ to $d_p$.
+		\item After sorting the eigenvalues in decreasing order
+		\begin{equation}
+		d_{[1]} > ... > d_{[j]} > ... > d_{[p]} \nonumber
+		\end{equation}
+		\begin{itemize}
+			\item[$\diamond$] $d_{[1]}$ is the largest singular value
+			\item[$\diamond$] $d_{[p]}$ is the smallest singular value
+		\end{itemize}
+	\end{itemize}
+	
+	\begin{block}{Condition number}{
+			Ratio of largest over smallest singular value.
+			\begin{equation}
+			\kappa = d_{[1]} / d_{[p]} \nonumber
+			\end{equation}
+		}
+	\end{block}
+	
+}
+
+
+\frame{
+	\frametitle{Singular value decomposition in \texttt{R}} 
+	
+	\begin{itemize}
+		\item Singular value decomposition: \texttt{svd()}  \\
+		Value $\$d$ extracts the singular values
+		\item Condition number: \texttt{kappa()} \\
+		Use argument \texttt{exact=TRUE}
+	\end{itemize}
+	
+	\centering \includegraphics [scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/condition_nr}
+	
+	\begin{itemize}
+		\item Interpretation: The condition number is far below 30, which is often used as a rule of thumb. There is no sign of multicollinearity. 
+	\end{itemize}
+	
+}
+
+
+
+
+\frame{
+	\frametitle{Example: Diabetes data} 
+	
+	\begin{itemize}
+		\item age: age of the subject
+		\item male: binary indicator if male
+		\item female1: binary indicator if female, but one sample is wrongly annotated
+		\item[$\rightarrow$] cor(male,female1) = -0.9954659
+		\item map: blood pressure
+		\item ltg: triglycerides
+	\end{itemize}
+	
+	Correlation matrix
+	\centering \includegraphics [scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/female1_cor}
+	
+}
+
+
+\frame{
+	\frametitle{Example: Diabetes data} 
+	
+	Correlation matrix corrplot
+	\centering \includegraphics [scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/female1_corrplot}
+	
+}
+
+\frame{
+	\frametitle{Example: Diabetes data} 
+	
+	
+	\centering \includegraphics [scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/female1_lm}
+	
+}
+
+
+\frame{
+	\frametitle{Example: Diabetes data} 
+	
+	
+	\begin{itemize}
+		\item The linear model can be calculated now since there is no exact collinearity.
+		\item Note that male and female have both a negative regression coefficient.
+		\item \texttt{VIF()}
+	\end{itemize}
+	
+	\centering \includegraphics [scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/female1_vif}
+	
+	
+	\begin{itemize}
+		\item Interpretation: VIF for male and female1 is highly inflated and indicates strong multicollinearity.
+		\item This inflation distorts the linear model and hinders the interpretation of the male and female1 regression coefficients.
+	\end{itemize}
+}
+
+\frame{
+	\frametitle{Example: Diabetes data} 
+	
+	
+	\begin{itemize}
+		\item Singular value decomposition and condition number
+		\vspace{0.4cm}
+		
+		\centering \includegraphics [scale=0.42]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/female1_cnr}
+		
+		\item Interpretation: The condition number is very high ($>>30$) and indicates strong multicollinearity.
+	\end{itemize}
+}
+
+
+
+
+\section{How to prevent multicollinearity?}
+
+\frame{
+	\frametitle{How to prevent multicollinearity?} 
+	
+	\begin{itemize}
+		\item Grouping
+		\item Partial least squares
+		\item Pre-whitening
+	\end{itemize}
+	
+	
+}
+
+\subsection{Grouping}
+
+\frame{
+	\frametitle{Grouping} 
+	
+	\begin{itemize}
+		\item When there is biological knowledge of pre-defined groups of variables (e.g. genes within a pathways, lipid characteristics of specific subfractions), it is advised to group them and use only one variable within the group as representative.
+		\item Group structures can be defined using unsupervised learning approaches such as clustering.
+		\item Projections into a lower-dimensional space
+		\begin{itemize}
+			\item[$\diamond$] Principle component analysis (PCA)
+			\item[$\diamond$] Independent component analysis
+			\item[$\diamond$] Non-negative matrix factorisation
+		\end{itemize}
+	\end{itemize}
+	
+}
+
+
+\subsection{Partial least squares}
+
+\frame{
+	\frametitle{Partial least squares} 
+	
+	\begin{itemize}
+		\item PLS is a dimension  reduction  approach  that  is  coupled  with a regression model.
+		\begin{enumerate}
+			\item Create latent components $t$ as a linear transformation of $x$ (dimension $n \times p$) 
+			\item Create latent components $u$ as a linear transformation of $y$ (dimension $n \times k$)
+			\begin{eqnarray}
+			\underbrace{x}_{n \times p} &=& \underbrace{t}_{n \times l} \underbrace{q_x^t}_{l \times p}  + \epsilon_x \nonumber \\
+			\underbrace{y}_{n \times k} &=& \underbrace{u}_{n \times l} \underbrace{q_y^t}_{l \times k}  + \epsilon_y \nonumber
+			\end{eqnarray}
+			\item Idea: The latent components have a smaller dimension $l < p$.
+			\item Aim: Find decompositions of both $x$ and $y$ that maximise the covariance between the latent components $t$ and $u$.
+		\end{enumerate}
+		\item R-package: \texttt{pls}
+	\end{itemize}
+	
+}
+
+
+\subsection{Pre-whitening}
+\frame{
+	\frametitle{Pre-whitening} 
+	
+	\begin{itemize}
+		\item Prewhitening transformations are matrix operations that `remove' correlation.
+		\item Suppose $x$  has a mean vector of 0 and covariance matrix $\Sigma$.
+		\item There exists a whitening matrix $w$ that satisfies $w^tw = \Sigma^{-1}$.
+		\item The prewhitened data $x^{\star}$ is defined as
+		\begin{equation}
+		x^{\star} = wx, \nonumber
+		\end{equation}
+		where the covariance of $x^{\star}$ is diagonal.
+		\item  There are several algorithms to compute $w$
+		\begin{itemize}
+			\item[$\diamond$] Mahalanobis transformation $w=\Sigma^{-1/2}$ 
+			\item[$\diamond$] Cholesky decomposition of $\Sigma$
+			\item[$\diamond$] PCA based 
+		\end{itemize}
+		\item R-package: \texttt{whitening}
+	\end{itemize}
+	
+}
+
+
+
+\frame{
+	\frametitle{Take away: Variable selection with correlated predictors} 
+	
+	
+	\begin{itemize}
+		\item Exact correlation between predictors can cause singularity of the correlation and covariance matrix.
+		\item Strong correlation between predictors can cause multicollinearity.
+		\item Multicollinearity can distort linear regression models and inflate the variance of the estimate.
+		\item How to detect singularity?
+		\begin{itemize}
+			\item[$\diamond$] Rank of the between predictor correlation matrix
+		\end{itemize}
+		\item How to detect multicollinearity?
+		\begin{itemize}
+			\item[$\diamond$] Variance inflation factor
+			\item[$\diamond$] Condition number based on the ratio of largest over smallest singular value
+		\end{itemize}
+	\end{itemize}
+	
+	
+}
+
+
+\end{document}
+
+
+
+

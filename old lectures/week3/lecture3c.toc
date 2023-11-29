@@ -1,0 +1,8 @@
+\babel@toc {german}{}
+\beamer@sectionintoc {1}{Cross-validation (CV)}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Exhaustive cross-validation}{5}{0}{1}
+\beamer@subsectionintoc {1}{2}{Non-exhaustive cross-validation}{8}{0}{1}
+\beamer@sectionintoc {2}{Cross-validation to evaluate prediction performance}{13}{0}{2}
+\beamer@subsectionintoc {2}{1}{Cross-validation in R: \texttt {crossval}}{14}{0}{2}
+\beamer@sectionintoc {3}{Cross-validation to fix open parameters}{17}{0}{3}
+\beamer@sectionintoc {4}{Cross-validation in R: \texttt {cv.glmnet}}{20}{0}{4}
