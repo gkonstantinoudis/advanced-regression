@@ -25,7 +25,7 @@ format:
 #| echo: false
 
 library(tidyverse)
-data_chol <- read_csv("data-1c/cholesterol.csv")
+data_chol <- read_csv("assets/cholesterol.csv")
 ```
 
 ## Motivation
