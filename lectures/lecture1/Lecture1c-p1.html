@@ -409,348 +409,411 @@ Garyfallos Konstantinoudis
 </section>
 <section id="motivation" class="slide level2">
 <h2>Motivation</h2>
-<p>All methods presented so far assume that the observations are iid.</p>
-<p>iid: Independent and identically distributed</p>
+<p>All methods presented so far assume that the observations are iid – <strong>i</strong>ndependent and <strong>i</strong>dentically <strong>d</strong>istributed</p>
 <ul>
-<li><p><strong>Independent</strong>: The observations are independent from each other</p>
-<p><span class="math display">\[
-cor(x_i, x_{i'}) = 0  \text{ for all }  i,i' \in 1,….,n
-\]</span></p></li>
-<li><p><strong>Identically</strong>: All observations have the same distribution. For example when assuming a Normal distribution they all have the same mean and variance.</p></li>
+<li><strong>Independent</strong>: The observations are conditionally independent from each other</li>
 </ul>
-<p>PS: Exchangeability: Allows for dependence between observations and only states that future observations behave like past ones.</p>
+<p><span class="math display">\[
+cor(x_i, x_{i'}) = 0  \text{ for all }  i, i' \in 1,….,n
+\]</span></p>
+<ul>
+<li><strong>Identically</strong>: All observations come from the same distribution. For example, from a Normal distribution with the same mean and variance.</li>
+</ul>
+<!-- ::: aside
+**Exchangeability**: Allows for dependence between observations and only states that future observations behave like past ones.
+::: -->
 </section>
 <section id="motivation-how-realistic-is-iid" class="slide level2">
 <h2>Motivation: How realistic is iid?</h2>
 <ul>
-<li><p>Often our data contains structure depending on how our data was sampled.</p>
+<li>Often our data contains structure depending on how our data was sampled.
 <ul>
-<li><p>Within <span class="math inline">\(K\)</span> boroughs in London we select <span class="math inline">\(n\)</span> participants …</p></li>
-<li><p>From <span class="math inline">\(K\)</span> schools we sample <span class="math inline">\(n\)</span> students …</p></li>
-<li><p>From <span class="math inline">\(K\)</span> hospitals we select <span class="math inline">\(n\)</span> patients …</p></li>
-<li><p>At <span class="math inline">\(K\)</span> stores we sampled <span class="math inline">\(n\)</span> costumers …</p></li>
-</ul></li>
-<li><p><span class="math inline">\(k \in 1,…,K\)</span> group index</p></li>
-</ul>
-<p><strong>Grouping creates dependence</strong></p>
-<p>Observations within a group are likely to be more similar to each other than to observations from other groups.</p>
-</section>
-<section id="motivation-gp-data" class="slide level2">
-<h2>Motivation: GP data</h2>
-<ul>
-<li><p>We are interested in the relationship of cholesterol and age and how age impacts cholesterol.</p></li>
-<li><p>Sampling: We take measurements of patients from certain GPs.</p>
-<ul>
-<li>Group-level: GPs <span class="math inline">\(K=12\)</span></li>
+<li>Within <span class="math inline">\(K\)</span> boroughs in London we select <span class="math inline">\(n\)</span> participants…</li>
+<li>From <span class="math inline">\(K\)</span> schools we sample <span class="math inline">\(n\)</span> students…</li>
+<li>From <span class="math inline">\(K\)</span> hospitals we select <span class="math inline">\(n\)</span> patients… <!-- - At $K$ stores we sampled $n$ costumers... --> <!-- - $k \in 1,…,K$ group index --></li>
 </ul></li>
 </ul>
-<p>\texttt{table(data.chol[[“doctor”]])} \\</p>
-<p>\includegraphics[scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-table}</p>
-<p>\item Individual-level: Patients $n=441$</p>
-<p>\end{itemize}</p>
-<p>\end{itemize}</p>
-<p>\texttt{head(data.chol)} \\</p>
-<p>\centering \includegraphics[scale=0.4]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-head}</p>
-<p>}</p>
+<p><strong>Grouping creates dependence</strong>: Observations within a group are likely to be more similar to each other than to observations from other groups.</p>
 </section>
-<section id="generalised-linear-model-glm" class="slide level2">
-<h2>Generalised linear model (GLM)</h2>
+<section id="motivation-gp-patient-data" class="slide level2">
+<h2>Motivation: GP patient data</h2>
 <ul>
-<li><p>Linear models can only model a quantitative outcome.</p></li>
-<li><p>Quantitative outcomes are defined as a real number, taking possible values from <span class="math inline">\(-\inf\)</span> to <span class="math inline">\(+\inf\)</span>.</p></li>
-<li><p>Many important data types can by definition not be modelled using a linear model:</p>
-<ul>
-<li><p>Dichotomous or binary <span class="math inline">\(\rightarrow\)</span> only takes two values, 0 or 1</p></li>
-<li><p>Counts <span class="math inline">\(\rightarrow\)</span> only positive integers (0,1,2,3,…)</p></li>
-</ul></li>
-</ul>
-<div class="callout callout-note no-icon callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<p><strong>Note</strong></p>
-</div>
-<div class="callout-content">
-<p>Flexible generalization of ordinary linear regression that allows for response variables that have error distribution models other than a normal distribution. Residuals are an important quantity for model diagnostics.</p>
-</div>
-</div>
-</div>
-</section>
-<section id="binary-outcome-and-logistic-regression" class="slide level2">
-<h2>Binary outcome and logistic regression</h2>
-<p>Example: Case-control study</p>
-<p><span class="math display">\[
-y_i =
-\begin{cases}
-1, \text{ If subject $i$ is a case} \\
-0, \text{ If subject $i$ is a control} \\
-\end{cases}
-\]</span></p>
-
-<img data-src="Lecture1c-p1_files/figure-revealjs/unnamed-chunk-1-1.png" width="576" class="r-stretch quarto-figure-center"></section>
-<section id="binary-outcome-and-logistic-regression-1" class="slide level2">
-<h2>Binary outcome and logistic regression</h2>
-<p><span class="math display">\[y = \underbrace{\alpha + \beta x}_{\text{Linear predictor}} + \epsilon\]</span></p>
-<ul>
-<li><p>Linear predictor: <span class="math inline">\(\eta=\alpha + \beta x\)</span> is defined from <span class="math inline">\(-\inf\)</span> to <span class="math inline">\(+\inf\)</span>.</p></li>
-<li><p>But <span class="math inline">\(y\)</span> only <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span> <span class="math inline">\(\rightarrow\)</span> The linear regression do not match the data well.</p></li>
-</ul>
-
-<img data-src="Lecture1c-p1_files/figure-revealjs/unnamed-chunk-2-1.png" width="576" class="r-stretch quarto-figure-center"></section>
-<section id="how-should-we-model-this-data" class="slide level2">
-<h2>How should we model this data?</h2>
-<p><strong>Key idea 1:</strong> Instead of modelling the outcomes (<span class="math inline">\(y=0\)</span> or <span class="math inline">\(y=1\)</span>) directly, logistic regression models the probability for <span class="math inline">\(y=1\)</span> denotes as</p>
-<ul>
-<li><span class="math inline">\(P(y=1 \mid x)\)</span></li>
-</ul>
-<p>Notes on probabilities for binary data:</p>
-<ul>
-<li><p>Probabilities can take values from 0 to 1</p></li>
-<li><p>Probabilities are symmetric: <span class="math inline">\(P(y=1\mid x) = 1- P(y=0\mid x)\)</span></p></li>
-</ul>
-</section>
-<section id="how-should-we-model-this-data-1" class="slide level2">
-<h2>How should we model this data?</h2>
-<p><strong>Key idea 2:</strong> Transform the linear predictor <span class="math inline">\(\eta= \alpha + \beta x_{i}\)</span> (quantitative, can take values from <span class="math inline">\(-\inf\)</span> to <span class="math inline">\(-inf\)</span>) to lie in the Interval <span class="math inline">\([0,1]\)</span>, which is valid for probabilities.</p>
-<p>This can be achieved using the logit function: <span class="math inline">\(\text{logit}(p) = \log (p/(1-p))\)</span></p>
-
-<img data-src="Lecture1c-p1_files/figure-revealjs/unnamed-chunk-3-1.png" width="480" class="r-stretch quarto-figure-center"></section>
-<section id="logistic-regression" class="slide level2">
-<h2>Logistic regression</h2>
-<p><span class="math display">\[
-\text{logit}(P(y=1 \mid x)) = \log(P(y=1 \mid x))/(1-P(y=1)\mid x) = \alpha + \beta x
-\]</span></p>
-<ul>
-<li><p><strong>Interpretation</strong>: The regression coefficient <span class="math inline">\(\beta\)</span> in logistic regression represents the <strong>log odds ratio</strong> between <span class="math inline">\(y=0\)</span> and <span class="math inline">\(y=1\)</span>.</p></li>
-<li><p><strong>Estimation</strong>: Maximum likelihood</p></li>
-</ul>
-</section>
-<section id="technical-details" class="slide level2">
-<h2>Technical details</h2>
-<ul>
-<li><p>Many important outcome types can be accommodated by GLMs.</p></li>
-<li><p>Each of these distributions has a location parameter, e.g.&nbsp;<span class="math inline">\(\mu\)</span> for the Gaussian, <span class="math inline">\(p\)</span> for the Bernoulli and Binomial.</p></li>
-<li><p>The natural link function between the location parameter and the linear predictor can be derived from the mathematical form of the distribution.</p></li>
-</ul>
-<table>
-<thead>
-<tr class="header">
-<th>Response</th>
-<th>Distribution</th>
-<th>E(y)</th>
-<th>Link (g)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Continuous</td>
-<td>Gaussian</td>
-<td><span class="math inline">\(\mu\)</span></td>
-<td><span class="math inline">\(1\)</span> (identity)</td>
-</tr>
-<tr class="even">
-<td>Dichotomous</td>
-<td>Bernoulli</td>
-<td><span class="math inline">\(p\)</span></td>
-<td><span class="math inline">\(\text{logit}\)</span></td>
-</tr>
-<tr class="odd">
-<td>Counts</td>
-<td>Poison</td>
-<td><span class="math inline">\(\lambda\)</span></td>
-<td><span class="math inline">\(\log\)</span></td>
-</tr>
-</tbody>
-</table>
-<p><a href="https://en.wikipedia.org/wiki/Generalized_linear_model" class="uri">https://en.wikipedia.org/wiki/Generalized_linear_model</a></p>
-</section>
-<section id="technical-details-glm" class="slide level2">
-<h2>Technical details: GLM</h2>
-<p>The GLM consists of three elements:</p>
-<ol type="1">
-<li>A probability distribution from the exponential family. Note: Only distributions that can be formulated as an exponential family can be modelled as GLM.</li>
-<li>A linear predictor <span class="math inline">\(\eta=x\beta\)</span></li>
-<li>A link function <span class="math inline">\(g\)</span> such that <span class="math inline">\(E(y) = \mu = g^{-1}(\eta)\)</span></li>
-</ol>
-</section>
-<section id="technical-details-exponential-families" class="slide level2">
-<h2>Technical details: Exponential families</h2>
-<p>An exponential family is a set of probability distributions of the following form:</p>
-<p><span class="math display">\[
-f_x(x \mid \theta) = h(x) \exp\{\eta(\theta) \times T(x) - A(\theta)\}
-\]</span></p>
-<p>where</p>
-<ul>
-<li><p><span class="math inline">\(\theta\)</span> is the parameter of interest.</p></li>
-<li><p><span class="math inline">\(T(x)\)</span> is a sufficient statistic.</p></li>
-<li><p><span class="math inline">\(\eta(\theta)\)</span> is the natural parameter or link function.</p></li>
-</ul>
-</section>
-<section id="gaussian-distribution-as-exponential-distribution" class="slide level2">
-<h2>Gaussian distribution as exponential distribution</h2>
-<p>Gaussian distribution with unknown <span class="math inline">\(\mu\)</span>, but known <span class="math inline">\(\sigma\)</span>:</p>
-<p><span class="math display">\[
-f_{\sigma}(x \mid \mu) =  \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\{ -\frac{(x-\mu)^2}{2\sigma^2} \} =  \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\{ -\frac{x^2}{2\sigma^2} + \frac{x\mu}{\sigma^2} - \frac{\mu^2}{2\sigma^2} \}
-\]</span></p>
-<ul>
-<li><p><span class="math inline">\(\theta = \mu\)</span></p></li>
-<li><p><span class="math inline">\(h(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\{ -\frac{x^2}{2\sigma^2} \}\)</span></p></li>
-<li><p><span class="math inline">\(T(x) = \frac{x}{\sigma}\)</span></p></li>
-<li><p><span class="math inline">\(\eta(\mu) = \frac{\mu}{\sigma}\)</span></p></li>
-<li><p><span class="math inline">\(A(\mu) = \frac{\mu^2}{2\sigma^2}\)</span></p></li>
-</ul>
-</section>
-<section id="logistic-regression-and-binary-outcomes" class="slide level2">
-<h2>Logistic regression and binary outcomes</h2>
-<p>Binomial distribution with known number of trials <span class="math inline">\(n\)</span>, but unknown probability <span class="math inline">\(p\)</span>:</p>
-<p><span class="math display">\[ \begin{align} f(x \mid p) &amp;= {n\choose x} p^x (1-p)^{n-x} = \\ &amp;= {n \choose x} \exp \{x \log (\frac{p}{1-p}) + n\log(1-p)\}  \end{align} \]</span></p>
-<ul>
-<li><p><span class="math inline">\(\theta = p\)</span></p></li>
-<li><p><span class="math inline">\(h(x) = {n\choose x}\)</span></p></li>
-<li><p><span class="math inline">\(T(x)=x\)</span></p></li>
-<li><p><span class="math inline">\(\eta(p) = \log(\frac{p}{1-p})\)</span></p></li>
-<li><p><span class="math inline">\(A(p) = - n \log(1-p)\)</span></p></li>
-</ul>
-</section>
-<section id="logistic-regression-and-binary-outcomes-1" class="slide level2">
-<h2>Logistic regression and binary outcomes</h2>
-<p>Formulate model: Three elements</p>
-<ol type="1">
-<li>Error distribution for response variable</li>
-<li>Linear predictor</li>
-<li>Link function</li>
-</ol>
-<p>The three elements of the logistic regression model are:</p>
-<ol type="1">
-<li>The Bernoulli probability distribution modelling the data: <span class="math inline">\(P( y_i= 1 \mid x_i ) = p_i\)</span></li>
-<li>The linear predictor: <span class="math inline">\(\alpha + \sum_{j=1}^p \beta_j x_{ij}\)</span></li>
-<li>The link function <span class="math inline">\(g\)</span> associating the mean of <span class="math inline">\(y\)</span>, <span class="math inline">\(P( y_i= 1 \mid x_i )\)</span> to the linear predictor: here the link is the <span style="color:red;">logistic link</span> as we set <span class="math inline">\(g(P( y_i= 1 \mid x_i ))=\text{logit}(p_i) = \beta_0 + \sum_{j=1}^p\beta_jx_{ij}\)</span></li>
-</ol>
-</section>
-<section id="glm-in-r" class="slide level2">
-<h2>glm() in R</h2>
-<ul>
-<li>GLMs can be called in R just as linear models.</li>
+<li>We are interested in <strong>the relationship between cholesterol and age</strong>.</li>
+<li>We take measurements of patients from <span class="math inline">\(K=12\)</span> GPs.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(lars)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">data</span>(diabetes)</span>
-<span id="cb1-5"><a href="#cb1-5"></a>x <span class="ot">&lt;-</span> <span class="fu">as.data.frame.matrix</span>(diabetes<span class="sc">$</span>x)</span>
-<span id="cb1-6"><a href="#cb1-6"></a>y <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(diabetes<span class="sc">$</span>y <span class="sc">&gt;</span> <span class="fu">mean</span>(diabetes<span class="sc">$</span>y), <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb1-7"><a href="#cb1-7"></a></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">glm</span>(y <span class="sc">~</span> age <span class="sc">+</span> sex <span class="sc">+</span> bmi <span class="sc">+</span> map <span class="sc">+</span> ltg, <span class="at">data =</span> x, <span class="at">family =</span> binomial) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">table</span>(data_chol<span class="sc">$</span>doctor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ 1  2  3  4  5  6  7  8  9 10 11 12
+36 36 36 39 36 36 39 36 36 39 36 36 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">head</span>(data_chol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 6
+   chol doctor   age   bmi agedoc   sex
+  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+1  7.13      1    54  27.4     55     0
+2  7.7       1    55  29.1     55     0
+3  7.3       1    56  27.9     55     0
+4  6.89      1    71  26.7     55     1
+5  6.9       1    72  26.7     55     1
+6  7.9       1    73  29.7     55     1</code></pre>
+</div>
+</div>
+</section>
+<section id="pooled-analysis" class="slide level2">
+<h2>Pooled analysis</h2>
+<p><span class="math display">\[
+y_i = \alpha_0 + \beta x_i  + \epsilon_i
+\]</span></p>
+<p><strong>Assumptions</strong>: All observations independent (incorrect).</p>
+<p><strong>Consequences</strong>:</p>
+<ul>
+<li>Estimated errors on regression coefficients are too small.</li>
+<li>Overstate significance of association.</li>
+</ul>
+</section>
+<section id="gp-data-pooled-analysis" class="slide level2">
+<h2>GP data: pooled analysis</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>model_pooled <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> age, <span class="at">data =</span> data_chol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+<img data-src="Lecture1c-p1_files/figure-revealjs/gp-data-model-plot-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="gp-data-pooled-analysis-1" class="slide level2">
+<h2>GP data: pooled analysis</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">summary</span>(model_pooled)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-glm(formula = y ~ age + sex + bmi + map + ltg, family = binomial,
-    data = x)
+lm(formula = chol ~ age, data = data_chol)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-1.8971 -0.6206 -0.1105  0.5693  2.9456
 
 Coefficients:
-            Estimate Std. Error z value Pr(&gt;|z|)
-(Intercept)  -0.3164     0.1190  -2.659  0.00783 **
-age          -1.0206     2.7309  -0.374  0.70860
-sex          -5.4254     2.6315  -2.062  0.03923 *
-bmi          14.5079     3.0223   4.800 1.58e-06 ***
-map          11.8803     2.9652   4.007 6.16e-05 ***
-ltg          18.6940     3.1954   5.850 4.91e-09 ***
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept) 2.798691   0.268571   10.42   &lt;2e-16 ***
+age         0.051262   0.004301   11.92   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-(Dispersion parameter for binomial family taken to be 1)
-
-    Null deviance: 606.61  on 441  degrees of freedom
-Residual deviance: 434.17  on 436  degrees of freedom
-AIC: 446.17
-
-Number of Fisher Scoring iterations: 4</code></pre>
+Residual standard error: 0.8362 on 439 degrees of freedom
+Multiple R-squared:  0.2445,    Adjusted R-squared:  0.2428
+F-statistic: 142.1 on 1 and 439 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </section>
-<section id="glm-in-r-1" class="slide level2">
-<h2>glm() in R</h2>
+<section id="gp-data-pooled-analysis-2" class="slide level2">
+<h2>GP data: pooled analysis</h2>
+
+<img data-src="Lecture1c-p1_files/figure-revealjs/gp-data-colour-doctor-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="gp-data-pooled-analysis-3" class="slide level2">
+<h2>GP data: pooled analysis</h2>
+
+<img data-src="Lecture1c-p1_files/figure-revealjs/gp-data-facet-doctor-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="accounting-for-dependence" class="slide level2">
+<h2>Accounting for dependence</h2>
+<p>When we ignore dependence: - standard <strong>errors too small</strong> - p−values too small / confidence intervals too narrow - we <strong>over-estimate significance</strong>.</p>
+<p>Intuitively, there is less information in the data than an independent sample.</p>
+</section>
+<section id="accounting-for-dependence-1" class="slide level2">
+<h2>Accounting for dependence</h2>
+<p>We can account for <strong>dependence</strong> by:</p>
+<ol type="1">
+<li>Perform analysis for each group separately.</li>
+<li>Calculate summary measures for each group and use standard analysis (group-level analysis).</li>
+<li>Fixed effects model to account for group structures.</li>
+<li>Use random effects models that explicitly model the similarity of observations in a group.</li>
+</ol>
+</section>
+<section id="motivation-individual-level-and-group-level" class="slide level2">
+<h2>Motivation: individual-level and group-level</h2>
+<p>Observations are <strong>grouped</strong> with grouping information known.</p>
+<p><strong>Multi-level</strong>: Multiple levels of groupings, e.g.&nbsp;classrooms within schools within districts.</p>
+<p>Variables can be measured on the individual and group level.</p>
+</section>
+<section id="separate-analysis" class="slide level2">
+<h2>1. Separate analysis</h2>
+<p>Estimate <strong>separate regression coefficients</strong> for each group.</p>
+<p>Assumptions: Independence between groups.</p>
+<p>Consequences:</p>
 <ul>
-<li><p>Different types of exponential families can be called using the <span class="math inline">\(\text{family}\)</span> option:</p>
+<li>This is a reasonable approach to exploratory analysis.</li>
+<li>If the number of individuals in each group is small, we will get imprecise estimates.</li>
+<li>Multiple testing is an issue.</li>
+</ul>
+</section>
+<section id="separate-analysis-1" class="slide level2">
+<h2>1. Separate analysis</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>model_separate <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> age <span class="sc">|</span> doctor, <span class="at">data =</span> data_chol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+<img data-src="Lecture1c-p1_files/figure-revealjs/gp-data-model-separate-plot-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="group-level-analysis" class="slide level2">
+<h2>2. Group-level analysis</h2>
+<p>Summarise outcome and predictors for each group <span class="math inline">\(k\)</span>, e.g.&nbsp;using mean or median.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>data_grouped <span class="ot">&lt;-</span> data_chol <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">group_by</span>(doctor) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">summarise</span>(<span class="at">chol_grouped =</span> <span class="fu">mean</span>(chol), <span class="at">age_grouped =</span> <span class="fu">mean</span>(age))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="group-level-analysis-1" class="slide level2">
+<h2>2. Group-level analysis</h2>
+<p>Treat the group summaries as observations</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>model_grouped <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol_grouped <span class="sc">~</span> age_grouped, <span class="at">data =</span> data_grouped)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Consequences:</p>
 <ul>
-<li><p><span class="math inline">\(\text{binomial(link = 'logit')}\)</span></p></li>
-<li><p><span class="math inline">\(\text{gaussian(link = 'identity')}\)</span></p></li>
-<li><p><span class="math inline">\(\text{Gamma(link = 'inverse')}\)</span></p></li>
-<li><p><span class="math inline">\(\text{poisson(link='log')}\)</span></p></li>
-</ul></li>
-<li><p>There are similar return values as for the <span class="math inline">\(\text{lm}\)</span> function:</p>
+<li>One regression line fit: Associations between outcome and predictors are the same for each group.</li>
+<li>Independence between groups.</li>
+<li>All groups are treated equal, irrespective of size</li>
+</ul>
+</section>
+<section id="group-level-analysis-2" class="slide level2">
+<h2>2. Group-level analysis</h2>
+
+<img data-src="Lecture1c-p1_files/figure-revealjs/gp-data-model-grouped-plot-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="group-level-analysis-3" class="slide level2">
+<h2>2. Group-level analysis</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">summary</span>(model_grouped)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = chol_grouped ~ age_grouped, data = data_grouped)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-0.7216 -0.4513 -0.1844  0.3020  1.3576
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  1.30687    5.05233   0.259    0.801
+age_grouped  0.07548    0.08176   0.923    0.378
+
+Residual standard error: 0.67 on 10 degrees of freedom
+Multiple R-squared:  0.07854,   Adjusted R-squared:  -0.0136
+F-statistic: 0.8524 on 1 and 10 DF,  p-value: 0.3776</code></pre>
+</div>
+</div>
+</section>
+<section id="group-level-analysis-4" class="slide level2">
+<h2>2. Group-level analysis</h2>
 <ul>
-<li><p>coefficients</p></li>
-<li><p>residuals</p></li>
-<li><p>fitted.values</p></li>
-<li><p>linear.predictors: the linear fit on the link scale</p></li>
+<li>This model <strong>lacks power</strong> as the number of data points used is the number of groups (<span class="math inline">\(k &lt; n\)</span>)</li>
+<li>Regression coefficients will be <strong>averaged over all groups</strong> so real within-group effects may be diluted.</li>
+<li>Regression coefficients will only be significant if there are similar significant association effects across all groups.</li>
+</ul>
+</section>
+<section id="inverse-variance-weighted-ivw-meta-analysis" class="slide level2">
+<h2>Inverse variance weighted (IVW) meta-analysis</h2>
+<p>Each random variable is <strong>weighted in inverse proportion to its variance</strong>. Assume we have independent observations <span class="math inline">\(y_k\)</span> with variance <span class="math inline">\(\sigma_k\)</span>. Then the IVW estimate is defined as</p>
+<p><span class="math display">\[
+\hat{y}_{\text{IVW}}  = \frac{\sum_{k=1}^{K} y_k/\sigma_k}{\sum_{k=1}^{K} 1/\sigma_k}
+\]</span></p>
+</section>
+<section id="inverse-variance-weighted-ivw-meta-analysis-1" class="slide level2">
+<h2>Inverse variance weighted (IVW) meta-analysis</h2>
+<p><strong>Weighted regression over groups</strong></p>
+<p>Assume <span class="math inline">\(y_k\)</span> is a vector of group summaries, <span class="math inline">\(x_k\)</span> is a <span class="math inline">\(k \times p\)</span> matrix of group summaries. Assume <span class="math inline">\(w\)</span> is a diagonal matrix with <span class="math inline">\(w[k,k] = \frac{1}{\sigma_k^2}\)</span>, then the <strong>weighted least squares</strong> estimate is defined as</p>
+<p><span class="math display">\[
+\hat{\beta}_w = (x_k^t w x_k)^{-1} x^t_k w y_k
+\]</span></p>
+</section>
+<section id="fixed-effects" class="slide level2">
+<h2>3. Fixed effects</h2>
+<p>Motivation:</p>
+<ul>
+<li>Keep the idea of modelling within groups, Allow <strong>associations to differ across groups</strong>.</li>
+<li>But now we model all the data (n observations) together: Maximise the power to detect associations.</li>
+</ul>
+</section>
+<section id="fixed-effects-1" class="slide level2">
+<h2>3. Fixed effects</h2>
+<p><strong>Joint model with group-specific intercept</strong></p>
+<p><span class="math display">\[
+y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
+\]</span> where <span class="math inline">\(\alpha_k\)</span> is a fixed effect.</p>
+<ul>
+<li><span class="math inline">\(\alpha_k\)</span> captures the effect of unobserved group specific confounders.</li>
+<li>Residual errors <span class="math inline">\(\epsilon_i\)</span> are assumed independent.</li>
+</ul>
+</section>
+<section id="fixed-effects-2" class="slide level2">
+<h2>3. Fixed effects</h2>
+<p>A fixed effects model is fit in the same way as the simple linear model including the group as a covariate.</p>
+<p>Assumptions: Information on αk comes from observations in group k only.</p>
+<p>Consequences:</p>
+<ul>
+<li>By including group effects we adjust for group characteristics.</li>
+<li>But introduces a number of parameters (one for each group).</li>
+<li>May be a problem if there are few observations in some groups.</li>
+</ul>
+</section>
+<section id="fixed-effects-with-lm" class="slide level2">
+<h2>3. Fixed effects with <code>lm()</code></h2>
+<p>There are two different types of fixed effect:</p>
+<ol type="1">
+<li><p>Group-specific intercept <span class="math inline">\(\alpha_k\)</span> <span class="math display">\[
+y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
+\]</span></p></li>
+<li><p>Group-specific slope <span class="math inline">\(\beta_k\)</span> <span class="math display">\[
+y_i = \alpha_0 + \color{red}{\beta_k} x_i  + \epsilon_i
+\]</span></p></li>
+</ol>
+</section>
+<section id="varying-intercept-with-lm" class="slide level2">
+<h2>Varying intercept with <code>lm()</code></h2>
+<ol type="1">
+<li>Group-specific intercept <span class="math inline">\(\alpha_k\)</span> <span class="math display">\[
+y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
+\]</span></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>model_varying_intercept <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> <span class="fu">as.factor</span>(doctor) <span class="sc">+</span> age, <span class="at">data =</span> data_chol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="varying-intercept-with-lm-1" class="slide level2">
+<h2>Varying intercept with <code>lm()</code></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">summary</span>(model_varying_intercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = chol ~ as.factor(doctor) + age, data = data_chol)
+
+Residuals:
+     Min       1Q   Median       3Q      Max
+-1.59881 -0.40321 -0.08463  0.37929  1.77313
+
+Coefficients:
+                     Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)          3.826236   0.213854  17.892  &lt; 2e-16 ***
+as.factor(doctor)2   0.400993   0.136014   2.948  0.00337 **
+as.factor(doctor)3  -0.752146   0.135865  -5.536 5.41e-08 ***
+as.factor(doctor)4  -0.555317   0.133254  -4.167 3.73e-05 ***
+as.factor(doctor)5  -0.884528   0.136039  -6.502 2.21e-10 ***
+as.factor(doctor)6  -0.653299   0.135970  -4.805 2.15e-06 ***
+as.factor(doctor)7  -1.295580   0.133444  -9.709  &lt; 2e-16 ***
+as.factor(doctor)8  -1.563657   0.136053 -11.493  &lt; 2e-16 ***
+as.factor(doctor)9  -1.193645   0.135970  -8.779  &lt; 2e-16 ***
+as.factor(doctor)10 -1.453255   0.133231 -10.908  &lt; 2e-16 ***
+as.factor(doctor)11 -1.376027   0.136039 -10.115  &lt; 2e-16 ***
+as.factor(doctor)12 -1.685593   0.137173 -12.288  &lt; 2e-16 ***
+age                  0.049543   0.003065  16.164  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.5764 on 428 degrees of freedom
+Multiple R-squared:   0.65, Adjusted R-squared:  0.6402
+F-statistic: 66.24 on 12 and 428 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="varying-intercept-with-lm-2" class="slide level2">
+<h2>Varying intercept with <code>lm()</code></h2>
+
+<img data-src="Lecture1c-p1_files/figure-revealjs/gp-data-model-varying-intercept-plot-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="varying-slope-with-lm" class="slide level2">
+<h2>Varying slope with <code>lm()</code></h2>
+<ol start="2" type="1">
+<li>Group-specific slope <span class="math inline">\(\beta_k\)</span> <span class="math display">\[
+y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
+\]</span></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>model_varying_slope <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> age <span class="sc">:</span> <span class="fu">as.factor</span>(doctor), <span class="at">data =</span> data_chol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="varying-slope-with-lm-1" class="slide level2">
+<h2>Varying slope with <code>lm()</code></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">summary</span>(model_varying_slope)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = chol ~ age:as.factor(doctor), data = data_chol)
+
+Residuals:
+     Min       1Q   Median       3Q      Max
+-1.56821 -0.41837 -0.07627  0.38652  1.67691
+
+Coefficients:
+                        Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)             2.845418   0.193641  14.694   &lt;2e-16 ***
+age:as.factor(doctor)1  0.064655   0.003392  19.059   &lt;2e-16 ***
+age:as.factor(doctor)2  0.072176   0.003571  20.210   &lt;2e-16 ***
+age:as.factor(doctor)3  0.052904   0.003382  15.644   &lt;2e-16 ***
+age:as.factor(doctor)4  0.056631   0.003365  16.831   &lt;2e-16 ***
+age:as.factor(doctor)5  0.050906   0.003247  15.676   &lt;2e-16 ***
+age:as.factor(doctor)6  0.054907   0.003492  15.722   &lt;2e-16 ***
+age:as.factor(doctor)7  0.044971   0.003540  12.703   &lt;2e-16 ***
+age:as.factor(doctor)8  0.040084   0.003301  12.143   &lt;2e-16 ***
+age:as.factor(doctor)9  0.046254   0.003333  13.877   &lt;2e-16 ***
+age:as.factor(doctor)10 0.042601   0.003337  12.765   &lt;2e-16 ***
+age:as.factor(doctor)11 0.043010   0.003577  12.025   &lt;2e-16 ***
+age:as.factor(doctor)12 0.037020   0.003750   9.873   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.5817 on 428 degrees of freedom
+Multiple R-squared:  0.6435,    Adjusted R-squared:  0.6336
+F-statistic: 64.39 on 12 and 428 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="varying-slope-with-lm-2" class="slide level2">
+<h2>Varying slope with <code>lm()</code></h2>
+
+<img data-src="Lecture1c-p1_files/figure-revealjs/gp-data-model-varying-slope-plot-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="fixed-effects-with-lm-1" class="slide level2">
+<h2>Fixed effects with <code>lm()</code></h2>
+<p>Main formula: <code>y ∼ x</code>, where <code>y</code> is the outcome and <code>x</code> the predictor(s)</p>
+<p>Predictors can be added as</p>
+<p><code>+</code> | main effect |<br>
+<code>:</code> | interaction only |<br>
+<code>*</code> | main effect and interaction |</p>
+<p>Use <code>summary()</code>, <code>coef()</code> and <code>fitted()</code> to get values.</p>
+</section>
+<section id="fixed-effects-disadvantages" class="slide level2">
+<h2>Fixed effects: Disadvantages</h2>
+<ul>
+<li>Fixed effects account for <strong>any</strong> unobserved group-specific confounders, so including both a group-specific intercept and slope is not identifiable.
+<ul>
+<li>When the intercept <span class="math inline">\(\alpha_k\)</span> is group-specific, then the slope is assumed to be the same for all groups.</li>
+<li>When slope <span class="math inline">\(\beta_k\)</span> is group-specific, then the intercept is assumed to be the same for all groups.</li>
 </ul></li>
 </ul>
 </section>
-<section id="making-predictions" class="slide level2">
-<h2>Making predictions</h2>
-<ol type="1">
-<li>Train the prediction rule</li>
-<li>Derive predictions on the linear predictor scale for the new data</li>
-</ol>
-<div class="cell" data-warnings="false">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">library</span>(lars)</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="fu">set.seed</span>(<span class="dv">11</span>)</span>
-<span id="cb3-6"><a href="#cb3-6"></a></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="fu">data</span>(diabetes)</span>
-<span id="cb3-8"><a href="#cb3-8"></a>x <span class="ot">&lt;-</span> <span class="fu">as.data.frame.matrix</span>(diabetes<span class="sc">$</span>x)</span>
-<span id="cb3-9"><a href="#cb3-9"></a>y <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(diabetes<span class="sc">$</span>y <span class="sc">&gt;</span> <span class="fu">mean</span>(diabetes<span class="sc">$</span>y), <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb3-10"><a href="#cb3-10"></a></span>
-<span id="cb3-11"><a href="#cb3-11"></a>glm_predict <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> glu, <span class="at">data =</span> x, <span class="at">family =</span> binomial)</span>
-<span id="cb3-12"><a href="#cb3-12"></a>xnew <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">glu =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">1000</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fl">0.5</span>))</span>
-<span id="cb3-13"><a href="#cb3-13"></a>xnew <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>          glu
-1 -0.29551555
-2  0.01329718
-3 -0.75827655
-4 -0.68132667
-5  0.58924458
-6 -0.46707566</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>eta <span class="ot">&lt;-</span> <span class="fu">predict.glm</span>(glm_predict, xnew)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="plot-the-predictions" class="slide level2">
-<h2>Plot the predictions</h2>
-<div class="cell" data-warnings="false">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> eta)) <span class="sc">|</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">exp</span>(eta) <span class="sc">/</span> (<span class="fu">exp</span>(eta) <span class="sc">+</span> <span class="dv">1</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-</div>
-<img data-src="Lecture1c-p1_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"><div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">rbinom</span>(</span>
-<span id="cb7-2"><a href="#cb7-2"></a>  <span class="at">n =</span> <span class="fu">length</span>(eta),</span>
-<span id="cb7-3"><a href="#cb7-3"></a>  <span class="at">size =</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">length</span>(eta)),</span>
-<span id="cb7-4"><a href="#cb7-4"></a>  <span class="at">prob =</span> <span class="fu">exp</span>(eta) <span class="sc">/</span> (<span class="fu">exp</span>(eta) <span class="sc">+</span> <span class="dv">1</span>)</span>
-<span id="cb7-5"><a href="#cb7-5"></a>) <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0 0 0 0 1 0</code></pre>
-</div>
-</div>
-</section>
-<section id="take-away-generalised-linear-model" class="slide level2">
-<h2>Take away: Generalised linear model</h2>
-<p>The model formulation in GLMs consists of three elements:</p>
-<ol type="1">
-<li>Error distribution for response variable</li>
-<li>Linear predictor</li>
-<li>Link function</li>
-</ol>
-<p>Most common data types can be modelled using GLMs</p>
+<section id="fixed-effects-disadvantages-1" class="slide level2">
+<h2>Fixed effects: Disadvantages</h2>
 <ul>
-<li><p>Continuous <span class="math inline">\(\rightarrow\)</span> Gaussian distribution</p></li>
-<li><p>Dichotomous or binary <span class="math inline">\(\rightarrow\)</span> Bernoulli distribution</p></li>
-<li><p>Counts <span class="math inline">\(\rightarrow\)</span> Poisson or Binomial (with known number of trial) distribution</p></li>
+<li>If we add new groups to the dataset we may not consistently estimate <span class="math inline">\(\alpha_k\)</span>:
+<ul>
+<li>Consider <span class="math inline">\(\alpha_1\)</span>, the intercept for the first group.<br>
+</li>
+<li>When we add new groups, the slope may vary.</li>
+<li>Changing slope will change the intercept, also <span class="math inline">\(\alpha_1\)</span>.</li>
+</ul></li>
+<li>Information on <span class="math inline">\(\alpha_k\)</span> or <span class="math inline">\(\beta_k\)</span> comes only from observations in group <span class="math inline">\(k\)</span> and we need to estimate one parameter per group.</li>
+</ul>
+</section>
+<section id="take-away-structured-data" class="slide level2">
+<h2>Take away: Structured Data</h2>
+<ul>
+<li>Most statistical methods are developed for independent and identically distributed (iid) data, but often in practice we observe structured data, where <strong>there is an intrinsic group structure</strong>.</li>
+<li>Grouping creates dependence: Observations within a group are likely to be more similar to each other than to observations from other groups.</li>
+<li>Ignoring the group structure can lead to over-confident results or even false positives.</li>
+<li>Analysing each group separately, we do not assume any shared mechanisms and need to fit a model on the samples within a group only. Aggregating and working only on the group-level drastically reduces the sample size <span class="math inline">\(k\)</span>.</li>
 </ul>
 
 <img src="../../assets/bmeh_normal.png" class="slide-logo r-stretch"><div class="footer footer-default">

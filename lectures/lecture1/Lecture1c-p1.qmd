@@ -21,389 +21,403 @@ format:
         buttons: false
 ---
 
+```{r load-packages-and-data}
+#| echo: false
+
+library(tidyverse)
+data_chol <- read_csv("data-1c/cholesterol.csv")
+```
+
 ## Motivation
 
-All methods presented so far assume that the observations are iid.
+All methods presented so far assume that the observations are iid – **i**ndependent and **i**dentically **d**istributed
 
-iid: Independent and identically distributed
+-   **Independent**: The observations are conditionally independent from each other
 
--   **Independent**: The observations are independent from each other
+$$
+cor(x_i, x_{i'}) = 0  \text{ for all }  i, i' \in 1,….,n
+$$
 
-    $$
-     cor(x_i, x_{i'}) = 0  \text{ for all }  i,i' \in 1,….,n
-    $$
+-   **Identically**: All observations come from the same distribution. For example, from a Normal distribution with the same mean and variance.
 
--   **Identically**: All observations have the same distribution. For example when assuming a Normal distribution they all have the same mean and variance.
-
-PS: Exchangeability: Allows for dependence between observations and only states that future observations behave like past ones.
+<!-- ::: aside
+**Exchangeability**: Allows for dependence between observations and only states that future observations behave like past ones.
+::: -->
 
 ## Motivation: How realistic is iid?
 
--   Often our data contains structure depending on how our data was sampled.
+- Often our data contains structure depending on how our data was sampled.
+  - Within $K$ boroughs in London we select $n$ participants...
+  - From $K$ schools we sample $n$ students...
+  - From $K$ hospitals we select $n$ patients...
+  <!-- - At $K$ stores we sampled $n$ costumers... -->
+  <!-- - $k \in 1,…,K$ group index -->
 
-    -   Within $K$ boroughs in London we select $n$ participants ...
+**Grouping creates dependence**: Observations within a group are likely to be more similar to each other than to observations from other groups.
 
-    -    From $K$ schools we sample $n$ students ...
+## Motivation: GP patient data
 
-    -   From $K$ hospitals we select $n$ patients ...
+- We are interested in **the relationship between cholesterol and age**.
+- We take measurements of patients from $K=12$ GPs.
 
-    -   At $K$ stores we sampled $n$ costumers ...
+```{r count-gp-data}
+#| echo: true
+table(data_chol$doctor)
+```
 
--    $k \in 1,…,K$ group index
+```{r view-gp-data}
+#| echo: true
+head(data_chol)
+```
 
-**Grouping creates dependence**
-
-Observations within a group are likely to be more similar to each other than to observations from other groups.
-
-## Motivation: GP data
-
--   We are interested in the relationship of cholesterol and age and how age impacts cholesterol.
-
--   Sampling: We take measurements of patients from certain GPs.
-
-    -    Group-level: GPs $K=12$
-
-\\texttt{table(data.chol\[\["doctor"\]\])} \\\\
-
-\\includegraphics\[scale=0.4\]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-table}
-
-\\item Individual-level: Patients \$n=441\$
-
-\\end{itemize}
-
-\\end{itemize}
-
-\\texttt{head(data.chol)} \\\\
-
-\\centering \\includegraphics\[scale=0.4\]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/gp-head}
-
-}
-
-## Generalised linear model (GLM)
-
--   Linear models can only model a quantitative outcome.
-
--   Quantitative outcomes are defined as a real number, taking possible values from $-\inf$ to $+\inf$.
-
--   Many important data types can by definition not be modelled using a linear model:
-
-    -   Dichotomous or binary $\rightarrow$ only takes two values, 0 or 1
-
-    -   Counts $\rightarrow$ only positive integers (0,1,2,3,...)
-
-::: {.callout-note icon="false"}
-Flexible generalization of ordinary linear regression that allows for response variables that have error distribution models other than a normal distribution. Residuals are an important quantity for model diagnostics.
-:::
-
-## Binary outcome and logistic regression
-
-Example: Case-control study
+## Pooled analysis
 
 $$
-y_i =
-\begin{cases}
-1, \text{ If subject $i$ is a case} \\
-0, \text{ If subject $i$ is a control} \\
-\end{cases}
+y_i = \alpha_0 + \beta x_i  + \epsilon_i
 $$
 
-```{r}
+**Assumptions**: All observations independent (incorrect).
+
+**Consequences**:
+
+- Estimated errors on regression coefficients are too small.
+- Overstate significance of association.
+
+## GP data: pooled analysis
+
+```{r gp-data-model}
+#| echo: true
+model_pooled <- lm(chol ~ age, data = data_chol)
+```
+
+```{r gp-data-model-plot}
 #| echo: false
 #| eval: true
-#| fig-width: 6
-#| fig-height: 4
 #| fig-align: "center"
-
-library(lars)
-library(dplyr)
-library(ggplot2)
-
-data(diabetes)
-x <- as.data.frame.matrix(diabetes$x)
-y <- ifelse(diabetes$y > mean(diabetes$y), 1, 0)
-
-ggplot() +
-  geom_point(data = data.frame(x = x$glu, y = y), aes(x = x, y = y), size = 2) +
-  theme_bw() +
-  ylim(c(-0.5, 1.5)) +
-  ylab("light/severe diabetes") +
-  xlab("glucose level") +
-  theme(text = element_text(size = 20))
+data_chol |>
+  ggplot(aes(x = age, y = chol)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_minimal()
 ```
 
-## Binary outcome and logistic regression
+## GP data: pooled analysis
 
-$$y = \underbrace{\alpha + \beta x}_{\text{Linear predictor}} + \epsilon$$
+```{r gp-data-model-summary}
+#| echo: true
+#| eval: true
+summary(model_pooled)
+```
 
--   Linear predictor: $\eta=\alpha + \beta x$ is defined from $-\inf$ to $+\inf$.
+## GP data: pooled analysis
 
--   But $y$ only $0$ or $1$ $\rightarrow$ The linear regression do not match the data well.
-
-```{r}
+```{r gp-data-colour-doctor}
 #| echo: false
 #| eval: true
-#| fig-width: 6
-#| fig-height: 4
 #| fig-align: "center"
-
-library(lars)
-library(dplyr)
-library(ggplot2)
-
-data(diabetes)
-x <- as.data.frame.matrix(diabetes$x)
-y <- ifelse(diabetes$y > mean(diabetes$y), 1, 0)
-
-coefs <- lm(y ~ glu, data = x) %>% coef()
-
-ggplot() +
-  geom_point(data = data.frame(x = x$glu, y = y), aes(x = x, y = y), size = 2) +
-  geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1.3, col = "red") +
-  theme_bw() +
-  ylim(c(-0.5, 1.5)) +
-  ylab("light/severe diabetes") +
-  xlab("glucose level") +
-  theme(text = element_text(size = 20))
+data_chol |>
+  mutate(doctor_name = factor(str_c("Dr ", doctor), levels = str_c("Dr ", 1:12))) |>
+  ggplot(aes(x = age, y = chol, colour = doctor_name)) +
+  geom_point() +
+  theme_minimal() +
+  theme(legend.position = "none")
 ```
 
-## How should we model this data?
-
-**Key idea 1:** Instead of modelling the outcomes ($y=0$ or $y=1$) directly, logistic regression models the probability for $y=1$ denotes as
-
--   $P(y=1 \mid x)$
-
-Notes on probabilities for binary data:
-
--   Probabilities can take values from 0 to 1
-
--   Probabilities are symmetric: $P(y=1\mid x) = 1- P(y=0\mid x)$
-
-## How should we model this data?
-
-**Key idea 2:** Transform the linear predictor $\eta= \alpha + \beta x_{i}$ (quantitative, can take values from $-\inf$ to $-inf$) to lie in the Interval $[0,1]$, which is valid for probabilities.
-
-This can be achieved using the logit function: $\text{logit}(p) = \log (p/(1-p))$
-
-```{r}
+## GP data: pooled analysis
+```{r gp-data-facet-doctor}
 #| echo: false
 #| eval: true
-#| fig-width: 5
-#| fig-height: 3
 #| fig-align: "center"
-
-library(ggplot2)
-
-set.seed(11)
-p <- runif(n = 1000)
-
-data.frame(
-  p = p,
-  logitp = log(p / (1 - p))
-) %>%
-  ggplot() +
-  geom_line(aes(x = p, y = logitp), lwd = 1) +
-  theme_bw() +
-  theme(text = element_text(size = 15))
+data_chol |>
+  mutate(doctor_name = factor(str_c("Dr ", doctor), levels = str_c("Dr ", 1:12))) |>
+  ggplot(aes(x = age, y = chol)) +
+  geom_point() +
+  facet_wrap(~doctor_name) +
+  theme_minimal()
 ```
 
-## Logistic regression
+## Accounting for dependence
 
-$$
-\text{logit}(P(y=1 \mid x)) = \log(P(y=1 \mid x))/(1-P(y=1)\mid x) = \alpha + \beta x
-$$
+When we ignore dependence:
+- standard **errors too small**
+- p−values too small / confidence intervals too narrow
+- we **over-estimate significance**.
 
--   **Interpretation**: The regression coefficient $\beta$ in logistic regression represents the **log odds ratio** between $y=0$ and $y=1$.
+Intuitively, there is less information in the data than an independent sample.
 
--   **Estimation**: Maximum likelihood
+## Accounting for dependence
 
-## Technical details
+We can account for **dependence** by:
 
--   Many important outcome types can be accommodated by GLMs.
+1. Perform analysis for each group separately.
+1. Calculate summary measures for each group and use standard analysis (group-level analysis).
+1. Fixed effects model to account for group structures.
+1. Use random effects models that explicitly model the similarity of observations in a group.
 
--   Each of these distributions has a location parameter, e.g. $\mu$ for the Gaussian, $p$ for the Bernoulli and Binomial.
+## Motivation: individual-level and group-level
 
--   The natural link function between the location parameter and the linear predictor can be derived from the mathematical form of the distribution.
+Observations are **grouped** with grouping information known.
 
-| Response    | Distribution | E(y)      | Link (g)       |
-|-------------|--------------|-----------|----------------|
-| Continuous  | Gaussian     | $\mu$     | $1$ (identity) |
-| Dichotomous | Bernoulli    | $p$       | $\text{logit}$ |
-| Counts      | Poison       | $\lambda$ | $\log$         |
+**Multi-level**: Multiple levels of groupings, e.g. classrooms within schools within districts.
 
-<https://en.wikipedia.org/wiki/Generalized_linear_model>
+Variables can be measured on the individual and group level.
 
-## Technical details: GLM
+## 1. Separate analysis
 
-The GLM consists of three elements:
+Estimate **separate regression coefficients** for each group.
 
-1.  A probability distribution from the exponential family. Note: Only distributions that can be formulated as an exponential family can be modelled as GLM.
-2.  A linear predictor $\eta=x\beta$
-3.  A link function $g$ such that $E(y) = \mu = g^{-1}(\eta)$
+Assumptions: Independence between groups.
 
-## Technical details: Exponential families
+Consequences:
 
-An exponential family is a set of probability distributions of the following form:
+- This is a reasonable approach to exploratory analysis.
+- If the number of individuals in each group is small, we will get imprecise estimates.
+- Multiple testing is an issue.
 
-$$
-f_x(x \mid \theta) = h(x) \exp\{\eta(\theta) \times T(x) - A(\theta)\}
-$$
+## 1. Separate analysis
+```{r gp-data-model-separate}
+#| echo: true
+model_separate <- lm(chol ~ age | doctor, data = data_chol)
+```
 
-where
+```{r gp-data-model-separate-plot}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+data_chol |>
+  mutate(doctor_name = factor(str_c("Dr ", doctor), levels = str_c("Dr ", 1:12))) |>
+  ggplot(aes(x = age, y = chol)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~doctor_name) +
+  theme_minimal()
+```
 
--   $\theta$ is the parameter of interest.
+## 2. Group-level analysis
 
--   $T(x)$ is a sufficient statistic.
+Summarise outcome and predictors for each group $k$, e.g. using mean or median.
 
--   $\eta(\theta)$ is the natural parameter or link function.
+```{r gp-data-grouped}
+#| echo: true
+data_grouped <- data_chol |>
+  group_by(doctor) |>
+  summarise(chol_grouped = mean(chol), age_grouped = mean(age))
+```
 
-## Gaussian distribution as exponential distribution
+## 2. Group-level analysis
 
-Gaussian distribution with unknown $\mu$, but known $\sigma$:
+Treat the group summaries as observations
 
-$$
-f_{\sigma}(x \mid \mu) =  \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\{ -\frac{(x-\mu)^2}{2\sigma^2} \} =  \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\{ -\frac{x^2}{2\sigma^2} + \frac{x\mu}{\sigma^2} - \frac{\mu^2}{2\sigma^2} \}
-$$
+```{r gp-data-model-grouped}
+#| echo: true
+model_grouped <- lm(chol_grouped ~ age_grouped, data = data_grouped)
+```
 
--   $\theta = \mu$
+Consequences:
 
--   $h(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\{ -\frac{x^2}{2\sigma^2} \}$
+- One regression line fit: Associations between outcome and predictors are the same for each group.
+- Independence between groups.
+- All groups are treated equal, irrespective of size
 
--   $T(x) = \frac{x}{\sigma}$
+## 2. Group-level analysis
 
--   $\eta(\mu) = \frac{\mu}{\sigma}$
+```{r gp-data-model-grouped-plot}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+data_grouped |>
+  ggplot(aes(x = age_grouped, y = chol_grouped)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_minimal()
+```
 
--   $A(\mu) = \frac{\mu^2}{2\sigma^2}$
+## 2. Group-level analysis
 
-## Logistic regression and binary outcomes
-
-Binomial distribution with known number of trials $n$, but unknown probability $p$:
-
-$$ \begin{align} f(x \mid p) &= {n\choose x} p^x (1-p)^{n-x} = \\ &= {n \choose x} \exp \{x \log (\frac{p}{1-p}) + n\log(1-p)\}  \end{align} $$
-
--   $\theta = p$
-
--   $h(x) = {n\choose x}$
-
--   $T(x)=x$
-
--   $\eta(p) = \log(\frac{p}{1-p})$
-
--   $A(p) = - n \log(1-p)$
-
-## Logistic regression and binary outcomes
-
-Formulate model: Three elements
-
-1.  Error distribution for response variable
-2.  Linear predictor
-3.  Link function
-
-The three elements of the logistic regression model are:
-
-1.  The Bernoulli probability distribution modelling the data: $P( y_i= 1 \mid x_i ) = p_i$
-2.  The linear predictor: $\alpha + \sum_{j=1}^p \beta_j x_{ij}$
-3.  The link function $g$ associating the mean of $y$, $P( y_i= 1 \mid x_i )$ to the linear predictor: here the link is the [logistic link]{style="color:red;"} as we set $g(P( y_i= 1 \mid x_i ))=\text{logit}(p_i) = \beta_0 + \sum_{j=1}^p\beta_jx_{ij}$
-
-## glm() in R
-
--   GLMs can be called in R just as linear models.
-
-```{r}
+```{r gp-data-model-grouped-summary}
 #| echo: true
 #| eval: true
-library(lars)
-library(dplyr)
-
-data(diabetes)
-x <- as.data.frame.matrix(diabetes$x)
-y <- ifelse(diabetes$y > mean(diabetes$y), 1, 0)
-
-glm(y ~ age + sex + bmi + map + ltg, data = x, family = binomial) %>% summary()
+summary(model_grouped)
 ```
 
-## glm() in R
+## 2. Group-level analysis
 
--   Different types of exponential families can be called using the $\text{family}$ option:
+- This model **lacks power** as the number of data points used is the number of groups ($k < n$)
+- Regression coefficients will be **averaged over all groups** so real within-group effects may be diluted.
+- Regression coefficients will only be significant if there are similar significant association effects across all groups.
 
-    -   $\text{binomial(link = 'logit')}$
+## Inverse variance weighted (IVW) meta-analysis
 
-    -   $\text{gaussian(link = 'identity')}$
+Each random variable is **weighted in inverse proportion to its variance**.
+Assume we have independent observations $y_k$ with variance $\sigma_k$.
+Then the IVW estimate is defined as
 
-    -   $\text{Gamma(link = 'inverse')}$
+$$
+\hat{y}_{\text{IVW}}  = \frac{\sum_{k=1}^{K} y_k/\sigma_k}{\sum_{k=1}^{K} 1/\sigma_k}
+$$
 
-    -   $\text{poisson(link='log')}$
+## Inverse variance weighted (IVW) meta-analysis
 
--   There are similar return values as for the $\text{lm}$ function:
+**Weighted regression over groups**
 
-    -   coefficients
+Assume $y_k$ is a vector of group summaries, $x_k$ is a $k \times p$ matrix of group summaries.
+Assume $w$ is a diagonal matrix with $w[k,k] = \frac{1}{\sigma_k^2}$, then the **weighted least squares** estimate is defined as
 
-    -   residuals
+$$
+\hat{\beta}_w = (x_k^t w x_k)^{-1} x^t_k w y_k
+$$
 
-    -   fitted.values
+## 3. Fixed effects
 
-    -   linear.predictors: the linear fit on the link scale
+Motivation:
 
-## Making predictions
+- Keep the idea of modelling within groups, Allow **associations to differ across groups**.
+- But now we model all the data (n observations) together: Maximise the power to detect associations.
 
-1.  Train the prediction rule
-2.  Derive predictions on the linear predictor scale for the new data
+## 3. Fixed effects
 
-```{r}
+**Joint model with group-specific intercept**
+
+$$
+y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
+$$
+where $\alpha_k$ is a fixed effect.
+
+- $\alpha_k$ captures the effect of unobserved group specific confounders.
+- Residual errors $\epsilon_i$ are assumed independent.
+
+## 3. Fixed effects
+
+A fixed effects model is fit in the same way as the simple linear model including the group as a covariate.
+
+Assumptions: Information on αk comes from observations in group k only.
+
+Consequences:
+
+- By including group effects we adjust for group characteristics.
+- But introduces a number of parameters (one for each group).
+- May be a problem if there are few observations in some groups.
+
+## 3. Fixed effects with `lm()`
+
+There are two different types of fixed effect:
+
+1. Group-specific intercept $\alpha_k$
+$$
+y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
+$$
+
+2. Group-specific slope $\beta_k$
+$$
+y_i = \alpha_0 + \color{red}{\beta_k} x_i  + \epsilon_i
+$$
+
+## Varying intercept with `lm()`
+
+1. Group-specific intercept $\alpha_k$
+$$
+y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
+$$
+
+```{r gp-data-model-varying-intercept}
+#| echo: true
+model_varying_intercept <- lm(chol ~ as.factor(doctor) + age, data = data_chol)
+```
+
+## Varying intercept with `lm()`
+
+```{r gp-data-model-varying-intercept-summary}
 #| echo: true
 #| eval: true
-#| warnings: false
-#| fig-height: 4
-library(lars)
-library(dplyr)
-library(ggplot2)
-library(patchwork)
-set.seed(11)
-
-data(diabetes)
-x <- as.data.frame.matrix(diabetes$x)
-y <- ifelse(diabetes$y > mean(diabetes$y), 1, 0)
-
-glm_predict <- glm(y ~ glu, data = x, family = binomial)
-xnew <- data.frame(glu = rnorm(n = 1000, mean = 0, sd = 0.5))
-xnew %>% head()
-
-eta <- predict.glm(glm_predict, xnew)
+summary(model_varying_intercept)
 ```
 
-## Plot the predictions
+## Varying intercept with `lm()`
 
-```{r}
+```{r gp-data-model-varying-intercept-plot}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+data_chol |>
+  mutate(
+    doctor_name = factor(str_c("Dr ", doctor), levels = str_c("Dr ", 1:12)),
+    .fitted = fitted(model_varying_intercept)
+  ) |>
+  ggplot(aes(x = age)) +
+  geom_point(aes(y = chol)) +
+  geom_line(aes(y = .fitted)) +
+  facet_wrap(~doctor_name) +
+  theme_minimal()
+```
+
+## Varying slope with `lm()`
+
+2. Group-specific slope $\beta_k$
+$$
+y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
+$$
+
+```{r gp-data-model-varying-slope}
+#| echo: true
+model_varying_slope <- lm(chol ~ age:as.factor(doctor), data = data_chol)
+```
+
+## Varying slope with `lm()`
+
+```{r gp-data-model-varying-slope-summary}
 #| echo: true
 #| eval: true
-#| warnings: false
-ggplot() +
-  geom_histogram(aes(x = eta)) |
-  ggplot() +
-    geom_histogram(aes(x = exp(eta) / (exp(eta) + 1)))
+summary(model_varying_slope)
 ```
 
-```{r}
-#| echo: true
+## Varying slope with `lm()`
+
+```{r gp-data-model-varying-slope-plot}
+#| echo: false
 #| eval: true
-rbinom(
-  n = length(eta),
-  size = rep(1, length(eta)),
-  prob = exp(eta) / (exp(eta) + 1)
-) %>% head()
+#| fig-align: "center"
+data_chol |>
+  mutate(
+    doctor_name = factor(str_c("Dr ", doctor), levels = str_c("Dr ", 1:12)),
+    .fitted = fitted(model_varying_slope)
+  ) |>
+  ggplot(aes(x = age)) +
+  geom_point(aes(y = chol)) +
+  geom_line(aes(y = .fitted)) +
+  facet_wrap(~doctor_name) +
+  theme_minimal()
 ```
 
-## Take away: Generalised linear model
+## Fixed effects with `lm()`
 
-The model formulation in GLMs consists of three elements:
+Main formula: `y ∼ x`, where `y` is the outcome and `x` the predictor(s)
 
-1.  Error distribution for response variable
-2.  Linear predictor
-3.  Link function
+Predictors can be added as
 
-Most common data types can be modelled using GLMs
+| `+` | main effect |
+| `:` | interaction only |
+| `*` | main effect and interaction |
 
--   Continuous $\rightarrow$ Gaussian distribution
+Use `summary()`, `coef()` and `fitted()` to get values.
 
--   Dichotomous or binary $\rightarrow$ Bernoulli distribution
+## Fixed effects: Disadvantages
 
--   Counts $\rightarrow$ Poisson or Binomial (with known number of trial) distribution
+- Fixed effects account for **any** unobserved group-specific confounders, so including both a group-specific intercept and slope is not identifiable.
+  - When the intercept $\alpha_k$ is group-specific, then the slope is assumed to be the same for all groups.
+  - When slope $\beta_k$ is group-specific, then the intercept is assumed to be the same for all groups.
+
+## Fixed effects: Disadvantages
+
+- If we add new groups to the dataset we may not consistently estimate $\alpha_k$:
+  - Consider $\alpha_1$, the intercept for the first group.
+  - When we add new groups, the slope may vary.
+  - Changing slope will change the intercept, also  $\alpha_1$.
+
+- Information on $\alpha_k$  or $\beta_k$ comes only from observations in group $k$ and we need to estimate one parameter per group.
+
+## Take away: Structured Data
+
+- Most statistical methods are developed for independent and identically distributed (iid) data, but often in practice we observe structured data, where **there is an intrinsic group structure**.
+- Grouping creates dependence: Observations within a group are likely to be more similar to each other than to observations from other groups.
+- Ignoring the group structure can lead to over-confident results or even false positives.
+- Analysing each group separately, we do not assume any shared mechanisms and need to fit a model on the samples within a group only. Aggregating and working only on the group-level drastically reduces the sample size $k$.
