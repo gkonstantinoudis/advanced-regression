@@ -1,0 +1,9 @@
+\babel@toc {german}{}
+\beamer@sectionintoc {1}{Advanced Regression: Motivation}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Course aims}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{High-dimensional data}{4}{0}{1}
+\beamer@sectionintoc {2}{Advanced Regression: Course details}{7}{0}{2}
+\beamer@subsectionintoc {2}{1}{Practicals}{7}{0}{2}
+\beamer@subsectionintoc {2}{2}{Timetable}{11}{0}{2}
+\beamer@subsectionintoc {2}{3}{Learning outcomes and exam}{16}{0}{2}
+\beamer@subsectionintoc {2}{4}{Questions?}{18}{0}{2}

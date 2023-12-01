@@ -1,0 +1,547 @@
+\documentclass{beamer}
+
+\usetheme{Montpellier}
+%\usetheme{CambridgeUS}
+
+
+\usepackage[OT1]{fontenc}
+\usepackage[utf8x]{inputenc}
+
+
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+\usepackage[german]{babel}
+\usepackage{booktabs,bm, color, enumerate, hyperref, pgf, url, soul, tikz}
+\usepackage{amssymb, amsmath}
+\usepackage{graphicx}
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+\newcommand*{\Resize}[2]{\resizebox{#1}{!}{$#2$}}%
+
+%\usepackage{hyperref}
+
+\usepackage{appendixnumberbeamer}
+
+
+\bibliographystyle{apalike}
+
+
+
+%\input{abbreviations}
+
+
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+%\usepackage{appendixnumberbeamer}
+
+
+
+%\subject{2015}
+
+
+
+
+\title{Advanced Regression: 2a Variable selection}
+
+
+
+\author{Garyfallos Konstantinoudis}
+\institute{Epidemiology and Biostatistics, Imperial College London}
+
+
+
+
+\date{7th March 2023}
+
+
+\setlength{\unitlength}{0.9cm}
+\linethickness{1.1pt}
+
+
+
+
+
+
+
+
+\begin{document}
+
+
+\frame{
+\titlepage
+}
+
+
+
+\frame{
+\tableofcontents
+}
+
+%\section{Variable ranking, variable importance and variable selection}
+%\section{Classical variable or model selection}
+%\section{Variable importance}
+%\section{Variable ranking}
+%\section{Example: Genome-wide association studies}
+%\section{Example: Differential expression}
+
+
+
+\section{Classical variable or model selection}
+
+\frame{
+\frametitle{Variable or model selection} 
+
+
+\begin{block}{Variable or model selection}
+To select a model (a set of variables, i.e. one or many variables) jointly.
+\end{block}
+
+
+\begin{itemize}
+\item Focus is not on a single variable but on a model, i.e. one or a combination of many variables.
+\item Motivation: \textbf{To understand} which combination of variables explains best the outcome and \textbf{to predict} future outcomes.
+\end{itemize}
+
+
+
+
+}
+
+
+
+
+
+\frame{
+\frametitle{Classical variable or model selection} 
+
+Measures used to compare models:
+\begin{itemize}
+\item Proportion of variance explained
+\item $F-$statistic and analysis of variances (ANOVA)
+\item Likelihood based methods
+\begin{itemize}
+\item Likelihood ratio test (LRT)	
+\item Akaike information criterion (AIC)
+\item Bayesian information criterion (BIC)
+\end{itemize}
+\end{itemize}
+
+}
+
+
+\subsection{Variance explained and ANOVA}
+
+
+\frame{
+\frametitle{Proportion of variance explained} 
+
+
+\begin{block}{Linear model}{
+\begin{equation}
+y =  x \beta + \epsilon \nonumber
+\end{equation}}
+\end{block}
+
+
+\begin{itemize}
+\item Variance decomposition:
+\begin{equation}
+\underbrace{var(y)}_{\text{Total Variance}} = \underbrace{var(x\beta)}_{\text{Explained Variance}} + \underbrace{var(\epsilon)}_{\text{Error Variance}} \nonumber
+\end{equation}
+\item $R^2$ is the proportion of variance explained by a model
+\begin{equation}
+R^2 = \frac{var(x\beta)}{var(y)} = 1-\frac{var(\epsilon)}{Var(y)} \nonumber
+\end{equation}
+\end{itemize}
+
+
+
+
+}
+
+
+
+\frame{
+\frametitle{Proportion of variance explained} 
+
+\begin{itemize}
+\item How to compute? Using sum of squares (SS):
+\begin{itemize}
+\item[$\diamond$] Total variance
+\begin{equation}
+\hat{var}(y) = \frac{1}{n-1} SS_{Total} = \frac{1}{n} \sum_{i=1}^n[y_i - \bar{y}]^2  \nonumber
+\end{equation}
+\item[$\diamond$] Explained variance $\hat{y}=x\beta$
+\begin{equation}
+\hat{var}(\hat{y}) = \frac{1}{n-1} SS_{Explained} = \frac{1}{n} \sum_{i=1}^n[\hat{y}_i - \bar{y}]^2  \nonumber
+\end{equation}
+\item[$\diamond$] Error variance
+\begin{equation}
+\hat{var}(\epsilon) = \frac{1}{n-1} SS_{Error} = \frac{1}{n} \sum_{i=1}^n[y_i -\hat{y}_i]^2  \nonumber
+\end{equation}
+where the mean is defined as $\bar{y} = \frac{1}{n} \sum_{i=1}^n y_i  $
+\end{itemize}
+\end{itemize}
+
+}
+
+\frame{
+\frametitle{Occam's razor} 
+
+\begin{itemize}
+\item When comparing two models it is important not only to consider $R^2$ but also how complex they are, i.e. how many variables they include.
+\item Occam's razor (law of parsimony): Simpler solutions are more likely to be correct than complex ones (William of Ockham 1287–1347ad).
+\item Problem: $R^2$ will always increase when including more variables.
+\item Question: Is including more variables actually improving the model fit significantly?
+\end{itemize}
+
+
+
+}
+
+
+\frame{
+\frametitle{Adjusted proportion of variance explained} 
+
+\begin{itemize}
+\item Adjusted $R^2$
+\begin{equation}
+R^2_{adj} = 1- (1-R) \times \frac{n-1}{n-p-1} \nonumber
+\end{equation}
+\item Alternative representation with degrees of freedom (df)
+\begin{equation}
+R^2_{adj} = 1- \frac{SS_{Error}/df_e}{SS_{Total}/df_t} \nonumber
+\end{equation}
+where $df_t=n-1$ and $df_e=n-p-1$ 
+\end{itemize}
+
+}
+
+\frame{
+\frametitle{Analysis of Variances (ANOVA)} 
+
+What is a nested model?
+\begin{itemize}
+\item Model $M_1$ is a nested model of model $M_2$ when model $M_2$ contains $M_1$.
+\item $M_1$ is a subset of $M_2$: $M_1 \subset M_2$
+\item Example: $M_1 = bmi$ and $M_2 = bmi + map$
+\end{itemize}
+
+\centering \includegraphics [scale=0.36]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/subset}
+
+
+}
+
+
+
+
+
+\frame{
+\frametitle{Analysis of Variances (ANOVA)} 
+
+
+\begin{itemize}
+\item $F-$test, to compare two nested models: a `full' and a `reduced' model.
+\item $M_2$ `full' model included $p_2$ predictors. 
+\begin{table}
+\begin{tabular}{ c | c | c }   
+  & df & SS \\
+\hline
+Regression fit & $p_2$ & $SS_{Explained}(M_2)$ \\
+Error & $n-p_2-1$ & $SS_{Error}(M_2)$ \\
+\hline
+Total & $n-1$ & $SS_{Total}(M_2)$ \\
+\end{tabular}
+\end{table} 
+\item $M_1$ `reduced' model included $p_1$ predictors, where $p_1<p_2$. 
+\begin{table}
+\begin{tabular}{ c | c | c |}   
+  & df & SS \\
+\hline
+Regression fit & $p_1$ & $SS_{Explained}(M_1)$ \\
+Error & $n-p_1-1$ & $SS_{Error}(M_1)$ \\
+\hline
+Total & $n-1$ & $SS_{Total}(M_1)$ \\
+\end{tabular}
+\end{table} 
+\end{itemize}
+
+
+}
+
+
+\frame{
+\frametitle{Analysis of Variances (ANOVA)} 
+
+
+\begin{itemize}
+\item $F$-test, to compare two nested models:
+\begin{itemize}
+\item[$\diamond$]   `full' model ($M_2$) with $p_2$ parameter 
+\item [$\diamond$]  `reduced' model ($M_1$) with $p_1$ parameter
+\end{itemize}
+\item It will always hold that:
+\begin{itemize}
+\item[$\diamond$] $R^2(M1) \leq R^2(M2)$
+\item[$\diamond$] $SS_{Error}(M_1)\geq SS_{Error}(M_2)$ 
+\item [$\diamond$] $p_2>p_1$
+\end{itemize}
+\item But is the `full' model ($M_2$) significantly better than a `reduced' model ($M_1$)?
+\end{itemize}
+
+
+}
+
+
+\frame{
+\frametitle{Analysis of Variances (ANOVA)} 
+
+
+\begin{itemize}
+\item $H_0$: Model $M_2$ fits the data as good as model $M_1$.
+\begin{equation}
+F = \frac{(SS_{Error}(M_1)- SS_{Error}(M_2))/(p_2-p_1)}{SS_{Error}(M_2) / (n-p_2-1)} \nonumber
+\end{equation}
+\item Under the Null, the test statistic $F$ follows an $F$-distribution with $(p_2-p_1)$ and $(n-p_2-1)$ degrees of freedom.
+\item Interpretation 1: If we reject $H_0$, $M_2$ fits the data significantly better than model $M_1$.
+\item Interpretation 2: By adding more predictors in the complex model compared to the reduced model we can explain more of the variation in $Y$.
+\item \texttt{anova(M1,M2)} command in \texttt{R}.
+\end{itemize}
+
+
+}
+
+
+
+
+\frame{
+\frametitle{ANOVA example: Diabetes data} 
+
+\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/anova_diabetes1}
+
+\begin{itemize}
+\item It improves the model fit to add the variable glu to the model.
+\item The `full' model ($M_2$) is better than the `reduced' model ($M_1$).
+\end{itemize}
+
+
+}
+
+
+
+\subsection{Akaike criterion and other likelihood-based measures}
+
+
+\frame{
+\frametitle{Likelihood ratio test} 
+
+\begin{itemize}
+\item The likelihood ratio test (LRT) contrasts two nested models ($M_1 \subset M_2$). 
+\item It is defined as the difference between the log-likelihoods
+\begin{equation}
+LRT = - 2 (\log L(M_1)- \log L(M_2)) \nonumber
+\end{equation}
+\item Note that $-\log L(M_2) \leq \log -L(M_1)$, \\
+which is in analogy with $R^2 (M_2)\geq R^2 (M_1)$.
+\item The main aim is to test if $M_2$ provides a significantly better model fit than $M_1$.
+\end{itemize}
+
+}
+
+
+\frame{
+\frametitle{Likelihood ratio test in R} 
+
+\begin{itemize}
+\item \texttt{library(lmtest)}
+\item Function: \texttt{lrtest(M1,M2)}
+\end{itemize}
+
+
+\begin{itemize}
+\item Is there a better model fit when including the predictor glu to the model?
+
+\vspace{0.4cm}	
+\includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/LRT1}
+\vspace{0.4cm}	
+
+\item Model $M_2$ (including glu) is marginally better.
+\end{itemize}
+
+}
+
+
+\frame{
+\frametitle{Likelihood ratio test in R} 
+\begin{itemize}
+\item Is there a better model fit when including the predictor map to the model?
+
+\vspace{0.4cm}	
+\includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/LRT2}
+\vspace{0.4cm}	
+
+\item Model $M_2$ (including map) is significantly better.
+\item Model $M_2$ needs one more parameter to estimate than $M_1$ (degree of freedom (df)=1).
+\end{itemize}
+
+%\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/LRT3}
+%\begin{itemize}
+%\item Switching M2 and M1 results in negative degrees of freedom.
+%\end{itemize}
+
+}
+
+
+
+\frame{
+\frametitle{Akaike information criterion (AIC)} 
+
+\begin{itemize}
+\item Akaike information criterion (AIC) combines a measure of model fit with a measure of model complexity.
+\begin{equation}
+AIC = -2 \log L + 2p \nonumber
+\end{equation}
+
+\begin{itemize}
+\item[$\diamond$] $L$ Maximum likelihood of the model
+\item[$\diamond$] $p$ Model complexity: Number of parameters in the model
+\end{itemize}
+
+\item The best model is the one with the minimum AIC value (minimum information loss). 
+\item The AIC can be used for model comparison, not to assess the quality of the model fit.
+\item \texttt{AIC(M1,M2)} command in R.
+\end{itemize}
+
+}
+
+
+
+
+\frame{
+\frametitle{Bayesian information criterion (BIC)} 
+
+\begin{itemize}
+\item Also the Bayes information criterion (BIC) combines a measure of model fit with a measure of model complexity.
+\begin{equation}
+BIC = -2 \log L + \log(n) p \nonumber
+\end{equation}
+\begin{itemize}
+\item[$\diamond$]  $L$ Maximum likelihood of the model
+\item[$\diamond$]  $p$ Model complexity: Number of parameters in the model
+\end{itemize}
+\item The best model is the one with the minimum BIC value (minimum information loss). 
+\item The BIC can be used for model comparison, not to assess the quality of the model fit.
+\item \texttt{BIC(M1,M2)} command in R.
+\end{itemize}
+
+
+}
+
+
+\frame{
+\frametitle{AIC and BIC} 
+
+\begin{itemize}
+\item More generally, we can understand information criteria (IC) as a compromise between model fit and model complexity
+\begin{equation}
+IC = -2log L + k \times p \nonumber
+\end{equation}
+\begin{itemize}
+\item[$\diamond$]  $L$ Model fit: Maximum likelihood of the model
+\item[$\diamond$]  $p$ Model complexity: Number of parameters in the model
+\end{itemize}
+\item The best model is the one with the minimum IC value (minimum information loss). 
+\item $k$ defines the penalty of the model complexity
+\begin{itemize}
+\item[$\diamond$] AIC:  $k=2$ 
+\item[$\diamond$] BIC:  $k=\log(n)$ 
+\end{itemize}
+\end{itemize}
+
+}
+
+\frame{
+\frametitle{AIC and BIC in R} 
+
+
+\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/AIC1}
+
+\begin{itemize}
+\item There is no consensus between AIC and BIC.
+\item Using the AIC we would prefer $M_2$, but using the BIC we would prefer $M_1$.
+\item This is not a strong evidence that adding the variable glu (glucose) has a lot of benefit.
+\end{itemize}
+
+}
+
+\frame{
+\frametitle{AIC and BIC in R} 
+
+\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/AIC2}
+
+\begin{itemize}
+\item In contrast the variable map (blood pressure) greatly improves the model fit.
+\item Since the variable map (blood pressure) is supported by both methods we have greater confidence that it improves the model fit.
+\end{itemize}
+
+
+%\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/anova_diabetes2}
+
+
+}
+
+
+
+\frame{
+\frametitle{How to decide which models to test?} 
+
+\begin{itemize}
+\item Backward selection 
+\begin{enumerate}
+\item Start with the full model and include all $p$ variables available.
+\item Identify the variable with the weakest evidence and remove it.
+\item Evaluate the model with $p-1$ variables.
+\item Identify the variable with the weakest evidence and remove it.
+\item ...
+\end{enumerate}
+\item Forward selection 
+\begin{enumerate}
+\item Start to evaluate all models including just a single predictor variable.
+\item Identify the variable with the strongest univariable impact.
+\item Evaluate all models including the best single predictor variable and one additional variable.
+\item Identify the tuple of two variables with the strongest impact.
+\item ...
+\end{enumerate}
+\end{itemize}
+
+}
+
+
+
+
+\frame{
+\frametitle{Alternatives for model selection} 
+
+
+\begin{block}{Warning!}
+Backward and forward selection do rarely agree. They are highly instable and there is no guaranty that they find the optimal model. It is not recommended to use them.
+\end{block}
+
+Alternatives for model selection:
+
+\begin{itemize}
+\item Evaluate all possible models: Becomes computationally infeasible even with a moderate number of variables. 
+\begin{itemize}
+\item  $p=10$ variables have $2^{10} =1,024$ possible models
+\item  $p=20$ variables have $2^{20} =1,048,576$ possible models
+\end{itemize}
+\item Penalised regression (Lecture 3b)
+\end{itemize}
+
+}
+
+
+\end{document}
+
+
+
+

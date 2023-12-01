@@ -1,0 +1,803 @@
+\documentclass{beamer}
+
+\usetheme{Montpellier}
+%\usetheme{CambridgeUS}
+
+
+\usepackage[OT1]{fontenc}
+\usepackage[utf8x]{inputenc}
+
+
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
+\usepackage[german]{babel}
+\usepackage{booktabs,bm, color, enumerate, hyperref, pgf, url, soul, tikz}
+\usepackage{amssymb, amsmath}
+\usepackage{graphicx}
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+\newcommand*{\Resize}[2]{\resizebox{#1}{!}{$#2$}}%
+
+%\usepackage{hyperref}
+
+\usepackage{appendixnumberbeamer}
+
+
+\bibliographystyle{apalike}
+
+
+
+%\input{abbreviations}
+
+
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+%\usepackage{appendixnumberbeamer}
+
+
+
+%\subject{2015}
+
+
+
+
+\title{Advanced Regression: 3b Penalised regression models (ridge, lasso, elastic net)}
+
+
+
+\author{Garyfallos Konstantinoudis}
+\institute{Epidemiology and Biostatistics, Imperial College London}
+
+
+
+
+\date{7th March 2023}
+
+
+\setlength{\unitlength}{0.9cm}
+\linethickness{1.1pt}
+
+
+
+
+
+
+
+
+\begin{document}
+
+
+\frame{
+\titlepage
+}
+
+
+
+\frame{
+\tableofcontents
+}
+
+%\section{Motivation penalised regression}
+%\section{Ridge regression}
+%\section{Lasso}
+%\section{Elastic Net}
+%\section{Penalised regression and Bayesian regression analysis}
+%\section{How to tune the regularisation parameter?}
+%\section{Prediction using penalised regression}
+
+
+
+\section{Motivation for penalised regression}
+
+
+
+\frame{
+\frametitle{The linear model} 
+
+
+\begin{equation}
+y = \alpha +  x \beta + \epsilon \nonumber
+\end{equation}
+
+\begin{itemize}
+\item $y$: Outcome, response, dependent variable \\
+Dimension: $n \times 1$
+\item $x$: Regressors, exposures, covariates, input, explanatory, or independent variables \\
+Dimension: $n \times p$
+\item $\epsilon$: Residuals, error
+\item $\alpha$: Intercept
+\item $\beta$: Regression coefficients, vector of length $p$
+\end{itemize}
+
+
+}
+
+
+\frame{
+\frametitle{Classical regression} 
+
+\begin{itemize}
+\item The ordinary least squares $\hat{\beta}_{OLS}$ is defined as
+\begin{equation}
+\hat{\beta}_{OLS} = \underbrace{(x^t x)^{(-1)} }_{p \times p}  \underbrace{x^t}_{p \times n} \underbrace{y}_{n \times 1}. \nonumber
+\end{equation}
+\item The residual sum of squares (RSS) is minimised by the ordinary least squares estimate
+\begin{eqnarray}
+RSS(\alpha, \beta) & = &  \epsilon_1^2  + ... +  \epsilon_i^2   + ... + \epsilon_n^2  \nonumber \\
+    & = & \sum_{i=1}^n  \epsilon_i^2  \nonumber \\
+    & = & \sum_{i=1}^n  \left(y_i - \hat{y}_i \right)^2  \nonumber \\
+    & = & \sum_{i=1}^n  \left(y_i - (\alpha + \beta x_i) \right)^2  \nonumber 
+\end{eqnarray}
+\end{itemize}
+
+}
+
+
+
+
+
+
+\frame{
+\frametitle{Residual sum of squares (RSS)} 
+
+\centering \includegraphics [scale=0.42]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/residual}
+
+
+\begin{itemize}
+\item Note $\sum_{i=1}^n  \epsilon_i = 0$
+\end{itemize}
+
+
+}
+
+
+
+\frame{
+\frametitle{Classical regression and high-dimensional data} 
+
+
+
+\begin{itemize}
+\item When $n<<p$ the ordinary least squares cannot be computed because $\underbrace{(x^t x)}_{p \times p}$ is singular (rank $n$).
+\item Bias-variance trade-off: 
+\begin{itemize}
+\item[$\diamond$] The ordinary least squares estimate is best linear unbiased estimator (BLUE).
+\item[$\diamond$] BEST (smallest variance) among UNBIASED (zero bias) estimators.
+\item[$\diamond$] When considering high-dimensional data, the ordinary least squares estimate has a high variability. (dramatically different over different samples).
+\item[$\diamond$] We rather prefer an estimate that is biased \\ (towards a sensible option, e.g. the Null), \\ but is precise, (ie has low variance).
+\end{itemize}
+\end{itemize}
+
+IDEA: Control the estimates' variance by not allowing the to be too big. Constraints on how big they get. Does it remind you anything?
+}
+
+
+\section{Penalised regression}
+
+
+\frame{
+\frametitle{Motivation for penalised least squares} 
+
+
+Minimise RSS but with penalty
+\begin{equation}
+\underset{\alpha, \beta}{argmin} =  \underbrace{RSS(\alpha,\beta)}_{\text{Residual Sum of Squares}} +  \underbrace{\lambda  f(\beta)}_{\text{penalty}} \nonumber
+\end{equation}
+
+where
+\begin{itemize}
+\item Residual Sum of Squares: $RSS(\alpha,\beta) = \sum_{i=1}^n  \left(y_i - (\alpha + \beta x_i) \right)^2$
+\item Penalty term as a function of the regression coefficients $\beta$: $f(\beta)$
+\item Regularization parameter: $\lambda$
+\item The intercept is not penalised
+\end{itemize}
+
+
+}
+
+
+
+\frame{
+\frametitle{Motivation for penalised least squares} 
+
+
+The penalty introduces a bias, so why do it?
+
+\begin{itemize}
+\item Which variables do we include? Only those for which it is worth to take the penalty.
+\item Occam's razor: It induces sparsity and favours models with lower complexity  (Lasso and elastic net). 
+\item Regularizes the  inversion of $x^t x$ (Ridge regression).
+\end{itemize}
+
+
+}
+
+
+\frame{
+\frametitle{Different penalty terms define different methods} 
+
+
+\begin{equation}
+\underset{\alpha, \beta}{argmin} =  RSS(\alpha,\beta) +  \lambda f(\beta) \nonumber
+\end{equation}
+
+
+\begin{itemize}
+\item Ridge regression: L2 penalty
+\begin{equation}
+\lambda f(\beta) =  \lambda \sum_{j=1}^p \beta_j^2  \nonumber
+\end{equation}
+\item Lasso regression: L1 penalty
+\begin{equation}
+\lambda f(\beta) =  \lambda \sum_{j=1}^p  \left| \beta_j \right|  \nonumber
+\end{equation}
+\item Elastic net regression: L1 + L2 penalty
+\begin{equation}
+\lambda f(\beta) =  \lambda_1 \sum_{j=1}^p \left| \beta_j \right|  +  \lambda_2 \sum_{j=1}^p \beta_j^2  \nonumber
+\end{equation}
+\end{itemize}
+
+
+
+}
+
+
+
+\subsection{Ridge regression}
+
+\frame{
+\frametitle{Ridge regression} 
+
+Ridge regression uses the L2 norm as penalty:
+\begin{equation}
+\underset{\alpha, \hat{\beta}_{Ridge}}{argmin} =  \underbrace{RSS(\alpha,\beta)}_{\text{Residual Sum of Squares}} +  \underbrace{\lambda \sum_{j=1}^p \beta_j^2}_{\text{penalty}} \nonumber
+\end{equation}
+
+Interpretation: 
+\begin{itemize}
+\item The Ridge regression coefficient $\hat{\beta}_{Ridge}$ is a biased estimate, but has a reduced variance compared to $\hat{\beta}_{OLS}$.
+\item There is no intrinsic model selection in Ridge regression, all $p$ variables will have $\hat{\beta}_{Ridge} \neq 0$.
+\item Minimise the RSS while forcing $\beta$ not to be very large.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{Ridge regression: Geometric interpretation} 
+
+\begin{columns}
+	\column{.5\textwidth}
+	\begin{itemize}
+		\item $||\beta||_2^2\leq c^2$
+		\item Where is the BLUE?
+		\item Where is the ridge solution?
+	\end{itemize}
+	\column{.5\textwidth}
+	\centering \includegraphics [scale=0.20]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/ridge.png}
+\end{columns}
+}
+
+\frame{
+	\frametitle{Ridge regression} 
+	
+	$$\sum(Y_i - \alpha - \beta_1x_i - \dots )^2 \text{ subject to } ||\beta||_2^2\leq c^2$$
+	$$F(\alpha, \beta, \lambda) = \sum(Y_i - \alpha - \beta_1x_i - \dots )^2 + \lambda(\beta_1^2 + \beta_2^2 + \dots - c^2)$$
+	
+	How can we solve it? 
+	\begin{itemize}
+		\item Partial derivatives
+		\item Numerical solution using different values for $\lambda$. Note $\lambda \geq 0$
+	\end{itemize}
+
+	$$argmin\{F(\alpha, \beta, \lambda)\} =  RSS(\alpha,\beta) +  \lambda \sum_{j=1}^p \beta_j^2$$
+	
+	
+	Interpretation of $\lambda$
+	\begin{itemize}
+		\item $\lambda=0$, then OLS
+		\item $\lambda>>0$, then $\beta$=0
+	\end{itemize}
+}
+
+\frame{
+\frametitle{Ridge regression and ordinary least squares} 
+
+The ridge regression estimate is available in closed form
+\begin{equation}
+\hat{\beta}_{Ridge} = \underbrace{(x^t x + \lambda I)^{(-1)} }_{p \times p}  \underbrace{x^t}_{p \times n} \underbrace{y}_{n \times 1}, \nonumber
+\end{equation}
+where $I$ is a $p \times p$ diagonal matrix with ones on the diagonal and zero on the off-diagonal
+\begin{equation}
+x^t x + \lambda I =  n  \begin{bmatrix}
+   cov(x_1)  & cov(x_{12}) & cov(x_{13})  \\
+   cov(x_{21})  & cov(x_2)  & cov(x_{23})  \\
+   cov(x_{31})  & cov(x_{23}) & cov(x_3) \\
+   \end{bmatrix} + \begin{bmatrix}
+   \lambda  & 0 & 0  \\
+   0  & \lambda & 0  \\
+   0  & 0 & \lambda  \\
+   \end{bmatrix}. \nonumber
+\end{equation}
+
+This resembles the OLS estimate apart from $ +  \lambda I$
+\begin{equation}
+\hat{\beta}_{OLS} = \underbrace{(x^t x)^{(-1)} }_{p \times p}  \underbrace{x^t}_{p \times n} \underbrace{y}_{n \times 1}. \nonumber
+\end{equation}
+
+}
+
+
+\frame{
+\frametitle{Ridge regression and ordinary least squares} 
+ \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/ridge1}
+}
+
+\frame{
+\frametitle{Ridge regression and ordinary least squares} 
+\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/ridge2}
+}
+
+
+\frame{
+\frametitle{Ridge regression and ordinary least squares} 
+
+\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/ridge3}
+
+
+}
+
+\frame{
+\frametitle{Ridge regression and ordinary least squares} 
+\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/ridge4}
+}
+
+
+\frame{
+\frametitle{Ridge regression and ordinary least squares} 
+\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/ridge5}
+}
+
+\frame{
+\frametitle{Ridge regression and ordinary least squares} 
+\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/ridge7}
+}
+
+\frame{
+\frametitle{Ridge regression and ordinary least squares} 
+\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/ridge6}
+}
+
+
+\subsection{Lasso}
+
+\frame{
+\frametitle{Lasso regression} 
+
+
+\begin{equation}
+\underset{\hat{\alpha}, \hat{\beta}_{Lasso}}{argmin} =  \underbrace{RSS(\alpha,\beta)}_{\text{Residual Sum of Squares}} +  \underbrace{\lambda \sum_{j=1}^p \left| \beta_j \right| }_{\text{penalty}} \nonumber
+\end{equation}
+
+Interpretation: 
+\begin{itemize}
+\item The Lasso regression coefficient $\hat{\beta}_{Lasso}$ is a biased estimate, but has a reduced variance compared to $\hat{\beta}_{OLS}$.
+\item There is an intrinsic model selection in Lasso regression, as it sets certain variables exactly to $\hat{\beta}_{Lasso} = 0$, and thus excludes them from the model.
+\item When two variables are highly correlated, Lasso includes only one (at random) and not both.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{Lasso regression: Geometric interpretation} 
+	
+	\begin{columns}
+		\column{.5\textwidth}
+		\begin{itemize}
+			\item $||\beta||_1\leq c$
+			\item Where is the BLUE?
+			\item Where is the lasso solution?
+		\end{itemize}
+		\column{.5\textwidth}
+		\centering \includegraphics [scale=0.20]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/lasso.png}
+	\end{columns}
+If circle, then we are not really sure where min $\beta$ is, but if diamond the sharp edges makes it likely to hit at 0: $\beta_2 = c$ and $\beta_1 = 0$.
+}
+
+
+\frame{
+\frametitle{Ridge and lasso: Induced shrinkage} 
+
+\centering \includegraphics [scale=0.25]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/Ridge-vs-Lasso.png}
+}
+
+
+
+
+
+\frame{
+\frametitle{Ridge and lasso: Bayesian interpretation} 
+
+
+\centering \includegraphics [scale=0.7]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/Bayes-regression}
+\vspace{-0.2cm}
+
+\begin{itemize}
+\item Left: Ridge regression is the posterior mode for $\beta$ under a Gaussian prior.
+\item Right: Lasso regression is the posterior mode for $\beta$ under a double-exponential prior.
+\end{itemize}
+
+}
+
+
+\subsection{Elastic net}
+
+\frame{
+\frametitle{Elastic net regression} 
+
+
+\begin{equation}
+\underset{\hat{\alpha}, \hat{\beta}_{\text{Elastic net}}}{argmin} =  \underbrace{RSS(\alpha,\beta)}_{\text{Residual Sum of Squares}} +  \underbrace{\lambda_1 \sum_{j=1}^p \left| \beta_j \right|  +  \lambda_2 \sum_{j=1}^p \beta_j^2}_{\text{penalty}} \nonumber
+\end{equation}
+
+Interpretation: 
+\begin{itemize}
+\item The Elastic net regression coefficient $\hat{\beta}_{\text{Elastic net}}$ is a biased estimate, but has a reduced variance compared to $\hat{\beta}_{OLS}$.
+\item There is an intrinsic model selection in Lasso regression, as it sets certain variables exactly to $\hat{\beta}_{\text{Elastic net}} = 0$, and thus excludes them from the model.
+\item When two variables are highly correlated, Elastic net includes both (Grouping property).
+\end{itemize}
+}
+
+
+\frame{
+	\frametitle{Elastic net regression: reparametrization} 
+	
+	
+	\begin{equation}
+	\underset{\hat{\alpha}, \hat{\beta}_{\text{Elastic net}}}{argmin} =  \underbrace{RSS(\alpha,\beta)}_{\text{Residual Sum of Squares}} +  \lambda \bigg[\alpha\left|\left|\beta \right|\right|_1  +  (1-\alpha)\left|\left|\beta \right|\right|_2^2 \bigg] \nonumber
+	\end{equation}
+	
+	\begin{itemize}
+		\item $\alpha$ can be seen as a mixing parameter
+		\item When $\alpha = 0$ ridge regression
+		\item When $\alpha = 1$ lasso regression
+		\item How can we select the optimal $\lambda$ and $\alpha$?
+	\end{itemize}
+
+}
+
+
+
+\subsection{How to tune the regularisation parameter?}
+
+
+\frame{
+\frametitle{How to tune the regularisation parameter?} 
+
+\begin{equation}
+\underset{\alpha, \beta}{argmin} =  RSS(\alpha,\beta) +  \lambda f(\beta) \nonumber
+\end{equation}
+
+\begin{block}{$\lambda$ is the regularisation parameter}{
+\begin{itemize}
+\item $\lambda = 0$: No regularisation 
+\item Small $\lambda$: Minimal regularisation 
+\item Large $\lambda$: Strong regularisation 
+\item How to choose the optimal $\lambda$? \\
+ $\rightarrow$ Cross-validation (Lecture 3c) 
+\end{itemize}}
+\end{block}
+
+
+
+}
+
+
+
+\subsection{Prediction using penalised regression}
+
+
+
+\frame{
+\frametitle{Prediction using penalised regression} 
+
+\begin{itemize}
+\item Regularized regression is an ideal tool for prediction.
+\item We can define a prediction rule $\hat{f}(x)$ using the penalised regression coefficients
+\begin{equation}
+\hat{y} =  \hat{f}(x) = \alpha +  x \hat{\beta}_{\text{Penalised}}  \nonumber
+\end{equation}
+where $\hat{\beta}_{\text{Penalised}}$ are the $p$ regularized regression coefficients.
+\item Since Lasso and Elastic net force some $\hat{\beta}_{\text{Penalised}}$ to zero, variables with $\hat{\beta}_{\text{Penalised}}=0$ are excluded from the model and do not contribute to the prediction rule.
+\item In contrast in Ridge regression all variables contribute to $\hat{f}(x)$.
+\end{itemize}
+
+
+}
+
+
+
+
+
+\section{Penalised regression in R}
+
+
+
+\frame{
+	\frametitle{Penalised regression in R: glmnet()} 
+	
+	\begin{block}{}{
+			\texttt{glmnet(\textcolor{blue}{x, y}, \textcolor{red}{family}, alpha,nlambda = 100, lambda.min.ratio = ifelse(nobs<nvars,0.01,0.0001), lambda=NULL, standardize = TRUE, intercept=TRUE)}
+		}
+	\end{block}
+	
+	
+	
+	
+	\textcolor{blue}{Input}
+	\begin{itemize}
+		\item $y$: Outcome or response
+		\item $x$: Predictors, formatted \texttt{as.matrix(x)}
+	\end{itemize}
+	
+	
+	
+	\textcolor{red}{Generalised linear models included}
+	\begin{itemize}
+		\item Linear regression: family = `gaussian'
+		\item Logistic regression: family = `binomial'
+		\item Count regression: family = `poisson'
+		\item Categorical outcome: family  = `multinomial'
+		\item Survival model: family  = `cox'
+		\item Multivariate linear model: family = `mgaussian'
+	\end{itemize}
+	
+}
+
+
+
+
+
+\frame{
+	\frametitle{Penalised regression in R: glmnet()} 
+	
+	
+	\begin{block}{}{
+			\texttt{glmnet(x, y, family, \textcolor{red}{alpha}, \textcolor{blue}{nlambda = 100, lambda.min.ratio = ifelse(nobs<nvars,0.01,0.0001), lambda=NULL}, standardize = TRUE, intercept=TRUE)}
+		}
+	\end{block}
+	
+	
+	\textcolor{red}{Penalised regression models}:
+	\begin{itemize}
+		\item Ridge regression: alpha = 0
+		\item Lasso regression: alpha = 1
+		\item Elastic net: 0$<$alpha$<$1
+	\end{itemize}
+	\textcolor{blue}{Regularisation parameter}:
+	\begin{itemize}
+		\item Specify lambda for a pre-defined regularisation parameter 
+		\item Recommended: Perform cross-validation
+		\begin{itemize}
+			\item[$\diamond$] nlambda: Grid length
+			\item[$\diamond$] lambda.min.ratio = ifelse(nobs$<$nvars,0.01,0.0001)
+		\end{itemize}
+	\end{itemize}
+	
+}
+
+
+\frame{
+	\frametitle{Penalised regression in R: glmnet} 
+	
+	\begin{block}{}{
+			glmnet.out = \texttt{glmnet(x, y, family, alpha)}
+		}
+	\end{block}
+	
+	
+	Values:
+	\begin{itemize}
+		\item Intercept:  glmnet.out$\$$a0
+		\item Regression coefficient estimates:  glmnet.out$\$$beta
+		\item Regularisation parameters used:  glmnet.out$\$$lambda
+	\end{itemize}
+	
+	Functions:
+	\begin{itemize}
+		\item Cross-validation: \texttt{cv.glmnet()}
+		\item Regression coefficients: \texttt{coef(glmnet.out)}
+		\item Prediction: \texttt{predict(glmnet.out, newx)}
+	\end{itemize}
+	
+	
+}
+
+
+
+
+\frame{
+	\frametitle{Penalised regression in R: glmnet} 
+	
+	For more details on glmnet, see the useful vignette:
+	\url{http://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html}
+	
+	
+	\vspace{0.6cm}
+	
+	Other packages in R
+	\begin{itemize}
+		\item lm.ridge in the MASS package
+		\item lars in the lars package
+		\item penalized in the penalized package
+	\end{itemize}
+	
+}
+
+
+
+\section{Application}
+
+
+\subsection{Diabetes data}
+\frame{
+	\frametitle{Example: Diabetes data} 
+	\begin{itemize}
+		\item $y$: quantitative measure of disease progression one year after baseline (vector)
+		\item $x$: predictor matrix
+		\begin{itemize}
+			\item[$\diamond$] clinical parameters: age, sex, bmi
+			\item[$\diamond$] map: blood pressure
+			\item[$\diamond$] tc: total cholesterol 
+			\item[$\diamond$] ldl: low-density lipoprotein
+			\item[$\diamond$] hdl: high-density lipoprotein
+			\item[$\diamond$] tch: total cholesterol over hdl
+			\item[$\diamond$] ltg: triglycerides
+			\item[$\diamond$] glu: glucose
+		\end{itemize}
+		\item $n=442$: sample size
+	\end{itemize}
+	
+}
+
+\frame{
+	\frametitle{Ridge regression and diabetes data } 
+	
+	\begin{enumerate}
+		\item \texttt{lm(y$\sim$x)}
+		\item \texttt{glmnet(x,y,family="gaussian",alpha=0,lambda=0.1)}
+		\item \texttt{glmnet(x,y,family="gaussian",alpha=0,lambda=1)}
+	\end{enumerate}
+	
+	\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/diabetes-ridge}
+	
+}
+
+\frame{
+	\frametitle{Lasso regression and diabetes data } 
+	
+	\begin{enumerate}
+		\item \texttt{lm(y$\sim$x)}
+		\item \texttt{glmnet(x,y,family="gaussian",alpha=1,lambda=0.1)}
+		\item \texttt{glmnet(x,y,family="gaussian",alpha=1,lambda=40)}
+	\end{enumerate}
+	
+	\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/diabetes-lasso}
+	
+}
+
+\frame{
+	\frametitle{Elastic regression and diabetes data } 
+	
+	\begin{enumerate}
+		\item \texttt{lm(y$\sim$x)}
+		\item \texttt{glmnet(x,y,family="gaussian",alpha=0.5,lambda=0.1)}
+		\item \texttt{glmnet(x,y,family="gaussian",alpha=0.5,lambda=40)}
+	\end{enumerate}
+	
+	\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/diabetes-enet}
+	
+}
+
+\subsection{Breast cancer data}
+\frame{
+	\frametitle{Example: Breast cancer data} 
+	\begin{itemize}
+		\item $y$: benign or aggressive tumour (binary)
+		\begin{table}
+			\begin{tabular}{ c | c | c}   
+				Benign & Aggressive & Total \\
+				\hline
+				185 & 121 & 306
+			\end{tabular}
+		\end{table} 
+		\item $x$: gene expression of $p = 22,283$ genes
+		\item $n=306$: sample size
+		\item Truly big data $n < < p$
+		\item Data taken from Hatzis et al 2011
+		\url{https://jamanetwork.com/journals/jama/fullarticle/899864}
+	\end{itemize}
+	
+	
+	
+}
+
+
+
+\frame{
+	\frametitle{Breast cancer data and glm} 
+	
+	\begin{enumerate}
+		\item \texttt{glm(severity$\sim$as.matrix(x), family='binomial')}
+	\end{enumerate}
+	\centering \includegraphics [scale=0.5]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/glm_error}
+	
+}
+
+
+
+\frame{
+	\frametitle{Breast cancer data and lasso} 
+	
+	\includegraphics [scale=0.42]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/bcac_lasso2}
+	
+}
+
+
+
+\frame{
+	\frametitle{Breast cancer data and elastic net} 
+	
+	\includegraphics [scale=0.42]{E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/lectures/graphs/bcac_enet2}
+	
+}
+
+
+
+
+
+
+\frame{
+	\frametitle{Take away: Penalized regression models} 
+	
+	
+	\begin{itemize}
+		\item Regularized regression approaches minimise the residual sum of squares and an additional penalty function.
+		\item Different penalties imply different approaches:
+		\begin{itemize}
+			\item[$\diamond$] Ridge regression: $L2$
+			\item[$\diamond$] Lasso regression: $L1$
+			\item[$\diamond$] Elastic net regression: $L1+L2$
+		\end{itemize}
+		\item Penalized regression approaches are biased, they underestimate the size of the true effect.
+		\item But they reduce the variance of the estimate and the prediction rule.
+		\item Lasso and Elastic net perform an intrinsic model selection.
+		\item The regularisation parameter $\lambda$ can be chosen using cross-validation.
+	\end{itemize}
+	
+	
+}
+
+
+\frame{
+	\frametitle{Further reading: } 
+	
+	
+	\begin{itemize}
+		\item An Introduction to Statistical Learning: 
+		Chapter 6.2 (Shrinkage Methods) and 6.6 (Lab 2: Ridge Regression and the Lasso)
+		\url{http://www-bcf.usc.edu/~gareth/ISL/index.html}
+		\item   The epigenetic clock:  `A multi-tissue full lifespan epigenetic clock for mice'
+		\url{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6224226/}  \\
+		\textit{Using DNA methylation data from previous publications with data collected in house for a total 1189 samples spanning 193,651 CpG sites, we developed 4 novel epigenetic clocks by choosing different regression models (elastic net- versus ridge-regression) and by considering different sets of CpGs (all CpGs vs highly conserved CpGs).}
+	\end{itemize}
+	
+}
+
+
+
+
+\end{document}
+
+
+
+
+
+
+

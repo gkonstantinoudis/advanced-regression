@@ -1,0 +1,64 @@
+\headcommand {\slideentry {0}{0}{1}{1/1}{}{0}}
+\headcommand {\beamer@framepages {1}{1}}
+\headcommand {\slideentry {0}{0}{2}{2/2}{}{0}}
+\headcommand {\beamer@framepages {2}{2}}
+\headcommand {\beamer@sectionpages {1}{2}}
+\headcommand {\beamer@subsectionpages {1}{2}}
+\headcommand {\sectionentry {1}{Ensemble methods}{3}{Ensemble methods}{0}}
+\headcommand {\beamer@subsectionpages {3}{2}}
+\headcommand {\beamer@subsectionentry {0}{1}{1}{3}{Bagging}}
+\headcommand {\slideentry {1}{1}{1}{3/3}{Bagging}{0}}
+\headcommand {\beamer@framepages {3}{3}}
+\headcommand {\slideentry {1}{1}{2}{4/4}{Bagging}{0}}
+\headcommand {\beamer@framepages {4}{4}}
+\headcommand {\slideentry {1}{1}{3}{5/5}{Bagging}{0}}
+\headcommand {\beamer@framepages {5}{5}}
+\headcommand {\slideentry {1}{1}{4}{6/6}{Bagging}{0}}
+\headcommand {\beamer@framepages {6}{6}}
+\headcommand {\slideentry {1}{1}{5}{7/7}{Bagging}{0}}
+\headcommand {\beamer@framepages {7}{7}}
+\headcommand {\slideentry {1}{1}{6}{8/8}{Bagging}{0}}
+\headcommand {\beamer@framepages {8}{8}}
+\headcommand {\beamer@subsectionpages {3}{8}}
+\headcommand {\beamer@subsectionentry {0}{1}{2}{9}{Random forests}}
+\headcommand {\slideentry {1}{2}{1}{9/9}{Random forests}{0}}
+\headcommand {\beamer@framepages {9}{9}}
+\headcommand {\slideentry {1}{2}{2}{10/10}{Random forests}{0}}
+\headcommand {\beamer@framepages {10}{10}}
+\headcommand {\beamer@subsectionpages {9}{10}}
+\headcommand {\beamer@subsectionentry {0}{1}{3}{11}{Boosting}}
+\headcommand {\slideentry {1}{3}{1}{11/11}{Boosting}{0}}
+\headcommand {\beamer@framepages {11}{11}}
+\headcommand {\slideentry {1}{3}{2}{12/12}{Boosting}{0}}
+\headcommand {\beamer@framepages {12}{12}}
+\headcommand {\slideentry {1}{3}{3}{13/13}{Boosting}{0}}
+\headcommand {\beamer@framepages {13}{13}}
+\headcommand {\beamer@subsectionpages {11}{13}}
+\headcommand {\beamer@subsectionentry {0}{1}{4}{14}{Variable importance}}
+\headcommand {\slideentry {1}{4}{1}{14/14}{Variable importance}{0}}
+\headcommand {\beamer@framepages {14}{14}}
+\headcommand {\beamer@subsectionpages {14}{14}}
+\headcommand {\beamer@subsectionentry {0}{1}{5}{15}{Ensemble methods in \texttt {R}}}
+\headcommand {\slideentry {1}{5}{1}{15/15}{Ensemble methods in \texttt {R}}{0}}
+\headcommand {\beamer@framepages {15}{15}}
+\headcommand {\slideentry {1}{5}{2}{16/16}{Ensemble methods in \texttt {R}}{0}}
+\headcommand {\beamer@framepages {16}{16}}
+\headcommand {\slideentry {1}{5}{3}{17/17}{Ensemble methods in \texttt {R}}{0}}
+\headcommand {\beamer@framepages {17}{17}}
+\headcommand {\slideentry {1}{5}{4}{18/18}{Ensemble methods in \texttt {R}}{0}}
+\headcommand {\beamer@framepages {18}{18}}
+\headcommand {\slideentry {1}{5}{5}{19/19}{Ensemble methods in \texttt {R}}{0}}
+\headcommand {\beamer@framepages {19}{19}}
+\headcommand {\slideentry {1}{5}{6}{20/20}{Ensemble methods in \texttt {R}}{0}}
+\headcommand {\beamer@framepages {20}{20}}
+\headcommand {\slideentry {1}{5}{7}{21/21}{Ensemble methods in \texttt {R}}{0}}
+\headcommand {\beamer@framepages {21}{21}}
+\headcommand {\slideentry {1}{5}{8}{22/22}{Ensemble methods in \texttt {R}}{0}}
+\headcommand {\beamer@framepages {22}{22}}
+\headcommand {\slideentry {1}{5}{9}{23/23}{Ensemble methods in \texttt {R}}{0}}
+\headcommand {\beamer@framepages {23}{23}}
+\headcommand {\beamer@partpages {1}{23}}
+\headcommand {\beamer@subsectionpages {15}{23}}
+\headcommand {\beamer@sectionpages {3}{23}}
+\headcommand {\beamer@documentpages {23}}
+\headcommand {\gdef \inserttotalframenumber {23}}

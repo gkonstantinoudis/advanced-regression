@@ -1,0 +1,7 @@
+\babel@toc {german}{}
+\beamer@sectionintoc {1}{Ensemble methods}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Bagging}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Random forests}{9}{0}{1}
+\beamer@subsectionintoc {1}{3}{Boosting}{11}{0}{1}
+\beamer@subsectionintoc {1}{4}{Variable importance}{14}{0}{1}
+\beamer@subsectionintoc {1}{5}{Ensemble methods in \texttt {R}}{15}{0}{1}
