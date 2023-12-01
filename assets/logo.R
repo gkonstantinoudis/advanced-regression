@@ -22,28 +22,29 @@ s.mvn <- s.mvn %>% as.data.frame()
 
 data.grid <- expand.grid(s.1 = seq(-5, 8, length.out=200), s.2 = seq(-5, 12, length.out=200))
 q.samp <- cbind(data.grid, prob = mvtnorm::dmvnorm(data.grid, mean = mu2, sigma = sigma2))
-blues <- brewer.pal(n = 8, name = "Blues")
-blues[1] <- "#FFFFFF"
+blues <- brewer.pal(n = 9, name = "Blues")
+blues <- c("#FFFFFF", blues)
+# blues <- c(adjustcolor( "white", alpha.f = 0.01), blues)
+
 
 ggplot() + 
   # geom_contour(data=q.samp, aes(x=s.1,y=s.2,z=prob), bins = 4, lwd = 1, col = "plum2", alpha = .7) + 
-  geom_density_2d_filled(data = s.mvn, aes(x=X, y=Y), alpha = 0.95) + 
+  geom_contour_filled(data=q.samp, aes(x=s.1,y=s.2,z=prob)) +
+  scale_fill_manual(values = blues) + 
+  # geom_density_2d_filled(data = s.mvn, aes(x=X, y=Y), alpha = 0.95) + 
   geom_point(aes(x=0, y=0), col = "orange", pch = 18, cex = 80, alpha = 0.5) + 
   geom_vline(xintercept = 0) +
   geom_hline(yintercept = 0) +
-  geom_point() + 
-  xlim(c(-2.5, 8)) + 
-  ylim(c(-2.5, 11)) + 
+  xlim(c(-3, 8)) + 
+  ylim(c(-3, 11)) + 
   stat_ellipse(level = 0.9) +
   stat_ellipse(level = 0.95, color = 2) +
   stat_ellipse(level = 0.99, color = 3) + 
   # geom_point(aes(x=mu2[1], y=mu2[2]), cex = 2) + 
   theme_void() + 
-  scale_fill_manual(values = blues) + 
   theme(legend.position = "none")
 
-getwd()
-ggsave('myplot.png', bg='transparent')
+ggsave('assets/logo.png', width = 7)
 
 
 # basis function
@@ -68,4 +69,13 @@ ggplot() +
   geom_line(data = dat2plot %>% dplyr::filter(z %in% "res"), aes(x=x, y=y), lwd = 1.3, col = "red3") + 
   theme_void() + 
   theme(legend.position = "none")
+
+
+
+
+
+
+
+##
+##
 
