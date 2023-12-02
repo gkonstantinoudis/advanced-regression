@@ -1,0 +1,89 @@
+---
+title: "plotEN"
+output: html_document
+date: "2023-12-02"
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(shiny)
+library(ggplot2)
+library(dplyr)
+
+plotElasticNet <- function(mixing_alpha){
+  beta_2 <- seq(from = -2.5, to = 2.5, length.out = 1000)
+  lambda = 2.5
+  
+  get_en <- function(alpha, beta_2, lambda){
+    
+    A = 1-2*alpha
+    B = 2*(1-alpha)*(abs(beta_2) - alpha*abs(beta_2) - lambda)
+    C = (1-2*alpha)*beta_2^2 - 2*lambda*(1 - alpha)*abs(beta_2) + lambda^2
+    D = B^2 - 4*A*C
+    
+    beta13 = (-B - sqrt(D))/(2*A)
+    beta14 = -(-B - sqrt(D))/(2*A)
+    
+    return(list(beta13, beta14))
+    
+  }
+  
+  
+  dat.plot1 <- 
+    data.frame(
+      beta_1 = get_en(alpha = mixing_alpha, lambda = 2.5, beta_2 = beta_2) %>% unlist(),
+      beta_2 = c(beta_2, beta_2)
+    )
+  dat.plot1 <- dat.plot1[!is.nan(dat.plot1$beta_1),]
+  
+  
+  dat.plot2 <- 
+    data.frame(
+      beta_1 = get_en(alpha = 0, lambda = 2.5, beta_2 = beta_2) %>% unlist(),
+      beta_2 = c(beta_2, beta_2)
+    )
+  dat.plot2 <- dat.plot2[!is.nan(dat.plot2$beta_1),]
+  
+  
+  dat.plot3 <- 
+    data.frame(
+      beta_1 = get_en(alpha = 1, lambda = 2.5, beta_2 = beta_2) %>% unlist(),
+      beta_2 = c(beta_2, beta_2)
+    )
+  dat.plot3 <- dat.plot3[!is.nan(dat.plot3$beta_1),]
+  
+  
+  
+  ggplot() + 
+    geom_path(data = dat.plot1, aes(x=beta_1, y=beta_2), col = "blue4", lwd = 1) + 
+    geom_path(data = dat.plot2, aes(x=beta_1, y=beta_2), lty = "dashed", col = "blue4") + 
+    geom_path(data = dat.plot3, aes(x=beta_1, y=beta_2), lty = "dotted", col = "blue4") + 
+    xlim(c(-3, 5)) + 
+    ylim(c(-3, 5)) + 
+    annotate(geom="text", x=-0.5, y=4, label=expression(beta[1]),
+             color="black") + 
+    annotate(geom="text", x=4, y=-.5, label=expression(beta[2]),
+             color="black") + 
+    geom_segment(aes(x = 0, y = -3, xend = 0, yend = 4),
+                 arrow = arrow(length = unit(0.2, "cm")), lwd=1) + 
+    geom_segment(aes(x = -3, y = 0, xend = 4, yend = 0),
+                 arrow = arrow(length = unit(0.2, "cm")), lwd=1) +
+    theme_void() + 
+    theme(legend.position = "none")  -> pret
+    
+  return(pret)
+}
+```
+
+## Check the EN plot
+
+
+```{r eruptions, echo=FALSE, warning=FALSE, message=FALSE}
+
+ sliderInput("alpha", "Mixing parameter:",
+    min = 0, max = 1, value = 0.51, step = 0.03
+  )
+
+renderPlot({
+  plotElasticNet(mixing_alpha = input$alpha)
+})
