@@ -1,0 +1,1026 @@
+---
+title: "Penalised regression models"
+date: "20-02-2023"
+author:
+  name: "Garyfallos Konstantinoudis"
+institute: "Imperial College London"
+editor: visual
+date-format: medium
+title-slide-attributes:
+  data-background-color: "#f3f4f4"
+  data-background-size: 80%
+  data-background-position: 60% 120%
+format:
+    revealjs:
+      slide-number: true
+      theme: [default, ../../assets/style.scss]
+      incremental: false
+      chalkboard:
+        buttons: false
+---
+
+## Overview
+
+Penalised regression
+
+-   Ridge regression
+
+-   Lasso
+
+-   Elastic net
+
+-   Tuning the different parameters
+
+Examples in R and applications
+
+## The linear model
+
+$$
+y = \alpha + x\beta + \epsilon
+$$
+
+-   $y$: Outcome, response, dependent variable with dimension: $n \times 1$
+
+-   $x$: Regressors, exposures, covariates, input, explanatory, or independent variables with dimension: $n \times p$
+
+-   $\epsilon$: Residuals, error
+
+-   $\alpha$: Intercept
+
+-   $\beta$: Regression coefficients, vector of length $p$
+
+## Classical regression
+
+-   The ordinary least squares $\hat{\beta}_{OLS}$ is defined as: $\hat{\beta}_{OLS} = \underbrace{(x^t x)^{(-1)} }_{p \times p} \underbrace{x^t}_{p \times n} \underbrace{y}_{n \times 1}$
+
+-   The residual sum of squares (RSS) is minimised by the ordinary least squares estimate:
+
+$$
+\begin{align}
+RSS(\alpha, \beta) & =   \epsilon_1^2  + … +  \epsilon_i^2   + … + \epsilon_n^2 =  \sum_{i=1}^n  \epsilon_i^2  \nonumber \\& =  \sum_{i=1}^n  \left(y_i - \hat{y}_i \right)^2  \nonumber  =  \sum_{i=1}^n  \left(y_i - (\alpha + \beta x_i) \right)^2  \nonumber 
+\end{align}
+$$
+
+## Residual sum of squares (RSS)
+
+```{r}
+#| echo: false
+#| eval: true
+
+library(ggplot2)
+library(dplyr)
+library(ggrepel)
+library(pBrackets)
+
+bracketsGrob <- function(...){
+  l <- list(...)
+  e <- new.env()
+  e$l <- l
+  grid:::recordGrob(  {
+    do.call(grid.brackets, l)
+  }, e)
+}
+
+set.seed(11)
+x1 <- rnorm(n = 8, mean = 0, sd = 1)
+y1 <- 0.8 * x1 + rnorm(n = 8, mean = 0, sd = 1)
+
+coefs <- lm(y1 ~ x1) %>% coef()
+fitted <- coefs[1] + coefs[2] * x1
+
+br1 <- bracketsGrob(x1 = 0, y1 = 0, x2 = 1, y2 = 1, h = 0.2, lwd = 2)
+
+ggplot(data = data.frame(x = x1, y = y1), aes(x = x1, y = y1)) +
+  geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
+  geom_segment(aes(xend = x1, yend = fitted)) +
+  geom_point(size = 3) +
+  geom_point(aes(x = x1, y = fitted), shape = 25, fill = "blue", col = "blue", size = 3) +
+  theme_bw() +
+  ylab("y-axis") +
+  xlab("x-axis") +
+  annotate("text", x = 0.2, y = 0.1, label = expression(paste(r[i], "=", hat(y)[i], "-", y[i])), size = 8) +
+  annotate("text", x = 0.9, y = 0.5, label = expression(paste("(", x[i], ", ", y[i], ")")), size = 8) +
+  annotate("text", x = 0.9, y = -0.4, label = expression(paste("(", x[i], ", ", hat(y)[i], ")")), size = 8) +
+  annotation_custom(br1, xmin = 0.5, xmax = 0.501, ymin = -0.35, ymax = 0.5) +
+  theme(text = element_text(size = 20))
+
+```
+
+-   Note $\sum_{i=1}^n\epsilon_i=0$
+
+## Classical regression and high-dimensional data
+
+-   When $n<<p$ the ordinary least squares cannot be computed because $\underbrace{(x^t x)}_{p \times p}$ is singular (rank $n$)
+
+## Bias-variance trade-off
+
+-   The ordinary least squares estimate is best linear unbiased estimator (BLUE).
+
+-   BEST (smallest variance) among UNBIASED (zero bias) estimators.
+
+-   When considering high-dimensional data, the OLS estimate has a high variability. (dramatically different over different samples).
+
+-   We rather prefer an estimate that is biased (towards a sensible option, e.g. the Null), but is precise, (ie has low variance).
+
+## Idea
+
+::: {.callout-tip icon="false"}
+Control the estimates' variance by not allowing the to be too big. Constraints on how big they get. Does it remind you anything?
+:::
+
+## Motivation for penalised least squares
+
+Minimise RSS but with penalty
+
+$$\underset{\alpha, \beta}{argmin} =  \underbrace{RSS(\alpha,\beta)}_{\text{Residual Sum of Squares}} +  \underbrace{\lambda  f(\beta)}_{\text{penalty}} $$
+
+-   Residual Sum of Squares: $RSS(\alpha,\beta) = \sum_{i=1}^n \left(y_i - (\alpha + \beta x_i) \right)^2$
+
+-   Penalty term as a function of the regression coefficients $\beta$: $f(\beta)$
+
+-   Regularization parameter: $\lambda$
+
+-   The intercept is not penalised
+
+## Motivation for penalised least squares
+
+The penalty introduces a bias, so why do it?
+
+-   Which variables do we include? Only those for which it is worth to take the penalty.
+
+-   Occam's razor: It induces sparsity and favours models with lower complexity (Lasso and elastic net).
+
+-   Regularizes the inversion of $x^t x$ (Ridge regression).
+
+## Different penalty terms define different methods
+
+$$\underset{\alpha, \beta}{argmin} =  RSS(\alpha,\beta) +  \lambda f(\beta)$$
+
+-   Ridge regression: L2 penalty: $\lambda f(\beta) = \lambda \sum_{j=1}^p \beta_j^2$
+
+-   Lasso regression: L1 penalty: $f(\beta) = \lambda \sum_{j=1}^p \left| \beta_j \right|$
+
+-   Elastic net regression: L1 + L2 penalty:
+
+    $$\lambda f(\beta) =  \lambda_1 \sum_{j=1}^p \left| \beta_j \right|  +  \lambda_2 \sum_{j=1}^p \beta_j^2$$
+
+## Ridge regression
+
+Ridge regression uses the L2 norm as penalty:$$\underset{\alpha, \hat{\beta}_{Ridge}}{argmin} =  \underbrace{RSS(\alpha,\beta)}_{\text{Residual Sum of Squares}} +  \underbrace{\lambda \sum_{j=1}^p \beta_j^2}_{\text{penalty}}$$
+
+Interpretation:
+
+-   The Ridge regression coefficient $\hat{\beta}_{Ridge}$ is a biased estimate, but has a reduced variance compared to $\hat{\beta}_{OLS}$.
+
+-   There is no intrinsic model selection in Ridge regression, all $p$ variables will have $\hat{\beta}_{Ridge} \neq 0$.
+
+-   Minimise the RSS while forcing $\beta$ not to be very large.
+
+## Ridge regression: Geometric interpretation
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(mvtnorm)
+library(RColorBrewer)
+library(ggrepel)
+library(pBrackets)
+library(patchwork)
+library(ggforce)
+
+bracketsGrob <- function(...) {
+  l <- list(...)
+  e <- new.env()
+  e$l <- l
+  grid:::recordGrob(
+    {
+      do.call(grid.brackets, l)
+    },
+    e
+  )
+}
+
+sigma2 <- matrix(c(3, 3.5,
+                   3.5, 5), 
+                 nrow = 2, ncol = 2, byrow = TRUE)
+
+mu2 <- c(X = 2.5, Y = 5.7)
+
+lambda <- 2.5
+
+data.frame(
+  x = c(lambda, 0, -lambda, 0), 
+  y = c(0, -lambda, 0, lambda)
+) -> datlambda
+
+
+data.grid <- expand.grid(s.1 = seq(-5, 8, length.out=200), s.2 = seq(-5, 12, length.out=200))
+q.samp <- cbind(data.grid, prob = mvtnorm::dmvnorm(data.grid, mean = mu2, sigma = sigma2))
+blues <- brewer.pal(n = 9, name = "Blues")
+blues <- c("#FFFFFF", blues)
+
+
+br1 <- bracketsGrob(x1 = -0.4, y1 = 0.15, x2 = -0.4, y2 = 0.8, h = 0.1, lwd = 1.5)
+
+##
+## Ridge
+
+sigma2 <- matrix(c(3, 3.5,
+                   3.5, 5), 
+                 nrow = 2, ncol = 2, byrow = TRUE)
+
+mu2 <- c(X = 2.5, Y = 5.7)
+
+
+data.grid <- expand.grid(s.1 = seq(-5, 8, length.out=200), s.2 = seq(-5, 12, length.out=200))
+q.samp <- cbind(data.grid, prob = mvtnorm::dmvnorm(data.grid, mean = mu2, sigma = sigma2))
+blues <- brewer.pal(n = 9, name = "Blues")
+blues <- c("#FFFFFF", blues)
+
+
+ggplot() + 
+  geom_contour_filled(data=q.samp, aes(x=s.1,y=s.2,z=prob)) +
+  scale_fill_manual(values = blues) + 
+  geom_circle(aes(x0=0, y0=0, r=lambda), col = NA, fill = "orange", alpha = 0.5) + 
+  xlim(c(-3, 9)) + 
+  ylim(c(-3, 12)) + 
+  geom_point(aes(x=mu2[1], y=mu2[2]), cex = 2, col = "red") + 
+  geom_point(aes(x=0.2, y=2.45), cex = 2, col = "red") +
+  theme_void() + 
+  geom_segment(aes(x = 0.2, y = 2.45, xend = 3, yend = 2.45),
+               arrow = arrow(length = unit(0.2, "cm"))) + 
+  geom_segment(aes(x = 2.5, y = 5.7, xend = 4.5, yend = 5.7),
+               arrow = arrow(length = unit(0.2, "cm"))) + 
+  annotate(geom="text", x=5, y=5.7, label=expression(hat(beta)[OLS]),
+           color="black") + 
+  annotate(geom="text", x=3.5, y=2.45, label=expression(hat(beta)[ridge]),
+           color="black") + 
+  annotate(geom="text", x=-0.5, y=10, label=expression(beta[1]),
+           color="black") + 
+  annotate(geom="text", x=7, y=-.5, label=expression(beta[2]),
+           color="black") + 
+  annotate(geom="text", x=2, y=-2, label=expression(L[2]~": "~beta[1]^2~+~beta[2]^2~" <"~lambda),
+           color="black") + 
+  annotate(geom="text", x=-.6, y=1.3, label=expression(sqrt(lambda)),
+           color="black") +
+  geom_segment(aes(x = 0, y = -3, xend = 0, yend = 10.8),
+               arrow = arrow(length = unit(0.2, "cm"))) + 
+  geom_segment(aes(x = -3, y = 0, xend = 8, yend = 0),
+               arrow = arrow(length = unit(0.2, "cm"))) +
+  annotation_custom(br1, xmin = 0.5, xmax = 2, ymin = -0.35, ymax = 2.8) + 
+    theme(legend.position = "none")
+```
+
+## Ridge regression
+
+$$\sum(Y_i - \alpha - \beta_1x_i - \dots )^2 \text{ subject to } ||\beta||_2^2\leq c^2$$
+
+$$F(\alpha, \beta, \lambda) = \sum(Y_i - \alpha - \beta_1x_i - \dots )^2 + \lambda(\beta_1^2 + \beta_2^2 + \dots - c^2)$$
+
+How can we solve it?
+
+-   Partial derivatives
+
+-   Numerical solution using different values for $\lambda$. Note $\lambda \geq 0$:$argmin\{F(\alpha, \beta, \lambda)\} = RSS(\alpha,\beta) + \lambda \sum_{j=1}^p \beta_j^2$
+
+When $\lambda$: $\lambda=0$, then OLS, when $\lambda>>0$, then $\beta$=0
+
+## Ridge regression and OLS
+
+The ridge regression estimate is available in closed form
+
+$$\hat{\beta}_{Ridge} = \underbrace{(x^t x + \lambda I)^{(-1)} }_{p \times p}  \underbrace{x^t}_{p \times n} \underbrace{y}_{n \times 1}$$
+
+where $I$ is a $p \times p$ diagonal matrix with ones on the diagonal and zero on the off-diagonal
+
+$x^t x + \lambda I = n \begin{bmatrix} cov(x_1) & cov(x_{12}) & cov(x_{13} \\ cov(x_{21}) & cov(x_2) & cov(x_{23}) \\ cov(x_{31}) & cov(x_{23}) & cov(x_3) \end{bmatrix} + \begin{bmatrix} \lambda & 0 & 0 \\ 0 & \lambda & 0 \\ 0 & 0 & \lambda \end{bmatrix}$
+
+This resembles the OLS estimate apart from $+ \lambda I$.
+
+## Ridge regression and OLS
+
+```{r}
+set.seed(11)
+x1 <- rnorm(n = 8, mean = 0, sd = 1)
+y1 <- 0.8 * x1 + rnorm(n = 8, mean = 0, sd = 1)
+
+coefs <- lm(y1 ~ x1) %>% coef()
+fitted <- coefs[1] + coefs[2] * x1
+
+ggplot(data = data.frame(x = x1, y = y1), aes(x = x1, y = y1)) +
+  geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
+  geom_segment(aes(xend = x1, yend = fitted)) +
+  geom_point(size = 3) + 
+  theme_bw() +
+  ylim(c(-2.5, 0.7)) + 
+  xlim(c(-1.7, 1.5)) + 
+  ylab("y-axis") +
+  xlab("x-axis") +
+  theme(text = element_text(size = 20))
+```
+
+## Ridge regression and OLS
+
+```{r}
+set.seed(11)
+x1 <- rnorm(n = 8, mean = 0, sd = 1)
+y1 <- 0.8 * x1 + rnorm(n = 8, mean = 0, sd = 1)
+
+coefs <- lm(y1 ~ x1) %>% coef()
+fitted <- coefs[1] + coefs[2] * x1
+
+dat <- data.frame(x = x1, y = y1)
+dat$cv <- "Test data"
+dat$cv[c(2, 8)] <- "Training data"
+
+ggplot() +
+  geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
+  # geom_segment(aes(xend = x1, yend = fitted)) +
+  geom_point(data = dat, aes(x = x1, y = y1, pch = cv, col = cv), size = 3) + 
+  theme_bw() +
+  scale_color_viridis_d(end = 0.4) + 
+  ylim(c(-2.5, 0.7)) + 
+  xlim(c(-1.7, 1.5)) + 
+  ylab("y-axis") +
+  xlab("x-axis") +
+  theme(text = element_text(size = 20)) + 
+  guides(fill=guide_legend(title=""))
+```
+
+## Ridge regression and OLS
+
+```{r}
+library(viridis)
+
+set.seed(11)
+x1 <- rnorm(n = 8, mean = 0, sd = 1)
+y1 <- 0.8 * x1 + rnorm(n = 8, mean = 0, sd = 1)
+
+dat <- data.frame(x = x1, y = y1)
+dat$cv <- "Test data"
+dat$cv[c(2, 8)] <- "Training data"
+
+coefs <- lm(y ~ x, data = dat %>% dplyr::filter(cv %in% "Training data")) %>% coef()
+fitted <- coefs[1] + coefs[2] * x1
+
+ggplot() +
+  geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
+  geom_point(data = dat %>% dplyr::filter(cv %in% "Training data"), 
+             aes(x = x, y = y, pch = cv, col = cv), size = 3) +
+  theme_bw() +
+  ylim(c(-2.5, 0.7)) + 
+  xlim(c(-1.7, 1.5)) + 
+  scale_shape_manual(values=17) +
+  scale_color_viridis_d(begin = 0.4, end = 0.4) + 
+  ylab("y-axis") +
+  xlab("x-axis") +
+  theme(text = element_text(size = 20)) + 
+  guides(fill=guide_legend(title=""))
+```
+
+## Ridge regression and OLS
+
+```{r}
+set.seed(11)
+x1 <- rnorm(n = 8, mean = 0, sd = 1)
+y1 <- 0.8 * x1 + rnorm(n = 8, mean = 0, sd = 1)
+
+dat <- data.frame(x = x1, y = y1)
+dat$cv <- "Test data"
+dat$cv[c(2, 8)] <- "Training data"
+
+coefs <- lm(y ~ x, data = dat %>% dplyr::filter(cv %in% "Training data")) %>% coef()
+fitted <- coefs[1] + coefs[2] * x1
+
+ggplot() +
+  geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
+  geom_point(data = dat, 
+             aes(x = x, y = y, pch = cv, col = cv), size = 3) +
+  theme_bw() +
+  geom_segment(aes(x = x1, y = y1, xend = x1, yend = fitted)) + 
+  coord_cartesian(ylim = c(-2.5, 0.7)) + 
+  xlim(c(-1.7, 1.5)) + 
+  ylab("y-axis") +
+  xlab("x-axis") +
+  scale_color_viridis_d(end = 0.4) + 
+  theme(text = element_text(size = 20)) + 
+  guides(fill=guide_legend(title=""))
+```
+
+## Ridge regression and OLS
+
+```{r}
+set.seed(11)
+x1 <- rnorm(n = 8, mean = 0, sd = 1)
+y1 <- 0.8 * x1 + rnorm(n = 8, mean = 0, sd = 1)
+
+dat <- data.frame(x = x1, y = y1)
+dat$cv <- "Test data"
+dat$cv[c(2, 8)] <- "Training data"
+
+coefs <- lm(y ~ x, data = dat %>% dplyr::filter(cv %in% "Training data")) %>% coef()
+fitted <- coefs[1] + (coefs[2] - 1) * x1
+
+ggplot() +
+  geom_abline(intercept = coefs[1], slope = coefs[2] - 1, lwd = 1, col = "green3") +
+  geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
+  geom_point(data = dat %>% dplyr::filter(cv %in% "Training data"), 
+             aes(x = x, y = y, pch = cv), size = 3) +
+  geom_segment(aes(x = x1, y = y1, xend = x1, yend = fitted)) + 
+  geom_point(data = dat, 
+             aes(x = x, y = y, pch = cv, col = cv), size = 3) + 
+  theme_bw() +
+  coord_cartesian(ylim = c(-2.5, 0.7)) + 
+  xlim(c(-1.7, 1.5)) + 
+  ylab("y-axis") +
+  xlab("x-axis") +
+  theme(text = element_text(size = 20)) + 
+  scale_color_viridis_d(end = 0.4) +  
+  guides(fill=guide_legend(title=""))
+```
+
+## Ridge regression and OLS
+
+```{r}
+set.seed(11)
+x1 <- rnorm(n = 8, mean = 0, sd = 1)
+y1 <- 0.8 * x1 + rnorm(n = 8, mean = 0, sd = 1)
+
+coefs_truth <- lm(y1 ~ x1) %>% coef()
+
+dat <- data.frame(x = x1, y = y1)
+dat$cv <- "Test data"
+dat$cv[c(2, 8)] <- "Training data"
+
+coefs <- lm(y ~ x, data = dat %>% dplyr::filter(cv %in% "Training data")) %>% coef()
+fitted <- coefs[1] + (coefs[2] - 1) * x1
+
+ggplot() +
+  geom_abline(intercept = coefs[1], slope = coefs[2] - 1, lwd = 1, col = "green3") +
+  geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
+  geom_abline(intercept = coefs_truth[1], slope = coefs_truth[2], lwd = 1, col = "red", lty = 2) + 
+  geom_point(data = dat %>% dplyr::filter(cv %in% "Training data"), 
+             aes(x = x, y = y, pch = cv), size = 3) +
+  geom_segment(aes(x = x1, y = y1, xend = x1, yend = fitted)) + 
+  geom_point(data = dat, 
+             aes(x = x, y = y, pch = cv, col = cv), size = 3) + 
+  theme_bw() +
+  coord_cartesian(ylim = c(-2.5, 0.7)) + 
+  xlim(c(-1.7, 1.5)) + 
+  ylab("y-axis") +
+  xlab("x-axis") +
+  theme(text = element_text(size = 20)) + 
+  scale_color_viridis_d(end = 0.4) +  
+  guides(fill=guide_legend(title=""))
+```
+
+## Lasso regression
+
+$$\underset{\hat{\alpha}, \hat{\beta}_{Lasso}}{argmin} =  \underbrace{RSS(\alpha,\beta)}_{\text{Residual Sum of Squares}} +  \underbrace{\lambda \sum_{j=1}^p \left| \beta_j \right| }_{\text{penalty}} $$
+
+Interpretation:
+
+-   The Lasso regression coefficient $\hat{\beta}_{Lasso}$ is a biased estimate, but has a reduced variance compared to $\hat{\beta}_{OLS}$.
+
+-   There is an intrinsic model selection in Lasso regression, as it sets certain variables exactly to $\hat{\beta}_{Lasso} = 0$, and thus excludes them from the model.
+
+-   When two variables are highly correlated, Lasso includes only one (at random) and not both.
+
+## Lasso regression: Geometric interpretation
+
+```{r}
+
+library(ggplot2)
+library(dplyr)
+library(mvtnorm)
+library(RColorBrewer)
+library(ggrepel)
+library(pBrackets)
+library(patchwork)
+library(ggforce)
+
+bracketsGrob <- function(...) {
+  l <- list(...)
+  e <- new.env()
+  e$l <- l
+  grid:::recordGrob(
+    {
+      do.call(grid.brackets, l)
+    },
+    e
+  )
+}
+
+
+##
+## Lasso
+
+sigma2 <- matrix(c(3, 3.5,
+                   3.5, 5), 
+                 nrow = 2, ncol = 2, byrow = TRUE)
+
+mu2 <- c(X = 2.5, Y = 5.7)
+
+lambda <- 2.5
+
+data.frame(
+  x = c(lambda, 0, -lambda, 0), 
+  y = c(0, -lambda, 0, lambda)
+) -> datlambda
+
+
+data.grid <- expand.grid(s.1 = seq(-5, 8, length.out=200), s.2 = seq(-5, 12, length.out=200))
+q.samp <- cbind(data.grid, prob = mvtnorm::dmvnorm(data.grid, mean = mu2, sigma = sigma2))
+blues <- brewer.pal(n = 9, name = "Blues")
+blues <- c("#FFFFFF", blues)
+
+
+br1 <- bracketsGrob(x1 = -0.4, y1 = 0.15, x2 = -0.4, y2 = 0.8, h = 0.1, lwd = 1.5)
+
+ggplot() + 
+  geom_contour_filled(data=q.samp, aes(x=s.1,y=s.2,z=prob)) +
+  scale_fill_manual(values = blues) + 
+  geom_polygon(data=datlambda, aes(x=x, y=y), col = NA, fill = "orange", alpha = 0.5) + 
+  xlim(c(-3, 8)) + 
+  ylim(c(-3, 11)) + 
+  geom_point(aes(x=mu2[1], y=mu2[2]), cex = 2, col = "red") + 
+  geom_point(aes(x=0, y=2.5), cex = 2, col = "red") +
+  theme_void() + 
+  theme(legend.position = "none") + 
+  geom_segment(aes(x = 0, y = 2.5, xend = 2, yend = 2.5),
+               arrow = arrow(length = unit(0.2, "cm"))) + 
+  geom_segment(aes(x = 2.5, y = 5.7, xend = 4.5, yend = 5.7),
+               arrow = arrow(length = unit(0.2, "cm"))) + 
+  annotate(geom="text", x=5, y=5.7, label=expression(hat(beta)[OLS]),
+           color="black") + 
+  annotate(geom="text", x=2.5, y=2.5, label=expression(hat(beta)[lasso]),
+           color="black") + 
+  annotate(geom="text", x=-0.5, y=10, label=expression(beta[1]),
+           color="black") + 
+  annotate(geom="text", x=7, y=-.5, label=expression(beta[2]),
+           color="black") + 
+  annotate(geom="text", x=2, y=-2, label=expression(L[1]~": |"~beta[1]~"|"~+~"|"~beta[2]~"| <"~lambda),
+           color="black") + 
+  annotate(geom="text", x=-.5, y=1.3, label=expression(lambda),
+           color="black") +
+  # annotate(geom="text", x=-.5, y=-1.3, label=expression(lambda),
+  #          color="black") +
+  geom_segment(aes(x = 0, y = -3, xend = 0, yend = 10.8),
+               arrow = arrow(length = unit(0.2, "cm"))) + 
+  geom_segment(aes(x = -3, y = 0, xend = 8, yend = 0),
+               arrow = arrow(length = unit(0.2, "cm"))) +
+  annotation_custom(br1, xmin = 0.5, xmax = 2, ymin = -0.35, ymax = 3)
+```
+
+## Ridge and lasso: Induced shrinkage
+
+```{r}
+
+ggplot() + 
+  geom_segment(aes(x = -5, y = 0, xend = 5, yend = 0),
+               arrow = arrow(length = unit(0.4, "cm"))) + 
+  geom_segment(aes(x = 0, y = -5, xend = 0, yend = 5),
+               arrow = arrow(length = unit(0.4, "cm"))) + 
+  geom_abline(slope = 1, intercept = 0, col = "grey", lwd = 1) + 
+  geom_abline(slope = 1-.5, intercept = 0, col = "red3", lty = "dashed", lwd = 1.5) + 
+  geom_point(aes(x=0, y=0), size = 3) + 
+  annotate(geom="text", x=0.5, y=-1, label="(0,0)",
+           color="black") + 
+  theme_bw() + 
+  ylim(c(-5, 5)) + 
+  xlim(c(-5, 5)) + 
+  ggtitle("Ridge") + 
+  theme(plot.title = element_text(hjust = 0.5)) -> p1
+
+dat <- 
+  data.frame(
+    x = seq(from = -10, to = 10, length.out = 1000), 
+    y = 2 + seq(from = -10, to = 10, length.out = 1000)
+  )
+
+dat$y[dat$x>-2 & dat$x<2] <- 0
+dat$y[dat$x>=2] <- -2 + seq(from = -10, to = 10, length.out = 1000)[dat$x>=2]
+
+ggplot() + 
+  geom_segment(aes(x = -5, y = 0, xend = 5, yend = 0),
+               arrow = arrow(length = unit(0.4, "cm"))) + 
+  geom_segment(aes(x = 0, y = -5, xend = 0, yend = 5),
+               arrow = arrow(length = unit(0.4, "cm"))) + 
+  geom_point(aes(x=0, y=0), size = 3) + 
+  geom_abline(slope = 1, intercept = 0, col = "grey", lwd = 1) + 
+  geom_line(data = dat, aes(x=x, y=y), col = "red3", lty = "dashed", lwd = 1.5) + 
+  theme_bw() + 
+  coord_cartesian(ylim = c(-5, 5), xlim = c(-5, 5)) + 
+  ggtitle("Lasso") +
+  annotate(geom="text", x=0.5, y=-1, label="(0,0)",
+           color="black") + 
+  theme(plot.title = element_text(hjust = 0.5)) -> p2
+
+p1|p2
+
+```
+
+## Ridge and lasso: Bayesian interpretation
+
+```{r}
+library(VGAM)
+
+x <- seq(from = -3, to = 3, length.out = 1000)
+
+ggplot() + 
+  geom_line(aes(x=x, y=dnorm(x, mean = 0, sd = 1)), col = "red") + 
+  theme_bw() + 
+  xlab(expression(beta[j])) + 
+  ylab(expression(g(beta[j]))) + 
+  ylim(c(0, 0.7)) |
+
+ggplot() + 
+  geom_line(aes(x=x, y=dlaplace(x=x, scale = 0.75)), 
+            col = "red") + 
+  theme_bw() + 
+  xlab(expression(beta[j])) + 
+  ylab(expression(g(beta[j]))) + 
+  ylim(c(0, 0.7))
+
+
+```
+
+## Elastic net
+
+$\underset{\hat{\alpha}, \hat{\beta}_{\text{Elastic net}}}{argmin} = \underbrace{RSS(\alpha,\beta)}_{\text{Residual Sum of Squares}} + \underbrace{\lambda_1 \sum_{j=1}^p \left| \beta_j \right| + \lambda_2 \sum_{j=1}^p \beta_j^2}_{\text{penalty}}$
+
+-   The Elastic net regression coefficient $\hat{\beta}_{\text{Elastic net}}$ is a biased estimate, but has a reduced variance compared to $\hat{\beta}_{OLS}$
+
+-   There is an intrinsic model selection in Lasso regression, as it sets certain variables exactly to $\hat{\beta}_{\text{Elastic net}} = 0$, and thus excludes them from the model.
+
+-   When two variables are highly correlated, Elastic net includes both (Grouping property).
+
+## Elastic net regression: reparametrization
+
+$$\underset{\hat{\alpha}, \hat{\beta}_{\text{Elastic net}}}{argmin} = \underbrace{RSS(\alpha,\beta)}_{\text{Residual Sum of Squares}} +  \lambda \bigg[\alpha\left|\left|\beta \right|\right|_1  +  (1-\alpha)\left|\left|\beta \right|\right|_2^2 \bigg]$$
+
+-   $\alpha$ can be seen as a mixing parameter
+
+-   When $\alpha = 0$ ridge regression
+
+-   When $\alpha = 1$ lasso regression
+
+-   How can we select the optimal $\lambda$ and $\alpha$?
+
+## Elastic net: Geometric interpretation
+
+```{r}
+library(shiny)
+library(ggplot2)
+library(dplyr)
+
+plotElasticNet <- function(mixing_alpha){
+  beta_2 <- seq(from = -2.5, to = 2.5, length.out = 1000)
+  lambda = 2.5
+  
+  get_en <- function(alpha, beta_2, lambda){
+    
+    A = 1-2*alpha
+    B = 2*(1-alpha)*(abs(beta_2) - alpha*abs(beta_2) - lambda)
+    C = (1-2*alpha)*beta_2^2 - 2*lambda*(1 - alpha)*abs(beta_2) + lambda^2
+    D = B^2 - 4*A*C
+    
+    beta13 = (-B - sqrt(D))/(2*A)
+    beta14 = -(-B - sqrt(D))/(2*A)
+    
+    return(list(beta13, beta14))
+    
+  }
+  
+  
+  dat.plot1 <- 
+    data.frame(
+      beta_1 = get_en(alpha = mixing_alpha, lambda = 2.5, beta_2 = beta_2) %>% unlist(),
+      beta_2 = c(beta_2, beta_2)
+    )
+  dat.plot1 <- dat.plot1[!is.nan(dat.plot1$beta_1),]
+  
+  
+  dat.plot2 <- 
+    data.frame(
+      beta_1 = get_en(alpha = 0, lambda = 2.5, beta_2 = beta_2) %>% unlist(),
+      beta_2 = c(beta_2, beta_2)
+    )
+  dat.plot2 <- dat.plot2[!is.nan(dat.plot2$beta_1),]
+  
+  
+  dat.plot3 <- 
+    data.frame(
+      beta_1 = get_en(alpha = 1, lambda = 2.5, beta_2 = beta_2) %>% unlist(),
+      beta_2 = c(beta_2, beta_2)
+    )
+  dat.plot3 <- dat.plot3[!is.nan(dat.plot3$beta_1),]
+  
+  
+  
+  ggplot() + 
+    geom_path(data = dat.plot1, aes(x=beta_1, y=beta_2), col = "blue4", lwd = 1) + 
+    geom_path(data = dat.plot2, aes(x=beta_1, y=beta_2), lty = "dashed", col = "blue4") + 
+    geom_path(data = dat.plot3, aes(x=beta_1, y=beta_2), lty = "dotted", col = "blue4") + 
+    xlim(c(-3, 5)) + 
+    ylim(c(-3, 5)) + 
+    annotate(geom="text", x=-0.5, y=4, label=expression(beta[1]),
+             color="black") + 
+    annotate(geom="text", x=4, y=-.5, label=expression(beta[2]),
+             color="black") + 
+    geom_segment(aes(x = 0, y = -3, xend = 0, yend = 4),
+                 arrow = arrow(length = unit(0.2, "cm")), lwd=1) + 
+    geom_segment(aes(x = -3, y = 0, xend = 4, yend = 0),
+                 arrow = arrow(length = unit(0.2, "cm")), lwd=1) +
+    theme_void() + 
+    theme(legend.position = "none")  -> pret
+    
+  return(pret)
+}
+
+plotElasticNet(mixing_alpha = 0.51)
+
+#  sliderInput("alpha", "Mixing parameter:",
+#     min = 0, max = 1, value = 0.51, step = 0.03
+#   )
+# 
+# renderPlot({
+#   plotElasticNet(mixing_alpha = input$alpha)
+# })
+```
+
+## How to tune the regularisation parameter?
+
+$$\underset{\alpha, \beta}{argmin} =  RSS(\alpha,\beta) +  \lambda f(\beta) \nonumber$$
+
+$\lambda$ is the regularisation parameter
+
+-   $\lambda = 0$: No regularisation
+
+-   Small $\lambda$: Minimal regularisation
+
+-   Large $\lambda$: Strong regularisation
+
+-   How to choose the optimal $\lambda$?
+
+-   **Cross-validation**
+
+## Prediction using penalised regression
+
+-   Regularized regression is an ideal tool for prediction.
+
+-   We can define a prediction rule $\hat{f}(x)$ using the penalised regression coefficients:$$\hat{y} =  \hat{f}(x) = \alpha +  x \hat{\beta}_{\text{Penalised}}$$
+
+    where $\hat{\beta}_{\text{Penalised}}$ are the $p$ regularized coefficients.
+
+-   Since Lasso and Elastic net force some $\hat{\beta}_{\text{Penalised}}$ to zero, variables with $\hat{\beta}_{\text{Penalised}}=0$ are excluded from the model and do not contribute to the prediction rule.
+
+-    In contrast in Ridge regression variables contribute to $\hat{f}(x)$.
+
+## Penalised regression in R: `glmnet()`
+
+```{r}
+#| echo: true
+#| eval: false
+glmnet(x, y, family, alpha,nlambda = 100,
+lambda.min.ratio = ifelse(nobs<nvars,0.01,0.0001),
+lambda=NULL, standardize = TRUE, intercept=TRUE)
+```
+
+Input
+
+-   $y$: Outcome or response
+
+-   $x$: Predictors, formatted `as.matrix(x)`
+
+Generalised linear models included
+
+-   family = `gaussian`, `binomial`, `poisson`, `multinomial`, `cox`, `mgaussian`
+
+## Penalised regression in R: `glmnet()`
+
+```{r}
+#| echo: true
+#| eval: false
+glmnet(x, y, family, 
+       alpha, 
+       nlambda = 100, lambda.min.ratio = ifelse(nobs<nvars,0.01,0.0001), lambda=NULL, 
+       standardize = TRUE, intercept=TRUE)
+```
+
+Penalised regression models
+
+-   Ridge regression: $\text{alpha} = 0$
+
+-   Lasso regression: $\text{alpha} = 1$
+
+-   Elastic net: $0<\text{alpha}<1$
+
+Regularisation parameter:
+
+-   Perform cross-validation
+
+## Penalised regression in R: `glmnet()`
+
+```{r}
+#| echo: true
+#| eval: false
+glmnet.out = glmnet(x, y, family, alpha)
+```
+
+Values:
+
+-   Intercept: `glmnet.out$a0`
+
+-   Regression coefficient estimates: `glmnet.out$beta`
+
+-   Regularisation parameters used: `glmnet.out$lambda`
+
+Functions:
+
+-   Cross-validation: `cv.glmnet()`
+
+-   Regression coefficients: `coef(glmnet.out)`
+
+-   Prediction: `predict(glmnet.out, newx)`
+
+## Penalised regression in R: `glmnet()`
+
+For more details on glmnet, see the useful vignette:
+
+<http://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html>
+
+Other packages in R
+
+-   `lm.ridge` in the `MASS` package
+
+-   `lars` in the `lars` package
+
+-   `penalized` in the `penalized` package
+
+## Diabetes data
+
+-   $y$: quantitative measure of disease progression
+-   $x$: predictor matrix
+    -   clinical parameters: age, sex, bmi
+    -   map: blood pressure
+    -    tc: total cholesterol
+    -   ldl: low-density lipoprotein
+    -   hdl: high-density lipoprotein
+    -   tch: total cholesterol over hdl
+    -   ltg: triglycerides
+
+## Diabetes data
+
+```{r}
+#| echo: true
+#| eval: true
+library(lars)
+library(dplyr)
+library(glmnet)
+
+data(diabetes)
+x <- as.matrix(diabetes$x)
+y <- diabetes$y
+
+head(x)
+```
+
+## Ridge regression and diabetes data
+
+```{r}
+#| echo: false
+#| eval: true
+library(lars)
+library(dplyr)
+library(glmnet)
+
+data(diabetes)
+x <- as.matrix(diabetes$x)
+y <- diabetes$y
+```
+
+```{r}
+#| echo: true
+#| eval: true
+
+cbind(
+  lm(y~x) %>% coef(),
+  glmnet(x,y,family="gaussian",alpha=0,lambda=0.1) %>% coef(),
+  glmnet(x,y,family="gaussian",alpha=0,lambda=1) %>% coef()
+)
+```
+
+## Lasso regression and diabetes data
+
+```{r}
+#| echo: true
+#| eval: true
+
+cbind(
+  lm(y~x) %>% coef(),
+  glmnet(x,y,family="gaussian",alpha=1,lambda=0.1) %>% coef(),
+  glmnet(x,y,family="gaussian",alpha=1,lambda=40) %>% coef()
+)
+```
+
+## Elastic regression and diabetes data
+
+```{r}
+#| echo: true
+#| eval: true
+
+cbind(
+  lm(y~x) %>% coef(),
+  glmnet(x,y,family="gaussian",alpha=0.5,lambda=0.1) %>% coef(),
+  glmnet(x,y,family="gaussian",alpha=0.5,lambda=40) %>% coef()
+)
+```
+
+## Example: Breast cancer data
+
+-   $y$: benign or aggressive tumor (binary)
+
+| Benign | Aggressive | Total |
+|--------|------------|-------|
+| 185    | 121        | 306   |
+
+-   $x$: gene expression of $p=22,283$ genes
+
+-   $n=306$: sample size
+
+-   Truly big data $n<<p$
+
+## Breast cancer data and `glm()`
+
+```{r}
+#| echo: true
+#| eval: true
+load("assets/JAMA2011_breast_cancer")
+
+severity <- data_bc$rcb
+x <- data_bc$x
+```
+
+```{r}
+#| echo: true
+#| eval: false
+glm.out = glm(severity~as.matrix(x), family='binomial')
+glm.out$converged
+```
+
+Takes a lot of time and eventually you will get a warning that the algorithm did not converge!
+
+## Breast cancer data and lasso
+
+```{r}
+#| echo: true
+#| eval: true
+
+lasso.out = glmnet(x=as.matrix(x), y=severity, family='binomial', alpha = 1, lambda = 0.001)
+sum(abs(lasso.out$beta)>0)
+
+lasso.out = glmnet(x=as.matrix(x), y=severity, family='binomial', alpha = 1, lambda = 0.12)
+sum(abs(lasso.out$beta)>0)
+lasso.out$a0
+lasso.out$beta %>% summary()
+```
+
+## Breast cancer data and elastic net
+
+```{r}
+#| echo: true
+#| eval: true
+
+enet.out = glmnet(x=as.matrix(x), y=severity, family='binomial', alpha = 0.5, lambda = 0.003)
+sum(abs(enet.out$beta)>0)
+
+enet.out = glmnet(x=as.matrix(x), y=severity, family='binomial', alpha = 0.5, lambda = 0.26)
+sum(abs(enet.out$beta)>0)
+enet.out$a0
+enet.out$beta %>% summary()
+```
+
+## Take away: Penalised regression models
+
+-   Regularized regression approaches minimise the residual sum of squares and an additional penalty function.
+
+-   Different penalties imply different approaches:
+
+    -    Ridge regression: $L2$
+
+    -   Lasso regression: $L1$
+
+    -   Elastic net regression: $L1+L2$
+
+## Take away: Penalised regression models
+
+-   Penalized regression approaches are biased, they **underestimate** the size of the true effect.
+
+-   But they reduce the variance of the estimate and the prediction rule.
+
+-   Lasso and Elastic net perform an intrinsic model selection.
+
+-   The regularisation parameter $\lambda$ can be chosen using cross-validation.
+
+Questions?
