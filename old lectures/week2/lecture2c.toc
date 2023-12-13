@@ -1,9 +1,0 @@
-\babel@toc {german}{}
-\beamer@sectionintoc {1}{Introduction to lags}{4}{0}{1}
-\beamer@sectionintoc {2}{Example 1: Lung cancer and radon exposure}{5}{0}{2}
-\beamer@sectionintoc {3}{Example 2: PM10 in Chicago}{6}{0}{3}
-\beamer@sectionintoc {4}{Distributed linear lag models}{8}{0}{4}
-\beamer@sectionintoc {5}{Distributed non-linear lag models}{16}{0}{5}
-\beamer@sectionintoc {6}{Example 3: Temperature in Chicago}{21}{0}{6}
-\beamer@sectionintoc {7}{Example 4: Extension to space}{25}{0}{7}
-\beamer@sectionintoc {8}{Summary}{41}{0}{8}

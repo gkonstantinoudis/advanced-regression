@@ -1,8 +1,0 @@
-\babel@toc {german}{}
-\beamer@sectionintoc {1}{Cross validation}{3}{0}{1}
-\beamer@sectionintoc {2}{Overfitting}{10}{0}{2}
-\beamer@sectionintoc {3}{Bias-variance trade-off}{13}{0}{3}
-\beamer@sectionintoc {4}{Penalised regression}{19}{0}{4}
-\beamer@sectionintoc {5}{Generalised additive models in R}{27}{0}{5}
-\beamer@sectionintoc {6}{Case study: Chicago}{30}{0}{6}
-\beamer@sectionintoc {7}{Summary}{40}{0}{7}

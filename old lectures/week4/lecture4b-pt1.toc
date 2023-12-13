@@ -1,5 +1,0 @@
-\babel@toc {german}{}
-\beamer@sectionintoc {1}{Decision trees}{4}{0}{1}
-\beamer@subsectionintoc {1}{1}{Motivation for decision trees}{4}{0}{1}
-\beamer@subsectionintoc {1}{2}{Technical definition}{9}{0}{1}
-\beamer@subsectionintoc {1}{3}{Decision trees in \texttt {R}}{21}{0}{1}
