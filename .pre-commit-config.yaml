@@ -13,3 +13,5 @@ repos:
       - id: style-files
         args: [--style_pkg=styler, --style_fun=tidyverse_style]
         files: '(\.[rR]profile|\.[rR]|\.[rR]md|\.[rR]nw|\.[qQ]md)$'
+
+# https://lorenzwalthert.github.io/precommit/articles/available-hooks.html
