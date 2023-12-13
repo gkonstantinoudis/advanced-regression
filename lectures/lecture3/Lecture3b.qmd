@@ -57,7 +57,7 @@ $$
 
 $$
 \begin{align}
-RSS(\alpha, \beta) & =   \epsilon_1^2  + … +  \epsilon_i^2   + … + \epsilon_n^2 =  \sum_{i=1}^n  \epsilon_i^2  \nonumber \\& =  \sum_{i=1}^n  \left(y_i - \hat{y}_i \right)^2  \nonumber  =  \sum_{i=1}^n  \left(y_i - (\alpha + \beta x_i) \right)^2  \nonumber 
+RSS(\alpha, \beta) & =   \epsilon_1^2  + … +  \epsilon_i^2   + … + \epsilon_n^2 =  \sum_{i=1}^n  \epsilon_i^2  \nonumber \\& =  \sum_{i=1}^n  \left(y_i - \hat{y}_i \right)^2  \nonumber  =  \sum_{i=1}^n  \left(y_i - (\alpha + \beta x_i) \right)^2  \nonumber
 \end{align}
 $$
 
@@ -72,13 +72,16 @@ library(dplyr)
 library(ggrepel)
 library(pBrackets)
 
-bracketsGrob <- function(...){
+bracketsGrob <- function(...) {
   l <- list(...)
   e <- new.env()
   e$l <- l
-  grid:::recordGrob(  {
-    do.call(grid.brackets, l)
-  }, e)
+  grid:::recordGrob(
+    {
+      do.call(grid.brackets, l)
+    },
+    e
+  )
 }
 
 set.seed(11)
@@ -103,7 +106,6 @@ ggplot(data = data.frame(x = x1, y = y1), aes(x = x1, y = y1)) +
   annotate("text", x = 0.9, y = -0.4, label = expression(paste("(", x[i], ", ", hat(y)[i], ")")), size = 8) +
   annotation_custom(br1, xmin = 0.5, xmax = 0.501, ymin = -0.35, ymax = 0.5) +
   theme(text = element_text(size = 20))
-
 ```
 
 -   Note $\sum_{i=1}^n\epsilon_i=0$
@@ -200,21 +202,25 @@ bracketsGrob <- function(...) {
   )
 }
 
-sigma2 <- matrix(c(3, 3.5,
-                   3.5, 5), 
-                 nrow = 2, ncol = 2, byrow = TRUE)
+sigma2 <- matrix(
+  c(
+    3, 3.5,
+    3.5, 5
+  ),
+  nrow = 2, ncol = 2, byrow = TRUE
+)
 
 mu2 <- c(X = 2.5, Y = 5.7)
 
 lambda <- 2.5
 
 data.frame(
-  x = c(lambda, 0, -lambda, 0), 
+  x = c(lambda, 0, -lambda, 0),
   y = c(0, -lambda, 0, lambda)
 ) -> datlambda
 
 
-data.grid <- expand.grid(s.1 = seq(-5, 8, length.out=200), s.2 = seq(-5, 12, length.out=200))
+data.grid <- expand.grid(s.1 = seq(-5, 8, length.out = 200), s.2 = seq(-5, 12, length.out = 200))
 q.samp <- cbind(data.grid, prob = mvtnorm::dmvnorm(data.grid, mean = mu2, sigma = sigma2))
 blues <- brewer.pal(n = 9, name = "Blues")
 blues <- c("#FFFFFF", blues)
@@ -225,50 +231,70 @@ br1 <- bracketsGrob(x1 = -0.4, y1 = 0.15, x2 = -0.4, y2 = 0.8, h = 0.1, lwd = 1.
 ##
 ## Ridge
 
-sigma2 <- matrix(c(3, 3.5,
-                   3.5, 5), 
-                 nrow = 2, ncol = 2, byrow = TRUE)
+sigma2 <- matrix(
+  c(
+    3, 3.5,
+    3.5, 5
+  ),
+  nrow = 2, ncol = 2, byrow = TRUE
+)
 
 mu2 <- c(X = 2.5, Y = 5.7)
 
 
-data.grid <- expand.grid(s.1 = seq(-5, 8, length.out=200), s.2 = seq(-5, 12, length.out=200))
+data.grid <- expand.grid(s.1 = seq(-5, 8, length.out = 200), s.2 = seq(-5, 12, length.out = 200))
 q.samp <- cbind(data.grid, prob = mvtnorm::dmvnorm(data.grid, mean = mu2, sigma = sigma2))
 blues <- brewer.pal(n = 9, name = "Blues")
 blues <- c("#FFFFFF", blues)
 
 
-ggplot() + 
-  geom_contour_filled(data=q.samp, aes(x=s.1,y=s.2,z=prob)) +
-  scale_fill_manual(values = blues) + 
-  geom_circle(aes(x0=0, y0=0, r=lambda), col = NA, fill = "orange", alpha = 0.5) + 
-  xlim(c(-3, 9)) + 
-  ylim(c(-3, 12)) + 
-  geom_point(aes(x=mu2[1], y=mu2[2]), cex = 2, col = "red") + 
-  geom_point(aes(x=0.2, y=2.45), cex = 2, col = "red") +
-  theme_void() + 
+ggplot() +
+  geom_contour_filled(data = q.samp, aes(x = s.1, y = s.2, z = prob)) +
+  scale_fill_manual(values = blues) +
+  geom_circle(aes(x0 = 0, y0 = 0, r = lambda), col = NA, fill = "orange", alpha = 0.5) +
+  xlim(c(-3, 9)) +
+  ylim(c(-3, 12)) +
+  geom_point(aes(x = mu2[1], y = mu2[2]), cex = 2, col = "red") +
+  geom_point(aes(x = 0.2, y = 2.45), cex = 2, col = "red") +
+  theme_void() +
   geom_segment(aes(x = 0.2, y = 2.45, xend = 3, yend = 2.45),
-               arrow = arrow(length = unit(0.2, "cm"))) + 
+    arrow = arrow(length = unit(0.2, "cm"))
+  ) +
   geom_segment(aes(x = 2.5, y = 5.7, xend = 4.5, yend = 5.7),
-               arrow = arrow(length = unit(0.2, "cm"))) + 
-  annotate(geom="text", x=5, y=5.7, label=expression(hat(beta)[OLS]),
-           color="black") + 
-  annotate(geom="text", x=3.5, y=2.45, label=expression(hat(beta)[ridge]),
-           color="black") + 
-  annotate(geom="text", x=-0.5, y=10, label=expression(beta[1]),
-           color="black") + 
-  annotate(geom="text", x=7, y=-.5, label=expression(beta[2]),
-           color="black") + 
-  annotate(geom="text", x=2, y=-2, label=expression(L[2]~": "~beta[1]^2~+~beta[2]^2~" <"~lambda),
-           color="black") + 
-  annotate(geom="text", x=-.6, y=1.3, label=expression(sqrt(lambda)),
-           color="black") +
+    arrow = arrow(length = unit(0.2, "cm"))
+  ) +
+  annotate(
+    geom = "text", x = 5, y = 5.7, label = expression(hat(beta)[OLS]),
+    color = "black"
+  ) +
+  annotate(
+    geom = "text", x = 3.5, y = 2.45, label = expression(hat(beta)[ridge]),
+    color = "black"
+  ) +
+  annotate(
+    geom = "text", x = -0.5, y = 10, label = expression(beta[1]),
+    color = "black"
+  ) +
+  annotate(
+    geom = "text", x = 7, y = -.5, label = expression(beta[2]),
+    color = "black"
+  ) +
+  annotate(
+    geom = "text", x = 2, y = -2, label = expression(L[2] ~ ": " ~ beta[1]^2 ~ +~ beta[2]^2 ~ " <" ~ lambda),
+    color = "black"
+  ) +
+  annotate(
+    geom = "text", x = -.6, y = 1.3, label = expression(sqrt(lambda)),
+    color = "black"
+  ) +
   geom_segment(aes(x = 0, y = -3, xend = 0, yend = 10.8),
-               arrow = arrow(length = unit(0.2, "cm"))) + 
+    arrow = arrow(length = unit(0.2, "cm"))
+  ) +
   geom_segment(aes(x = -3, y = 0, xend = 8, yend = 0),
-               arrow = arrow(length = unit(0.2, "cm"))) +
-  annotation_custom(br1, xmin = 0.5, xmax = 2, ymin = -0.35, ymax = 2.8) + 
-    theme(legend.position = "none")
+    arrow = arrow(length = unit(0.2, "cm"))
+  ) +
+  annotation_custom(br1, xmin = 0.5, xmax = 2, ymin = -0.35, ymax = 2.8) +
+  theme(legend.position = "none")
 ```
 
 ## Ridge regression
@@ -310,10 +336,10 @@ fitted <- coefs[1] + coefs[2] * x1
 ggplot(data = data.frame(x = x1, y = y1), aes(x = x1, y = y1)) +
   geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
   geom_segment(aes(xend = x1, yend = fitted)) +
-  geom_point(size = 3) + 
+  geom_point(size = 3) +
   theme_bw() +
-  ylim(c(-2.5, 0.7)) + 
-  xlim(c(-1.7, 1.5)) + 
+  ylim(c(-2.5, 0.7)) +
+  xlim(c(-1.7, 1.5)) +
   ylab("y-axis") +
   xlab("x-axis") +
   theme(text = element_text(size = 20))
@@ -336,15 +362,18 @@ dat$cv[c(2, 8)] <- "Training data"
 ggplot() +
   geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
   # geom_segment(aes(xend = x1, yend = fitted)) +
-  geom_point(data = dat, aes(x = x1, y = y1, pch = cv, col = cv), size = 3) + 
+  geom_point(
+    data = dat,
+    aes(x = x1, y = y1, pch = cv, col = cv), size = 3
+  ) +
   theme_bw() +
-  scale_color_viridis_d(end = 0.4) + 
-  ylim(c(-2.5, 0.7)) + 
-  xlim(c(-1.7, 1.5)) + 
+  scale_color_viridis_d(end = 0.4) +
+  ylim(c(-2.5, 0.7)) +
+  xlim(c(-1.7, 1.5)) +
   ylab("y-axis") +
   xlab("x-axis") +
-  theme(text = element_text(size = 20)) + 
-  guides(fill=guide_legend(title=""))
+  theme(text = element_text(size = 20)) +
+  guides(fill = guide_legend(title = ""))
 ```
 
 ## Ridge regression and OLS
@@ -365,17 +394,19 @@ fitted <- coefs[1] + coefs[2] * x1
 
 ggplot() +
   geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
-  geom_point(data = dat %>% dplyr::filter(cv %in% "Training data"), 
-             aes(x = x, y = y, pch = cv, col = cv), size = 3) +
+  geom_point(
+    data = dat %>% dplyr::filter(cv %in% "Training data"),
+    aes(x = x, y = y, pch = cv, col = cv), size = 3
+  ) +
   theme_bw() +
-  ylim(c(-2.5, 0.7)) + 
-  xlim(c(-1.7, 1.5)) + 
-  scale_shape_manual(values=17) +
-  scale_color_viridis_d(begin = 0.4, end = 0.4) + 
+  ylim(c(-2.5, 0.7)) +
+  xlim(c(-1.7, 1.5)) +
+  scale_shape_manual(values = 17) +
+  scale_color_viridis_d(begin = 0.4, end = 0.4) +
   ylab("y-axis") +
   xlab("x-axis") +
-  theme(text = element_text(size = 20)) + 
-  guides(fill=guide_legend(title=""))
+  theme(text = element_text(size = 20)) +
+  guides(fill = guide_legend(title = ""))
 ```
 
 ## Ridge regression and OLS
@@ -394,17 +425,19 @@ fitted <- coefs[1] + coefs[2] * x1
 
 ggplot() +
   geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
-  geom_point(data = dat, 
-             aes(x = x, y = y, pch = cv, col = cv), size = 3) +
+  geom_point(
+    data = dat,
+    aes(x = x, y = y, pch = cv, col = cv), size = 3
+  ) +
   theme_bw() +
-  geom_segment(aes(x = x1, y = y1, xend = x1, yend = fitted)) + 
-  coord_cartesian(ylim = c(-2.5, 0.7)) + 
-  xlim(c(-1.7, 1.5)) + 
+  geom_segment(aes(x = x1, y = y1, xend = x1, yend = fitted)) +
+  coord_cartesian(ylim = c(-2.5, 0.7)) +
+  xlim(c(-1.7, 1.5)) +
   ylab("y-axis") +
   xlab("x-axis") +
-  scale_color_viridis_d(end = 0.4) + 
-  theme(text = element_text(size = 20)) + 
-  guides(fill=guide_legend(title=""))
+  scale_color_viridis_d(end = 0.4) +
+  theme(text = element_text(size = 20)) +
+  guides(fill = guide_legend(title = ""))
 ```
 
 ## Ridge regression and OLS
@@ -424,19 +457,23 @@ fitted <- coefs[1] + (coefs[2] - 1) * x1
 ggplot() +
   geom_abline(intercept = coefs[1], slope = coefs[2] - 1, lwd = 1, col = "green3") +
   geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
-  geom_point(data = dat %>% dplyr::filter(cv %in% "Training data"), 
-             aes(x = x, y = y, pch = cv), size = 3) +
-  geom_segment(aes(x = x1, y = y1, xend = x1, yend = fitted)) + 
-  geom_point(data = dat, 
-             aes(x = x, y = y, pch = cv, col = cv), size = 3) + 
+  geom_point(
+    data = dat %>% dplyr::filter(cv %in% "Training data"),
+    aes(x = x, y = y, pch = cv), size = 3
+  ) +
+  geom_segment(aes(x = x1, y = y1, xend = x1, yend = fitted)) +
+  geom_point(
+    data = dat,
+    aes(x = x, y = y, pch = cv, col = cv), size = 3
+  ) +
   theme_bw() +
-  coord_cartesian(ylim = c(-2.5, 0.7)) + 
-  xlim(c(-1.7, 1.5)) + 
+  coord_cartesian(ylim = c(-2.5, 0.7)) +
+  xlim(c(-1.7, 1.5)) +
   ylab("y-axis") +
   xlab("x-axis") +
-  theme(text = element_text(size = 20)) + 
-  scale_color_viridis_d(end = 0.4) +  
-  guides(fill=guide_legend(title=""))
+  theme(text = element_text(size = 20)) +
+  scale_color_viridis_d(end = 0.4) +
+  guides(fill = guide_legend(title = ""))
 ```
 
 ## Ridge regression and OLS
@@ -458,20 +495,24 @@ fitted <- coefs[1] + (coefs[2] - 1) * x1
 ggplot() +
   geom_abline(intercept = coefs[1], slope = coefs[2] - 1, lwd = 1, col = "green3") +
   geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
-  geom_abline(intercept = coefs_truth[1], slope = coefs_truth[2], lwd = 1, col = "red", lty = 2) + 
-  geom_point(data = dat %>% dplyr::filter(cv %in% "Training data"), 
-             aes(x = x, y = y, pch = cv), size = 3) +
-  geom_segment(aes(x = x1, y = y1, xend = x1, yend = fitted)) + 
-  geom_point(data = dat, 
-             aes(x = x, y = y, pch = cv, col = cv), size = 3) + 
+  geom_abline(intercept = coefs_truth[1], slope = coefs_truth[2], lwd = 1, col = "red", lty = 2) +
+  geom_point(
+    data = dat %>% dplyr::filter(cv %in% "Training data"),
+    aes(x = x, y = y, pch = cv), size = 3
+  ) +
+  geom_segment(aes(x = x1, y = y1, xend = x1, yend = fitted)) +
+  geom_point(
+    data = dat,
+    aes(x = x, y = y, pch = cv, col = cv), size = 3
+  ) +
   theme_bw() +
-  coord_cartesian(ylim = c(-2.5, 0.7)) + 
-  xlim(c(-1.7, 1.5)) + 
+  coord_cartesian(ylim = c(-2.5, 0.7)) +
+  xlim(c(-1.7, 1.5)) +
   ylab("y-axis") +
   xlab("x-axis") +
-  theme(text = element_text(size = 20)) + 
-  scale_color_viridis_d(end = 0.4) +  
-  guides(fill=guide_legend(title=""))
+  theme(text = element_text(size = 20)) +
+  scale_color_viridis_d(end = 0.4) +
+  guides(fill = guide_legend(title = ""))
 ```
 
 ## Lasso regression
@@ -489,7 +530,6 @@ Interpretation:
 ## Lasso regression: Geometric interpretation
 
 ```{r}
-
 library(ggplot2)
 library(dplyr)
 library(mvtnorm)
@@ -515,21 +555,25 @@ bracketsGrob <- function(...) {
 ##
 ## Lasso
 
-sigma2 <- matrix(c(3, 3.5,
-                   3.5, 5), 
-                 nrow = 2, ncol = 2, byrow = TRUE)
+sigma2 <- matrix(
+  c(
+    3, 3.5,
+    3.5, 5
+  ),
+  nrow = 2, ncol = 2, byrow = TRUE
+)
 
 mu2 <- c(X = 2.5, Y = 5.7)
 
 lambda <- 2.5
 
 data.frame(
-  x = c(lambda, 0, -lambda, 0), 
+  x = c(lambda, 0, -lambda, 0),
   y = c(0, -lambda, 0, lambda)
 ) -> datlambda
 
 
-data.grid <- expand.grid(s.1 = seq(-5, 8, length.out=200), s.2 = seq(-5, 12, length.out=200))
+data.grid <- expand.grid(s.1 = seq(-5, 8, length.out = 200), s.2 = seq(-5, 12, length.out = 200))
 q.samp <- cbind(data.grid, prob = mvtnorm::dmvnorm(data.grid, mean = mu2, sigma = sigma2))
 blues <- brewer.pal(n = 9, name = "Blues")
 blues <- c("#FFFFFF", blues)
@@ -537,87 +581,109 @@ blues <- c("#FFFFFF", blues)
 
 br1 <- bracketsGrob(x1 = -0.4, y1 = 0.15, x2 = -0.4, y2 = 0.8, h = 0.1, lwd = 1.5)
 
-ggplot() + 
-  geom_contour_filled(data=q.samp, aes(x=s.1,y=s.2,z=prob)) +
-  scale_fill_manual(values = blues) + 
-  geom_polygon(data=datlambda, aes(x=x, y=y), col = NA, fill = "orange", alpha = 0.5) + 
-  xlim(c(-3, 8)) + 
-  ylim(c(-3, 11)) + 
-  geom_point(aes(x=mu2[1], y=mu2[2]), cex = 2, col = "red") + 
-  geom_point(aes(x=0, y=2.5), cex = 2, col = "red") +
-  theme_void() + 
-  theme(legend.position = "none") + 
+ggplot() +
+  geom_contour_filled(data = q.samp, aes(x = s.1, y = s.2, z = prob)) +
+  scale_fill_manual(values = blues) +
+  geom_polygon(data = datlambda, aes(x = x, y = y), col = NA, fill = "orange", alpha = 0.5) +
+  xlim(c(-3, 8)) +
+  ylim(c(-3, 11)) +
+  geom_point(aes(x = mu2[1], y = mu2[2]), cex = 2, col = "red") +
+  geom_point(aes(x = 0, y = 2.5), cex = 2, col = "red") +
+  theme_void() +
+  theme(legend.position = "none") +
   geom_segment(aes(x = 0, y = 2.5, xend = 2, yend = 2.5),
-               arrow = arrow(length = unit(0.2, "cm"))) + 
+    arrow = arrow(length = unit(0.2, "cm"))
+  ) +
   geom_segment(aes(x = 2.5, y = 5.7, xend = 4.5, yend = 5.7),
-               arrow = arrow(length = unit(0.2, "cm"))) + 
-  annotate(geom="text", x=5, y=5.7, label=expression(hat(beta)[OLS]),
-           color="black") + 
-  annotate(geom="text", x=2.5, y=2.5, label=expression(hat(beta)[lasso]),
-           color="black") + 
-  annotate(geom="text", x=-0.5, y=10, label=expression(beta[1]),
-           color="black") + 
-  annotate(geom="text", x=7, y=-.5, label=expression(beta[2]),
-           color="black") + 
-  annotate(geom="text", x=2, y=-2, label=expression(L[1]~": |"~beta[1]~"|"~+~"|"~beta[2]~"| <"~lambda),
-           color="black") + 
-  annotate(geom="text", x=-.5, y=1.3, label=expression(lambda),
-           color="black") +
+    arrow = arrow(length = unit(0.2, "cm"))
+  ) +
+  annotate(
+    geom = "text", x = 5, y = 5.7, label = expression(hat(beta)[OLS]),
+    color = "black"
+  ) +
+  annotate(
+    geom = "text", x = 2.5, y = 2.5, label = expression(hat(beta)[lasso]),
+    color = "black"
+  ) +
+  annotate(
+    geom = "text", x = -0.5, y = 10, label = expression(beta[1]),
+    color = "black"
+  ) +
+  annotate(
+    geom = "text", x = 7, y = -.5, label = expression(beta[2]),
+    color = "black"
+  ) +
+  annotate(
+    geom = "text", x = 2, y = -2, label = expression(L[1] ~ ": |" ~ beta[1] ~ "|" ~ +~"|" ~ beta[2] ~ "| <" ~ lambda),
+    color = "black"
+  ) +
+  annotate(
+    geom = "text", x = -.5, y = 1.3, label = expression(lambda),
+    color = "black"
+  ) +
   # annotate(geom="text", x=-.5, y=-1.3, label=expression(lambda),
   #          color="black") +
   geom_segment(aes(x = 0, y = -3, xend = 0, yend = 10.8),
-               arrow = arrow(length = unit(0.2, "cm"))) + 
+    arrow = arrow(length = unit(0.2, "cm"))
+  ) +
   geom_segment(aes(x = -3, y = 0, xend = 8, yend = 0),
-               arrow = arrow(length = unit(0.2, "cm"))) +
+    arrow = arrow(length = unit(0.2, "cm"))
+  ) +
   annotation_custom(br1, xmin = 0.5, xmax = 2, ymin = -0.35, ymax = 3)
 ```
 
 ## Ridge and lasso: Induced shrinkage
 
 ```{r}
-
-ggplot() + 
+ggplot() +
   geom_segment(aes(x = -5, y = 0, xend = 5, yend = 0),
-               arrow = arrow(length = unit(0.4, "cm"))) + 
+    arrow = arrow(length = unit(0.4, "cm"))
+  ) +
   geom_segment(aes(x = 0, y = -5, xend = 0, yend = 5),
-               arrow = arrow(length = unit(0.4, "cm"))) + 
-  geom_abline(slope = 1, intercept = 0, col = "grey", lwd = 1) + 
-  geom_abline(slope = 1-.5, intercept = 0, col = "red3", lty = "dashed", lwd = 1.5) + 
-  geom_point(aes(x=0, y=0), size = 3) + 
-  annotate(geom="text", x=0.5, y=-1, label="(0,0)",
-           color="black") + 
-  theme_bw() + 
-  ylim(c(-5, 5)) + 
-  xlim(c(-5, 5)) + 
-  ggtitle("Ridge") + 
+    arrow = arrow(length = unit(0.4, "cm"))
+  ) +
+  geom_abline(slope = 1, intercept = 0, col = "grey", lwd = 1) +
+  geom_abline(slope = 1 - .5, intercept = 0, col = "red3", lty = "dashed", lwd = 1.5) +
+  geom_point(aes(x = 0, y = 0), size = 3) +
+  annotate(
+    geom = "text", x = 0.5, y = -1, label = "(0,0)",
+    color = "black"
+  ) +
+  theme_bw() +
+  ylim(c(-5, 5)) +
+  xlim(c(-5, 5)) +
+  ggtitle("Ridge") +
   theme(plot.title = element_text(hjust = 0.5)) -> p1
 
-dat <- 
+dat <-
   data.frame(
-    x = seq(from = -10, to = 10, length.out = 1000), 
+    x = seq(from = -10, to = 10, length.out = 1000),
     y = 2 + seq(from = -10, to = 10, length.out = 1000)
   )
 
-dat$y[dat$x>-2 & dat$x<2] <- 0
-dat$y[dat$x>=2] <- -2 + seq(from = -10, to = 10, length.out = 1000)[dat$x>=2]
+dat$y[dat$x > -2 & dat$x < 2] <- 0
+dat$y[dat$x >= 2] <- -2 + seq(from = -10, to = 10, length.out = 1000)[dat$x >= 2]
 
-ggplot() + 
+ggplot() +
   geom_segment(aes(x = -5, y = 0, xend = 5, yend = 0),
-               arrow = arrow(length = unit(0.4, "cm"))) + 
+    arrow = arrow(length = unit(0.4, "cm"))
+  ) +
   geom_segment(aes(x = 0, y = -5, xend = 0, yend = 5),
-               arrow = arrow(length = unit(0.4, "cm"))) + 
-  geom_point(aes(x=0, y=0), size = 3) + 
-  geom_abline(slope = 1, intercept = 0, col = "grey", lwd = 1) + 
-  geom_line(data = dat, aes(x=x, y=y), col = "red3", lty = "dashed", lwd = 1.5) + 
-  theme_bw() + 
-  coord_cartesian(ylim = c(-5, 5), xlim = c(-5, 5)) + 
+    arrow = arrow(length = unit(0.4, "cm"))
+  ) +
+  geom_point(aes(x = 0, y = 0), size = 3) +
+  geom_abline(slope = 1, intercept = 0, col = "grey", lwd = 1) +
+  geom_line(data = dat, aes(x = x, y = y), col = "red3", lty = "dashed", lwd = 1.5) +
+  theme_bw() +
+  coord_cartesian(ylim = c(-5, 5), xlim = c(-5, 5)) +
   ggtitle("Lasso") +
-  annotate(geom="text", x=0.5, y=-1, label="(0,0)",
-           color="black") + 
+  annotate(
+    geom = "text", x = 0.5, y = -1, label = "(0,0)",
+    color = "black"
+  ) +
   theme(plot.title = element_text(hjust = 0.5)) -> p2
 
-p1|p2
-
+p1 | p2
 ```
 
 ## Ridge and lasso: Bayesian interpretation
@@ -627,22 +693,21 @@ library(VGAM)
 
 x <- seq(from = -3, to = 3, length.out = 1000)
 
-ggplot() + 
-  geom_line(aes(x=x, y=dnorm(x, mean = 0, sd = 1)), col = "red") + 
-  theme_bw() + 
-  xlab(expression(beta[j])) + 
-  ylab(expression(g(beta[j]))) + 
+ggplot() +
+  geom_line(aes(x = x, y = dnorm(x, mean = 0, sd = 1)), col = "red") +
+  theme_bw() +
+  xlab(expression(beta[j])) +
+  ylab(expression(g(beta[j]))) +
   ylim(c(0, 0.7)) |
 
-ggplot() + 
-  geom_line(aes(x=x, y=dlaplace(x=x, scale = 0.75)), 
-            col = "red") + 
-  theme_bw() + 
-  xlab(expression(beta[j])) + 
-  ylab(expression(g(beta[j]))) + 
-  ylim(c(0, 0.7))
-
-
+  ggplot() +
+    geom_line(aes(x = x, y = dlaplace(x = x, scale = 0.75)),
+      col = "red"
+    ) +
+    theme_bw() +
+    xlab(expression(beta[j])) +
+    ylab(expression(g(beta[j]))) +
+    ylim(c(0, 0.7))
 ```
 
 ## Elastic net
@@ -674,67 +739,71 @@ library(shiny)
 library(ggplot2)
 library(dplyr)
 
-plotElasticNet <- function(mixing_alpha){
+plotElasticNet <- function(mixing_alpha) {
   beta_2 <- seq(from = -2.5, to = 2.5, length.out = 1000)
-  lambda = 2.5
-  
-  get_en <- function(alpha, beta_2, lambda){
-    
-    A = 1-2*alpha
-    B = 2*(1-alpha)*(abs(beta_2) - alpha*abs(beta_2) - lambda)
-    C = (1-2*alpha)*beta_2^2 - 2*lambda*(1 - alpha)*abs(beta_2) + lambda^2
-    D = B^2 - 4*A*C
-    
-    beta13 = (-B - sqrt(D))/(2*A)
-    beta14 = -(-B - sqrt(D))/(2*A)
-    
+  lambda <- 2.5
+
+  get_en <- function(alpha, beta_2, lambda) {
+    A <- 1 - 2 * alpha
+    B <- 2 * (1 - alpha) * (abs(beta_2) - alpha * abs(beta_2) - lambda)
+    C <- (1 - 2 * alpha) * beta_2^2 - 2 * lambda * (1 - alpha) * abs(beta_2) + lambda^2
+    D <- B^2 - 4 * A * C
+
+    beta13 <- (-B - sqrt(D)) / (2 * A)
+    beta14 <- -(-B - sqrt(D)) / (2 * A)
+
     return(list(beta13, beta14))
-    
   }
-  
-  
-  dat.plot1 <- 
+
+
+  dat.plot1 <-
     data.frame(
       beta_1 = get_en(alpha = mixing_alpha, lambda = 2.5, beta_2 = beta_2) %>% unlist(),
       beta_2 = c(beta_2, beta_2)
     )
-  dat.plot1 <- dat.plot1[!is.nan(dat.plot1$beta_1),]
-  
-  
-  dat.plot2 <- 
+  dat.plot1 <- dat.plot1[!is.nan(dat.plot1$beta_1), ]
+
+
+  dat.plot2 <-
     data.frame(
       beta_1 = get_en(alpha = 0, lambda = 2.5, beta_2 = beta_2) %>% unlist(),
       beta_2 = c(beta_2, beta_2)
     )
-  dat.plot2 <- dat.plot2[!is.nan(dat.plot2$beta_1),]
-  
-  
-  dat.plot3 <- 
+  dat.plot2 <- dat.plot2[!is.nan(dat.plot2$beta_1), ]
+
+
+  dat.plot3 <-
     data.frame(
       beta_1 = get_en(alpha = 1, lambda = 2.5, beta_2 = beta_2) %>% unlist(),
       beta_2 = c(beta_2, beta_2)
     )
-  dat.plot3 <- dat.plot3[!is.nan(dat.plot3$beta_1),]
-  
-  
-  
-  ggplot() + 
-    geom_path(data = dat.plot1, aes(x=beta_1, y=beta_2), col = "blue4", lwd = 1) + 
-    geom_path(data = dat.plot2, aes(x=beta_1, y=beta_2), lty = "dashed", col = "blue4") + 
-    geom_path(data = dat.plot3, aes(x=beta_1, y=beta_2), lty = "dotted", col = "blue4") + 
-    xlim(c(-3, 5)) + 
-    ylim(c(-3, 5)) + 
-    annotate(geom="text", x=-0.5, y=4, label=expression(beta[1]),
-             color="black") + 
-    annotate(geom="text", x=4, y=-.5, label=expression(beta[2]),
-             color="black") + 
+  dat.plot3 <- dat.plot3[!is.nan(dat.plot3$beta_1), ]
+
+
+
+  ggplot() +
+    geom_path(data = dat.plot1, aes(x = beta_1, y = beta_2), col = "blue4", lwd = 1) +
+    geom_path(data = dat.plot2, aes(x = beta_1, y = beta_2), lty = "dashed", col = "blue4") +
+    geom_path(data = dat.plot3, aes(x = beta_1, y = beta_2), lty = "dotted", col = "blue4") +
+    xlim(c(-3, 5)) +
+    ylim(c(-3, 5)) +
+    annotate(
+      geom = "text", x = -0.5, y = 4, label = expression(beta[1]),
+      color = "black"
+    ) +
+    annotate(
+      geom = "text", x = 4, y = -.5, label = expression(beta[2]),
+      color = "black"
+    ) +
     geom_segment(aes(x = 0, y = -3, xend = 0, yend = 4),
-                 arrow = arrow(length = unit(0.2, "cm")), lwd=1) + 
+      arrow = arrow(length = unit(0.2, "cm")), lwd = 1
+    ) +
     geom_segment(aes(x = -3, y = 0, xend = 4, yend = 0),
-                 arrow = arrow(length = unit(0.2, "cm")), lwd=1) +
-    theme_void() + 
-    theme(legend.position = "none")  -> pret
-    
+      arrow = arrow(length = unit(0.2, "cm")), lwd = 1
+    ) +
+    theme_void() +
+    theme(legend.position = "none") -> pret
+
   return(pret)
 }
 
@@ -743,7 +812,7 @@ plotElasticNet(mixing_alpha = 0.51)
 #  sliderInput("alpha", "Mixing parameter:",
 #     min = 0, max = 1, value = 0.51, step = 0.03
 #   )
-# 
+#
 # renderPlot({
 #   plotElasticNet(mixing_alpha = input$alpha)
 # })
@@ -775,16 +844,18 @@ $\lambda$ is the regularisation parameter
 
 -   Since Lasso and Elastic net force some $\hat{\beta}_{\text{Penalised}}$ to zero, variables with $\hat{\beta}_{\text{Penalised}}=0$ are excluded from the model and do not contribute to the prediction rule.
 
--    In contrast in Ridge regression variables contribute to $\hat{f}(x)$.
+-   In contrast in Ridge regression variables contribute to $\hat{f}(x)$.
 
 ## Penalised regression in R: `glmnet()`
 
 ```{r}
 #| echo: true
 #| eval: false
-glmnet(x, y, family, alpha,nlambda = 100,
-lambda.min.ratio = ifelse(nobs<nvars,0.01,0.0001),
-lambda=NULL, standardize = TRUE, intercept=TRUE)
+glmnet(x, y, family, alpha,
+  nlambda = 100,
+  lambda.min.ratio = ifelse(nobs < nvars, 0.01, 0.0001),
+  lambda = NULL, standardize = TRUE, intercept = TRUE
+)
 ```
 
 Input
@@ -802,10 +873,11 @@ Generalised linear models included
 ```{r}
 #| echo: true
 #| eval: false
-glmnet(x, y, family, 
-       alpha, 
-       nlambda = 100, lambda.min.ratio = ifelse(nobs<nvars,0.01,0.0001), lambda=NULL, 
-       standardize = TRUE, intercept=TRUE)
+glmnet(x, y, family,
+  alpha,
+  nlambda = 100, lambda.min.ratio = ifelse(nobs < nvars, 0.01, 0.0001), lambda = NULL,
+  standardize = TRUE, intercept = TRUE
+)
 ```
 
 Penalised regression models
@@ -825,7 +897,7 @@ Regularisation parameter:
 ```{r}
 #| echo: true
 #| eval: false
-glmnet.out = glmnet(x, y, family, alpha)
+glmnet.out <- glmnet(x, y, family, alpha)
 ```
 
 Values:
@@ -864,7 +936,7 @@ Other packages in R
 -   $x$: predictor matrix
     -   clinical parameters: age, sex, bmi
     -   map: blood pressure
-    -    tc: total cholesterol
+    -   tc: total cholesterol
     -   ldl: low-density lipoprotein
     -   hdl: high-density lipoprotein
     -   tch: total cholesterol over hdl
@@ -905,9 +977,9 @@ y <- diabetes$y
 #| eval: true
 
 cbind(
-  lm(y~x) %>% coef(),
-  glmnet(x,y,family="gaussian",alpha=0,lambda=0.1) %>% coef(),
-  glmnet(x,y,family="gaussian",alpha=0,lambda=1) %>% coef()
+  lm(y ~ x) %>% coef(),
+  glmnet(x, y, family = "gaussian", alpha = 0, lambda = 0.1) %>% coef(),
+  glmnet(x, y, family = "gaussian", alpha = 0, lambda = 1) %>% coef()
 )
 ```
 
@@ -918,9 +990,9 @@ cbind(
 #| eval: true
 
 cbind(
-  lm(y~x) %>% coef(),
-  glmnet(x,y,family="gaussian",alpha=1,lambda=0.1) %>% coef(),
-  glmnet(x,y,family="gaussian",alpha=1,lambda=40) %>% coef()
+  lm(y ~ x) %>% coef(),
+  glmnet(x, y, family = "gaussian", alpha = 1, lambda = 0.1) %>% coef(),
+  glmnet(x, y, family = "gaussian", alpha = 1, lambda = 40) %>% coef()
 )
 ```
 
@@ -931,9 +1003,9 @@ cbind(
 #| eval: true
 
 cbind(
-  lm(y~x) %>% coef(),
-  glmnet(x,y,family="gaussian",alpha=0.5,lambda=0.1) %>% coef(),
-  glmnet(x,y,family="gaussian",alpha=0.5,lambda=40) %>% coef()
+  lm(y ~ x) %>% coef(),
+  glmnet(x, y, family = "gaussian", alpha = 0.5, lambda = 0.1) %>% coef(),
+  glmnet(x, y, family = "gaussian", alpha = 0.5, lambda = 40) %>% coef()
 )
 ```
 
@@ -965,7 +1037,7 @@ x <- data_bc$x
 ```{r}
 #| echo: true
 #| eval: false
-glm.out = glm(severity~as.matrix(x), family='binomial')
+glm.out <- glm(severity ~ as.matrix(x), family = "binomial")
 glm.out$converged
 ```
 
@@ -977,11 +1049,11 @@ Takes a lot of time and eventually you will get a warning that the algorithm did
 #| echo: true
 #| eval: true
 
-lasso.out = glmnet(x=as.matrix(x), y=severity, family='binomial', alpha = 1, lambda = 0.001)
-sum(abs(lasso.out$beta)>0)
+lasso.out <- glmnet(x = as.matrix(x), y = severity, family = "binomial", alpha = 1, lambda = 0.001)
+sum(abs(lasso.out$beta) > 0)
 
-lasso.out = glmnet(x=as.matrix(x), y=severity, family='binomial', alpha = 1, lambda = 0.12)
-sum(abs(lasso.out$beta)>0)
+lasso.out <- glmnet(x = as.matrix(x), y = severity, family = "binomial", alpha = 1, lambda = 0.12)
+sum(abs(lasso.out$beta) > 0)
 lasso.out$a0
 lasso.out$beta %>% summary()
 ```
@@ -992,11 +1064,11 @@ lasso.out$beta %>% summary()
 #| echo: true
 #| eval: true
 
-enet.out = glmnet(x=as.matrix(x), y=severity, family='binomial', alpha = 0.5, lambda = 0.003)
-sum(abs(enet.out$beta)>0)
+enet.out <- glmnet(x = as.matrix(x), y = severity, family = "binomial", alpha = 0.5, lambda = 0.003)
+sum(abs(enet.out$beta) > 0)
 
-enet.out = glmnet(x=as.matrix(x), y=severity, family='binomial', alpha = 0.5, lambda = 0.26)
-sum(abs(enet.out$beta)>0)
+enet.out <- glmnet(x = as.matrix(x), y = severity, family = "binomial", alpha = 0.5, lambda = 0.26)
+sum(abs(enet.out$beta) > 0)
 enet.out$a0
 enet.out$beta %>% summary()
 ```
@@ -1007,7 +1079,7 @@ enet.out$beta %>% summary()
 
 -   Different penalties imply different approaches:
 
-    -    Ridge regression: $L2$
+    -   Ridge regression: $L2$
 
     -   Lasso regression: $L1$
 
