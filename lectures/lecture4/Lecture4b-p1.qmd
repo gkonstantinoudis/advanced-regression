@@ -1,5 +1,5 @@
 ---
-title: "Advanced Regression 4b: Machine learning, ensemble methods"
+title: "Advanced Regression 4b: Machine learning, decision trees"
 date: "20-03-2024"
 author:
   name: "Garyfallos Konstantinoudis"
@@ -45,6 +45,7 @@ library(parttree)
 library(ggparty)
 library(latex2exp)
 library(patchwork)
+library(palmerpenguins)
 ```
 
 ## Decision trees: an introduction
@@ -139,8 +140,8 @@ df <- tibble(
 ctrl <- list(cp = 0, minbucket = 5, maxdepth = 1)
 fit <- rpart(y ~ x, data = df, control = ctrl)
 
-df %>%
-  mutate(pred = predict(fit, df)) %>%
+df |>
+  mutate(pred = predict(fit, df)) |>
   ggplot(aes(x, y)) +
   geom_point(alpha = 0.2, size = 1) +
   geom_line(aes(x, y = truth), color = "grey25", linewidth = .75) +
