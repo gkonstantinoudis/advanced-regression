@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression: A note on collinearity"
-date: "20-02-2023"
+date: "03-05-2024"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -69,7 +69,6 @@ lm(y ~ age + male + female + map + ltg, data = x, singular.ok = FALSE)
 ```
 :::
 
-
 ::: {style="font-size: 80%;"}
 ## Fitting an lm when high correlation
 
@@ -134,7 +133,6 @@ How to detect singularity?
 How to detect multicollinearity
 
 -   Variance inflation factor
-
 
 ::: {style="font-size: 80%;"}
 ## Covariance matrix

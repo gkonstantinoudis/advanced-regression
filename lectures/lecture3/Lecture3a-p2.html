@@ -26,7 +26,7 @@
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
       width: 0.8em;
-      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
@@ -106,11 +106,11 @@
 
   .callout {
     margin-top: 1em;
-    margin-bottom: 1em;
+    margin-bottom: 1em;  
     border-radius: .25rem;
   }
 
-  .callout.callout-style-simple {
+  .callout.callout-style-simple { 
     padding: 0em 0.5em;
     border-left: solid #acacac .3rem;
     border-right: solid 1px silver;
@@ -161,7 +161,7 @@
     margin-top: 0.5em;
     margin-bottom: 0.5em;
   }
-
+    
   .callout.callout-titled.callout-style-simple .callout-content  p {
     margin-top: 0;
   }
@@ -212,7 +212,7 @@
   .callout-title {
     display: flex
   }
-
+    
   .callout-icon::before {
     margin-top: 1rem;
     padding-right: .5rem;
@@ -324,12 +324,12 @@
     }
     .reveal .footnotes ol {
       counter-reset: ol;
-      list-style-type: none;
+      list-style-type: none; 
       margin-left: 0;
     }
     .reveal .footnotes ol li:before {
       counter-increment: ol;
-      content: counter(ol) ". ";
+      content: counter(ol) ". "; 
     }
     .reveal .footnotes ol li > p:first-child {
       display: inline-block;
@@ -371,19 +371,19 @@
     .reveal .slide > img.r-stretch.quarto-figure-center {
       display: block;
       margin-left: auto;
-      margin-right: auto;
+      margin-right: auto; 
     }
     .reveal .slide > img.stretch.quarto-figure-left,
     .reveal .slide > img.r-stretch.quarto-figure-left  {
       display: block;
       margin-left: 0;
-      margin-right: auto;
+      margin-right: auto; 
     }
     .reveal .slide > img.stretch.quarto-figure-right,
     .reveal .slide > img.r-stretch.quarto-figure-right  {
       display: block;
       margin-left: auto;
-      margin-right: 0;
+      margin-right: 0; 
     }
   </style>
 </head>
@@ -397,7 +397,7 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Garyfallos Konstantinoudis
+Garyfallos Konstantinoudis 
 </div>
         <p class="quarto-title-affiliation">
             Imperial College London
@@ -405,7 +405,7 @@ Garyfallos Konstantinoudis
     </div>
 </div>
 
-  <p class="date">Aug 2, 2024</p>
+  <p class="date">Mar 5, 2024</p>
 </section>
 <section id="introduction" class="slide level2" style="font-size: 80%;">
 <h2>Introduction</h2>
@@ -423,22 +423,22 @@ Call:
 lm(formula = y ~ age + male + female + map + ltg, data = x)
 
 Residuals:
-     Min       1Q   Median       3Q      Max
--166.017  -42.787   -5.523   41.751  185.752
+     Min       1Q   Median       3Q      Max 
+-166.017  -42.787   -5.523   41.751  185.752 
 
 Coefficients: (1 not defined because of singularities)
-            Estimate Std. Error t value Pr(&gt;|t|)
+            Estimate Std. Error t value Pr(&gt;|t|)    
 (Intercept)  144.502      4.303  33.586  &lt; 2e-16 ***
-age          -31.454     65.564  -0.480   0.6317
-male          14.353      6.000   2.392   0.0172 *
-female            NA         NA      NA       NA
+age          -31.454     65.564  -0.480   0.6317    
+male          14.353      6.000   2.392   0.0172 *  
+female            NA         NA      NA       NA    
 map          460.104     69.384   6.631 9.84e-11 ***
 ltg          766.189     66.966  11.442  &lt; 2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 60.7 on 437 degrees of freedom
-Multiple R-squared:  0.3856,    Adjusted R-squared:   0.38
+Multiple R-squared:  0.3856,    Adjusted R-squared:   0.38 
 F-statistic: 68.57 on 4 and 437 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
@@ -468,12 +468,12 @@ F-statistic: 68.57 on 4 and 437 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>12 x 1 sparse Matrix of class "dgCMatrix"
                   s0
-age     .
+age     .           
 sex    -1.230792e+00
 bmi     5.250119e+02
 map     3.083265e+02
 tc     -1.609111e+02
-ldl     .
+ldl     .           
 hdl    -1.805392e+02
 tch     6.606582e+01
 ltg     5.242775e+02
@@ -680,7 +680,7 @@ attr(,"tol")
 <span id="cb13-2"><a href="#cb13-2"></a>lm2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> age <span class="sc">+</span> male <span class="sc">+</span> map <span class="sc">+</span> ltg, <span class="at">data =</span> x)</span>
 <span id="cb13-3"><a href="#cb13-3"></a><span class="fu">vif</span>(lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>     age     male      map      ltg
+<pre><code>     age     male      map      ltg 
 1.166584 1.075047 1.306446 1.216982 </code></pre>
 </div>
 </div>
@@ -717,7 +717,7 @@ attr(,"tol")
   <script src="Lecture3a-p2_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
   <script src="Lecture3a-p2_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
   <script src="Lecture3a-p2_files/libs/revealjs/plugin/quarto-support/support.js"></script>
-
+  
 
   <script src="Lecture3a-p2_files/libs/revealjs/plugin/notes/notes.js"></script>
   <script src="Lecture3a-p2_files/libs/revealjs/plugin/search/search.js"></script>
@@ -740,7 +740,7 @@ attr(,"tol")
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":false},
 'smaller': false,
-
+ 
         // Display controls in the bottom right corner
         controls: false,
 
@@ -918,7 +918,7 @@ attr(,"tol")
         ]
       });
     </script>
-
+    
     <script>
       // htmlwidgets need to know to resize themselves when slides are shown/hidden.
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
@@ -975,14 +975,14 @@ attr(,"tol")
           toggleBodyColorMode(bsSheetEl);
         }
       }
-      toggleBodyColorPrimary();
+      toggleBodyColorPrimary();  
       const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
       tabsets.forEach(function(tabset) {
         const tabby = new Tabby('#' + tabset.id);
       });
       const isCodeAnnotation = (el) => {
         for (const clz of el.classList) {
-          if (clz.startsWith('code-annotation-')) {
+          if (clz.startsWith('code-annotation-')) {                     
             return true;
           }
         }
@@ -1013,11 +1013,11 @@ attr(,"tol")
           button.setAttribute("data-bs-toggle", "tooltip");
           button.setAttribute("data-bs-placement", "left");
           button.setAttribute("data-bs-title", "Copied!");
-          tooltip = new bootstrap.Tooltip(button,
-            { trigger: "manual",
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
               customClass: "code-copy-button-tooltip",
               offset: [0, -8]});
-          tooltip.show();
+          tooltip.show();    
         }
         setTimeout(function() {
           if (tooltip) {
@@ -1049,7 +1049,7 @@ attr(,"tol")
         };
           config['offset'] = [0,0];
           config['maxWidth'] = 700;
-        window.tippy(el, config);
+        window.tippy(el, config); 
       }
       const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
       for (var i=0; i<noterefs.length; i++) {
@@ -1102,6 +1102,6 @@ attr(,"tol")
       }
     });
     </script>
-
+    
 
 </body></html>

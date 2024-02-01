@@ -1,6 +1,6 @@
 ---
 title: "Penalised regression models"
-date: "20-02-2023"
+date: "03-05-2024"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -532,7 +532,6 @@ Interpretation:
 
 -   When two variables are highly correlated, Lasso includes only one (at random) and not both.
 :::
-
 
 ## Lasso regression: Geometric interpretation
 
