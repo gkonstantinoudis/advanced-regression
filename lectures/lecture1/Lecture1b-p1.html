@@ -391,7 +391,7 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" data-background-color="#f3f4f4" data-background-image="../../assets/bmeh_normal.png" data-background-position="60% 120%" data-background-size="80%" class="quarto-title-block center">
+<section id="title-slide" data-background-color="#f3f4f4" data-background-image="../../assets/logo_trans.png" data-background-position="90% 120%" data-background-size="50%" class="quarto-title-block center">
   <h1 class="title">Advanced Regression: Linear and generalised linear models I</h1>
 
 <div class="quarto-title-authors">
@@ -407,7 +407,7 @@ Garyfallos Konstantinoudis
 
   <p class="date">Aug 2, 2025</p>
 </section>
-<section id="main-goal-of-linear-regression" class="slide level2">
+<section id="main-goal-of-linear-regression" class="slide level2" style="font-size: 70%;">
 <h2>Main goal of (linear) regression</h2>
 <p>Regression models are used to investigate association between</p>
 <ul>
@@ -443,7 +443,7 @@ y = \alpha + x\beta + \epsilon
 <li><p><span class="math inline">\(\beta\)</span>: Regression coefficients. Dimension: <span class="math inline">\(p\times 1\)</span></p></li>
 </ul>
 </section>
-<section id="parameters-to-estimate" class="slide level2">
+<section id="parameters-to-estimate" class="slide level2" style="font-size: 80%;">
 <h2>Parameters to estimate:</h2>
 <ul>
 <li><p><span class="math inline">\(\alpha\)</span>: Intercept, Baseline level, the expected mean value of <span class="math inline">\(y\)</span> when all <span class="math inline">\(x = 0\)</span></p></li>
@@ -460,7 +460,7 @@ y = \alpha + x\beta + \epsilon
 </ul></li>
 </ul>
 </section>
-<section id="estimates-ordinary-least-squares-ols" class="slide level2">
+<section id="estimates-ordinary-least-squares-ols" class="slide level2" style="font-size: 80%;">
 <h2>Estimates: Ordinary least squares (OLS)</h2>
 <p><span class="math display">\[
 \hat{\beta}_{OLS} = \underbrace{(x^t x)^{(-1)} }_{p \times p}  \underbrace{x^t}_{p \times n} \underbrace{y}_{n \times 1}
@@ -477,7 +477,7 @@ y = \alpha + x\beta + \epsilon
 </ul></li>
 </ul>
 </section>
-<section id="example-diabetes-data" class="slide level2">
+<section id="example-diabetes-data" class="slide level2" style="font-size: 80%;">
 <h2>Example: Diabetes data</h2>
 <ul>
 <li><p><span class="math inline">\(y\)</span> : quantitative measure of disease progression one year after baseline (vector)</p></li>
@@ -521,7 +521,7 @@ y = \alpha + x\beta + \epsilon
 </div>
 <p>An intercept is always included, to turn off add <span class="math inline">\(-1\)</span></p>
 </section>
-<section id="interpreting-the-summary.lm-command" class="slide level2">
+<section id="interpreting-the-summary.lm-command" class="slide level2" style="font-size: 80%;">
 <h2>Interpreting the summary.lm() command</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">library</span>(lars)</span>
@@ -558,7 +558,7 @@ F-statistic: 56.68 on 5 and 436 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </section>
-<section id="difference-between-univariable-and-multivariable-regression" class="slide level2">
+<section id="difference-between-univariable-and-multivariable-regression" class="slide level2" style="font-size: 80%;">
 <h2>Difference between univariable and multivariable regression</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> glu, <span class="at">data =</span> x) <span class="sc">%&gt;%</span> <span class="fu">summary.lm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -595,7 +595,7 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li><p>Bayesian linear regression (Module: Bayesian Statistics)</p></li>
 </ul>
 </section>
-<section id="fitted-values-and-residuals" class="slide level2">
+<section id="fitted-values-and-residuals" class="slide level2" style="font-size: 80%;">
 <h2>Fitted values and residuals</h2>
 <ul>
 <li>Fitted values</li>
@@ -624,7 +624,7 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
 <h2>Fitted values and residuals</h2>
 
 <img data-src="Lecture1b-p1_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"></section>
-<section id="lm-fitted-values-and-residuals" class="slide level2">
+<section id="lm-fitted-values-and-residuals" class="slide level2" style="font-size: 95%;">
 <h2>lm(): Fitted values and residuals</h2>
 <ul>
 <li>First fit a linear model and save it in the object <span class="math inline">\(\text{lm0}\)</span></li>
@@ -668,7 +668,7 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Independent errors: The residuals are uncorrelated (e.g.&nbsp;in time-series the error of time point <span class="math inline">\(t\)</span> will depend on the error of time point <span class="math inline">\(t-1\)</span>) and independent of <span class="math inline">\(x\)</span>.</li>
 </ol>
 </section>
-<section id="further-assumptions" class="slide level2">
+<section id="further-assumptions" class="slide level2" style="font-size: 80%;">
 <h2>Further assumptions</h2>
 <ul>
 <li><p>Normal-distributed errors:</p>
@@ -712,7 +712,7 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
 </ul>
 
 <img data-src="Lecture1b-p1_files/figure-revealjs/unnamed-chunk-15-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="diagnostic-plots-outliers" class="slide level2">
+<section id="diagnostic-plots-outliers" class="slide level2" style="font-size: 80%;">
 <h2>Diagnostic plots: Outliers</h2>
 <ul>
 <li><p>Scatterplot of standardised residuals against Cook’s distance.</p></li>
@@ -720,7 +720,7 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
 </ul>
 
 <img data-src="Lecture1b-p1_files/figure-revealjs/unnamed-chunk-16-1.png" width="576" class="r-stretch quarto-figure-center"></section>
-<section id="lm-diagnostics" class="slide level2">
+<section id="lm-diagnostics" class="slide level2" style="font-size: 70%;">
 <h2>lm(): Diagnostics</h2>
 <ul>
 <li><p>Linear relationship and outliers (Scatterplot of y against x)</p>
@@ -746,7 +746,7 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div></li>
 </ul>
 </section>
-<section id="prediction-using-linear-models" class="slide level2">
+<section id="prediction-using-linear-models" class="slide level2" style="font-size: 90%;">
 <h2>Prediction using linear models</h2>
 <p>Assume we have a database with <span class="math inline">\(n\)</span> type 2 diabetes cases, where we have measured the following data:</p>
 <ul>
@@ -782,7 +782,7 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li><p>Using the linear model to predict</p></li>
 </ul>
 
-<img src="../../assets/bmeh_normal.png" class="slide-logo r-stretch"><div class="footer footer-default">
+<img src="../../assets/logo_trans.png" class="slide-logo r-stretch"><div class="footer footer-default">
 
 </div>
 </section>

@@ -8,18 +8,20 @@ editor: visual
 date-format: medium
 title-slide-attributes:
   data-background-color: "#f3f4f4"
-  data-background-image: "../../assets/bmeh_normal.png"
-  data-background-size: 80%
-  data-background-position: 60% 120%
+  data-background-image: "../../assets/logo_trans.png"
+  data-background-size: 50%
+  data-background-position: 90% 120%
 format:
     revealjs:
       theme: [default, ../../assets/style.scss]
-      logo: "../../assets/bmeh_normal.png"
+      logo: "../../assets/logo_trans.png"
       slide-number: true
       incremental: false
       chalkboard:
         buttons: false
 ---
+
+::: {style="font-size: 70%;"}
 
 ## Main goal of (linear) regression
 
@@ -48,6 +50,7 @@ ggplot() +
   geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1.5) +
   theme_bw()
 ```
+:::
 
 ## Motivations
 
@@ -72,6 +75,7 @@ $$
 
 -   $\beta$: Regression coefficients. Dimension: $p\times 1$
 
+::: {style="font-size: 80%;"}
 ## Parameters to estimate:
 
 -   $\alpha$: Intercept, Baseline level, the expected mean value of $y$ when all $x = 0$
@@ -90,6 +94,9 @@ Observed data:
 
     -   $j = , ..., p$ variables.
 
+:::
+
+::: {style="font-size: 80%;"}
 ## Estimates: Ordinary least squares (OLS)
 
 $$
@@ -105,7 +112,9 @@ Alternative representation:
     -   $\hat{cov}(x,y)=\frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})$
 
     -   $\hat{cov}(x)=\frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})(x_i - \bar{x})$
+:::
 
+::: {style="font-size: 80%;"}
 ## Example: Diabetes data
 
 -   $y$ : quantitative measure of disease progression one year after baseline (vector)
@@ -131,6 +140,7 @@ Alternative representation:
 ```
 
 -   $n=442$: sample size
+:::
 
 ## The lm() command in R
 
@@ -165,6 +175,7 @@ y ~ x
 
 An intercept is always included, to turn off add $-1$
 
+::: {style="font-size: 80%;"}
 ## Interpreting the summary.lm() command
 
 ```{r}
@@ -180,7 +191,9 @@ y <- diabetes$y
 
 lm(y ~ age + sex + glu + map + ltg, data = x) %>% summary.lm()
 ```
+:::
 
+::: {style="font-size: 80%;"}
 ## Difference between univariable and multivariable regression
 
 ```{r}
@@ -191,6 +204,7 @@ lm(y ~ glu, data = x) %>% summary.lm()
 ```
 
 Reduction of the regression coeffient from 619 to 175 after conditioning on other covariates $\rightarrow$ attenuation of the effect
+:::
 
 ## Further estimates
 
@@ -204,6 +218,7 @@ Reduction of the regression coeffient from 619 to 175 after conditioning on othe
 
 -   Bayesian linear regression (Module: Bayesian Statistics)
 
+::: {style="font-size: 80%;"}
 ## Fitted values and residuals
 
 -   Fitted values
@@ -219,7 +234,7 @@ $\hat{y} = x \hat{\beta} = \underbrace{x (x^t x)^{-1} x^t}_{h} y$
 ::: callout-tip
 Residuals are an important quantity for model diagnostics.
 :::
-
+:::
 ## Fitted values and residuals
 
 ```{r}
@@ -266,6 +281,7 @@ ggplot(data = data.frame(x = x1, y = y1), aes(x = x1, y = y1)) +
   theme(text = element_text(size = 20))
 ```
 
+::: {style="font-size: 95%;"}
 ## lm(): Fitted values and residuals
 
 -   First fit a linear model and save it in the object $\text{lm0}$
@@ -281,26 +297,27 @@ lm0 <- lm(y ~ glu, data = x)
     -   Regression coefficients
 
     ```{r}
-#| echo: true
-#| eval: true
-lm0$coefficients
+    #| echo: true
+    #| eval: true
+    lm0$coefficients
     ```
 
     -   Fitted values
 
     ```{r}
-#| echo: true
-#| eval: false
-lm0$fitted.values
+    #| echo: true
+    #| eval: false
+    lm0$fitted.values
     ```
 
     -   Residuals
 
     ```{r}
-#| echo: true
-#| eval: false
-lm0$residuals
+    #| echo: true
+    #| eval: false
+    lm0$residuals
     ```
+:::
 
 ## Assumptions
 
@@ -310,6 +327,7 @@ lm0$residuals
 4.  No perfect multicollinearity: No predictor can be expressed as a linear combination of the other predictors (Lecture 2b).
 5.  Independent errors: The residuals are uncorrelated (e.g. in time-series the error of time point $t$ will depend on the error of time point $t-1$) and independent of $x$.
 
+::: {style="font-size: 80%;"}
 ## Further assumptions
 
 -   Normal-distributed errors:
@@ -329,6 +347,7 @@ lm0$residuals
     -   "True" biological outliers (follow-up)
 
 -   Influential variants: Cook's distance
+:::
 
 ## Diagnostic plots: Linear relationship
 
@@ -462,6 +481,7 @@ mod <- lm(y ~ age + sex + glu + map + ltg, data = x)
   )
 ```
 
+::: {style="font-size: 80%;"}
 ## Diagnostic plots: Outliers
 
 -   Scatterplot of standardised residuals against Cook's distance.
@@ -491,50 +511,54 @@ ggplot(mod, aes(.hat, .stdresid)) +
   theme_bw() +
   theme(legend.position = "bottom")
 ```
+:::
 
+::: {style="font-size: 70%;"}
 ## lm(): Diagnostics
 
 -   Linear relationship and outliers (Scatterplot of y against x)
 
     ```{r}
-#| echo: true
-#| eval: false
-plot(x, y)
-abline(mod, col = "red")
+    #| echo: true
+    #| eval: false
+    plot(x, y)
+    abline(mod, col = "red")
     ```
 
 -   Linear relationship and outliers (Residuals against fitted values)
 
     ```{r}
-#| echo: true
-#| eval: false
-plot(mod, which = 1)
+    #| echo: true
+    #| eval: false
+    plot(mod, which = 1)
     ```
 
 -   Homoscedasticity (Standardised residuals against fitted values)
 
     ```{r}
-#| echo: true
-#| eval: false
-plot(mod, which = 3)
+    #| echo: true
+    #| eval: false
+    plot(mod, which = 3)
     ```
 
 -   Normal-distribution of residuals (Q-Q plots of observed residuals against theoretical values under the Normal distribution)
 
     ```{r}
-#| echo: true
-#| eval: false
-plot(mod, which = 2)
+    #| echo: true
+    #| eval: false
+    plot(mod, which = 2)
     ```
 
 -   Influential variants: (Standardised residuals against Cook's distance)
 
     ```{r}
-#| echo: true
-#| eval: false
-plot(mod, which = 5)
+    #| echo: true
+    #| eval: false
+    plot(mod, which = 5)
     ```
+:::
 
+::: {style="font-size: 90%;"}
 ## Prediction using linear models
 
 Assume we have a database with $n$ type 2 diabetes cases, where we have measured the following data:
@@ -548,16 +572,17 @@ Assume we have a database with $n$ type 2 diabetes cases, where we have measured
 For a new case we only have the predictor matrix $x_{\text{new}}$, but not $y_{\text{new}}$.
 
 **Goal**: For each new type 2 diabetes case we want to predict $y_{\text{new}}$, his/her progression one year later.
+:::
 
 ## lm(): Predictions
 
 -   Use the linear model to learn a prediction rule from the training data, where both $x$ and $y$ are observed on the same individuals.
 
     ```{r}
-#| echo: true
-#| eval: false
-lm_train <-
-  lm(formula = y_train ~ age + sex + bmi + map + ltg, data = x_train)
+    #| echo: true
+    #| eval: false
+    lm_train <-
+      lm(formula = y_train ~ age + sex + bmi + map + ltg, data = x_train)
     ```
 
 -   Predict the outcome based on the prediction rule and the predictors of the new data.

@@ -8,12 +8,14 @@ editor: visual
 date-format: medium
 title-slide-attributes:
   data-background-color: "#f3f4f4"
-  data-background-size: 80%
-  data-background-position: 60% 120%
+  data-background-image: "../../assets/logo_trans.png"
+  data-background-size: 50%
+  data-background-position: 90% 120%
 format:
     revealjs:
-      slide-number: true
       theme: [default, ../../assets/style.scss]
+      logo: "../../assets/logo_trans.png"
+      slide-number: true
       incremental: false
       chalkboard:
         buttons: false
@@ -166,6 +168,7 @@ $$\underset{\alpha, \beta}{argmin} =  RSS(\alpha,\beta) +  \lambda f(\beta)$$
 
     $$\lambda f(\beta) =  \lambda_1 \sum_{j=1}^p \left| \beta_j \right|  +  \lambda_2 \sum_{j=1}^p \beta_j^2$$
 
+::: {style="font-size: 90%;"}
 ## Ridge regression
 
 Ridge regression uses the L2 norm as penalty:$$\underset{\alpha, \hat{\beta}_{Ridge}}{argmin} =  \underbrace{RSS(\alpha,\beta)}_{\text{Residual Sum of Squares}} +  \underbrace{\lambda \sum_{j=1}^p \beta_j^2}_{\text{penalty}}$$
@@ -177,6 +180,7 @@ Interpretation:
 -   There is no intrinsic model selection in Ridge regression, all $p$ variables will have $\hat{\beta}_{Ridge} \neq 0$.
 
 -   Minimise the RSS while forcing $\beta$ not to be very large.
+:::
 
 ## Ridge regression: Geometric interpretation
 
@@ -515,6 +519,7 @@ ggplot() +
   guides(fill = guide_legend(title = ""))
 ```
 
+::: {style="font-size: 80%;"}
 ## Lasso regression
 
 $$\underset{\hat{\alpha}, \hat{\beta}_{Lasso}}{argmin} =  \underbrace{RSS(\alpha,\beta)}_{\text{Residual Sum of Squares}} +  \underbrace{\lambda \sum_{j=1}^p \left| \beta_j \right| }_{\text{penalty}} $$
@@ -526,6 +531,8 @@ Interpretation:
 -   There is an intrinsic model selection in Lasso regression, as it sets certain variables exactly to $\hat{\beta}_{Lasso} = 0$, and thus excludes them from the model.
 
 -   When two variables are highly correlated, Lasso includes only one (at random) and not both.
+:::
+
 
 ## Lasso regression: Geometric interpretation
 
@@ -834,6 +841,7 @@ $\lambda$ is the regularisation parameter
 
 -   **Cross-validation**
 
+::: {style="font-size: 95%;"}
 ## Prediction using penalised regression
 
 -   Regularized regression is an ideal tool for prediction.
@@ -845,6 +853,7 @@ $\lambda$ is the regularisation parameter
 -   Since Lasso and Elastic net force some $\hat{\beta}_{\text{Penalised}}$ to zero, variables with $\hat{\beta}_{\text{Penalised}}=0$ are excluded from the model and do not contribute to the prediction rule.
 
 -   In contrast in Ridge regression variables contribute to $\hat{f}(x)$.
+:::
 
 ## Penalised regression in R: `glmnet()`
 

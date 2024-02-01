@@ -8,7 +8,7 @@
 <link href="Lecture2a_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="Lecture2a_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="Lecture2a_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.3.353">
+  <meta name="generator" content="quarto-1.3.450">
 
   <meta name="author" content="Garyfallos Konstantinoudis">
   <title>Advanced Regression: Introduction to non-linear regression</title>
@@ -391,7 +391,7 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" data-background-color="#f3f4f4" data-background-position="60% 120%" data-background-size="80%" class="quarto-title-block center">
+<section id="title-slide" data-background-color="#f3f4f4" data-background-image="../../assets/logo_trans.png" data-background-position="90% 120%" data-background-size="50%" class="quarto-title-block center">
   <h1 class="title">Advanced Regression: Introduction to non-linear regression</h1>
 
 <div class="quarto-title-authors">
@@ -407,7 +407,7 @@ Garyfallos Konstantinoudis
 
   <p class="date">Aug 2, 2024</p>
 </section>
-<section id="non-linear-regression" class="slide level2">
+<section id="non-linear-regression" class="slide level2" style="font-size: 90%;">
 <h2>Non-linear regression</h2>
 <p>So far we have studied the linear regression models, which are very flexible tool for estimating relationships in a set of data. In particular, we have seen:</p>
 <ul>
@@ -427,7 +427,7 @@ Garyfallos Konstantinoudis
 </div>
 </div>
 </section>
-<section id="a-clarification" class="slide level2">
+<section id="a-clarification" class="slide level2" style="font-size: 90%;">
 <h2>A clarification</h2>
 <p>In the name normal (or Poisson, binomial, etc.) linear model, the word ‘linear’ refers to the response being modelled as a linear combination of covariates, i.e.</p>
 <p><span class="math display">\[Y_i \sim N(\beta_1 + \beta_2X_{i2} + \dots + \beta_pX_{ip}, \sigma^2)\]</span></p>
@@ -444,7 +444,7 @@ Garyfallos Konstantinoudis
 <li><p>Fit as simple a model as possible, do not overcomplicate it unnecessarily. (Occam’s razor)</p></li>
 </ul>
 </section>
-<section id="example" class="slide level2">
+<section id="example" class="slide level2" style="font-size: 80%;">
 <h2>Example</h2>
 <p>Associations are not solely linear</p>
 <div class="cell" data-layout-align="center">
@@ -453,11 +453,13 @@ Garyfallos Konstantinoudis
 <span id="cb1-3"><a href="#cb1-3"></a></span>
 <span id="cb1-4"><a href="#cb1-4"></a><span class="fu">set.seed</span>(<span class="dv">11</span>)</span>
 <span id="cb1-5"><a href="#cb1-5"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">1000</span>)</span>
-<span id="cb1-6"><a href="#cb1-6"></a>y <span class="ot">=</span> <span class="fl">0.5</span><span class="sc">*</span>x<span class="sc">*</span>x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="at">sd =</span> <span class="fl">0.3</span>)</span>
+<span id="cb1-6"><a href="#cb1-6"></a>y <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> x <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="at">sd =</span> <span class="fl">0.3</span>)</span>
 <span id="cb1-7"><a href="#cb1-7"></a></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">x=</span>x,<span class="at">y=</span>y), <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">cex =</span> <span class="fl">1.2</span>) <span class="sc">+</span> </span>
-<span id="cb1-9"><a href="#cb1-9"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">'lm'</span>, <span class="at">formula=</span> y<span class="sc">~</span>x, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb1-10"><a href="#cb1-10"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>  <span class="fu">geom_point</span>(<span class="at">cex =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">formula =</span> y <span class="sc">~</span> x, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="Lecture2a_files/figure-revealjs/unnamed-chunk-1-1.png" width="768" class="r-stretch quarto-figure-center"></section>
@@ -499,7 +501,7 @@ Garyfallos Konstantinoudis
 <p><span class="math display">\[Y _i = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3 + \beta_4 X^4 +\beta_5 X^5 + \epsilon_i \]</span></p>
 
 <img data-src="Lecture2a_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="example-1" class="slide level2">
+<section id="example-1" class="slide level2" style="font-size: 80%;">
 <h2>Example</h2>
 <div class="cell" data-layout-align="center">
 <div class="cell-output cell-output-stdout">
@@ -574,7 +576,7 @@ Model 2: y ~ x + I(x^2) + I(x^3)
 </div>
 </div>
 </section>
-<section id="pros-and-cons" class="slide level2">
+<section id="pros-and-cons" class="slide level2" style="font-size: 80%;">
 <h2>Pros and cons</h2>
 <p>Pros</p>
 <ul>
@@ -604,7 +606,7 @@ Model 2: y ~ x + I(x^2) + I(x^3)
 <p><span class="math display">\[Y _i = \beta_0 + \beta_1 sin(\omega X) + \beta_2 cos(\omega X) + \beta_3 sin(2 \omega X) + \beta_4 cos(2\omega X) + \epsilon_i\]</span></p>
 
 <img data-src="Lecture2a_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="pros-and-cons-1" class="slide level2">
+<section id="pros-and-cons-1" class="slide level2" style="font-size: 90%;">
 <h2>Pros and cons</h2>
 <p>Pros</p>
 <ul>
@@ -659,9 +661,9 @@ Model 2: y ~ x + I(x^2) + I(x^3)
 <section id="linear-threshold-in-r" class="slide level2">
 <h2>Linear threshold in R</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x=</span>x, <span class="at">y=</span>y)</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)</span>
 <span id="cb7-2"><a href="#cb7-2"></a></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="fu">lm</span>(y<span class="sc">~</span>x<span class="sc">:</span>(x<span class="sc">&lt;=-</span><span class="dv">1</span>) <span class="sc">+</span> x<span class="sc">:</span>(x<span class="sc">&lt;=</span><span class="fl">0.5</span>) <span class="sc">+</span> x<span class="sc">:</span>(x<span class="sc">&lt;=</span><span class="fl">1.5</span>) <span class="sc">+</span> x<span class="sc">:</span>(x<span class="sc">&lt;=</span><span class="dv">3</span>), <span class="at">data=</span>dat) <span class="ot">-&gt;</span> mod1</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="fu">lm</span>(y <span class="sc">~</span> x<span class="sc">:</span>(x <span class="sc">&lt;=</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span> x<span class="sc">:</span>(x <span class="sc">&lt;=</span> <span class="fl">0.5</span>) <span class="sc">+</span> x<span class="sc">:</span>(x <span class="sc">&lt;=</span> <span class="fl">1.5</span>) <span class="sc">+</span> x<span class="sc">:</span>(x <span class="sc">&lt;=</span> <span class="dv">3</span>), <span class="at">data =</span> dat) <span class="ot">-&gt;</span> mod1</span>
 <span id="cb7-4"><a href="#cb7-4"></a>mod1 <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -698,17 +700,19 @@ F-statistic: 73.14 on 5 and 994 DF,  p-value: &lt; 2.2e-16</code></pre>
 <h2>Linear splines in R</h2>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">library</span>(splines)</span>
-<span id="cb9-2"><a href="#cb9-2"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>( y <span class="sc">~</span> <span class="fu">bs</span>(x, <span class="at">degree=</span><span class="dv">1</span>, <span class="at">knots=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="dv">3</span>)), <span class="at">data =</span> dat)</span>
+<span id="cb9-2"><a href="#cb9-2"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">bs</span>(x, <span class="at">degree =</span> <span class="dv">1</span>, <span class="at">knots =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="dv">3</span>)), <span class="at">data =</span> dat)</span>
 <span id="cb9-3"><a href="#cb9-3"></a></span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb9-5"><a href="#cb9-5"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">col =</span> cols[<span class="dv">1</span>], <span class="at">cex =</span> <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb9-6"><a href="#cb9-6"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb9-7"><a href="#cb9-7"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>dat<span class="sc">$</span>x, <span class="at">y =</span> fit<span class="sc">$</span>fitted.values), <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb9-8"><a href="#cb9-8"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">col =</span> cols[<span class="dv">1</span>], <span class="at">cex =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a>  <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> dat<span class="sc">$</span>x, <span class="at">y =</span> fit<span class="sc">$</span>fitted.values), <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb9-10"><a href="#cb9-10"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="Lecture2a_files/figure-revealjs/unnamed-chunk-16-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="linear-splines" class="slide level2">
+<section id="linear-splines" class="slide level2" style="font-size: 80%;">
 <h2>Linear splines</h2>
 <p>Linear threshold model</p>
 <p><span class="math display">\[
@@ -727,39 +731,41 @@ Y_i &amp;= \beta_0^{(5)} + \beta_1^{(5)}x + \epsilon \qquad x\geq3\\
 <section id="linear-splines-in-r-without-a-package" class="slide level2">
 <h2>Linear splines in R without a package</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">lm</span>(y<span class="sc">~</span> x <span class="sc">+</span> <span class="fu">I</span>((x<span class="sc">+</span><span class="dv">1</span>)<span class="sc">*</span>(x<span class="sc">&gt;=-</span><span class="dv">1</span>) )<span class="sc">+</span> <span class="fu">I</span>((x<span class="fl">-0.5</span>)<span class="sc">*</span>(x<span class="sc">&gt;=</span><span class="fl">0.5</span>)) <span class="sc">+</span> <span class="fu">I</span>((x<span class="fl">-1.5</span>)<span class="sc">*</span>(x<span class="sc">&gt;=</span><span class="fl">1.5</span>)) <span class="sc">+</span> <span class="fu">I</span>((x<span class="dv">-3</span>)<span class="sc">*</span>(x<span class="sc">&gt;=</span><span class="dv">3</span>)), <span class="at">data=</span>dat) <span class="ot">-&gt;</span> mod2</span>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> <span class="fu">I</span>((x <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">*</span> (x <span class="sc">&gt;=</span> <span class="sc">-</span><span class="dv">1</span>)) <span class="sc">+</span> <span class="fu">I</span>((x <span class="sc">-</span> <span class="fl">0.5</span>) <span class="sc">*</span> (x <span class="sc">&gt;=</span> <span class="fl">0.5</span>)) <span class="sc">+</span> <span class="fu">I</span>((x <span class="sc">-</span> <span class="fl">1.5</span>) <span class="sc">*</span> (x <span class="sc">&gt;=</span> <span class="fl">1.5</span>)) <span class="sc">+</span> <span class="fu">I</span>((x <span class="sc">-</span> <span class="dv">3</span>) <span class="sc">*</span> (x <span class="sc">&gt;=</span> <span class="dv">3</span>)), <span class="at">data =</span> dat) <span class="ot">-&gt;</span> mod2</span>
 <span id="cb10-2"><a href="#cb10-2"></a></span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">cex =</span> <span class="fl">1.3</span>, <span class="at">col =</span> cols[<span class="dv">1</span>]) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb10-5"><a href="#cb10-5"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb10-6"><a href="#cb10-6"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>dat<span class="sc">$</span>x, <span class="at">y =</span> mod2<span class="sc">$</span>fitted.values), <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb10-7"><a href="#cb10-7"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">cex =</span> <span class="fl">1.3</span>, <span class="at">col =</span> cols[<span class="dv">1</span>]) <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb10-6"><a href="#cb10-6"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a>  <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb10-8"><a href="#cb10-8"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> dat<span class="sc">$</span>x, <span class="at">y =</span> mod2<span class="sc">$</span>fitted.values), <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb10-9"><a href="#cb10-9"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="Lecture2a_files/figure-revealjs/unnamed-chunk-17-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="cubic-splines" class="slide level2">
+<section id="cubic-splines" class="slide level2" style="font-size: 80%;">
 <h2>Cubic splines</h2>
 <p>Similarly we can define higher order polynomial splines, for instance:</p>
 <p><span class="math inline">\(\begin{align} Y_i = \beta_0 &amp;+ \beta_1 x + \beta_2x^2 + \beta_3x^3 + \\&amp;\beta_4 (x+1)_+ +\beta_5 + (x+1)_+^2 +\beta_6 (x+1)_+^3 +\\ &amp;\beta_7 (x-0.5)_+ +\beta_8 (x-0.5)_+^2 +\beta_9 (x-0.5)_+^3 + \\ &amp; \dots + \epsilon \\(x-k)_+&amp; = \begin{cases} 0, \quad x&lt;k\\x-k, \quad x\geq k\end{cases} \end{align}\)</span></p>
 <p>which reduces to the following to ensure smooth curvature on the knots (it can be seen after deriving the first and second derivative):</p>
 <p><span class="math inline">\(Y_i = \begin{align}\beta_0 &amp;+ \beta_1 x + \beta_2x^2_+ + \beta_3x^3 + \\&amp;+\beta_6 (x+1)_+^3 + \beta_9 (x-0.5)_+^3 + \dots + \epsilon \\\end{align}\)</span></p>
 </section>
-<section id="cubic-splines-in-r" class="slide level2">
+<section id="cubic-splines-in-r" class="slide level2" style="font-size: 80%;">
 <h2>Cubic splines in R</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>fit_c <span class="ot">&lt;-</span> <span class="fu">lm</span>( y <span class="sc">~</span> <span class="fu">bs</span>(x, <span class="at">degree=</span><span class="dv">3</span>, <span class="at">knots=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="dv">3</span>)), <span class="at">data =</span> dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>fit_c <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">bs</span>(x, <span class="at">degree =</span> <span class="dv">3</span>, <span class="at">knots =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="dv">3</span>)), <span class="at">data =</span> dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>without the splines package:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>fit_nopack <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
-<span id="cb12-2"><a href="#cb12-2"></a>  y <span class="sc">~</span> x <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">3</span>) <span class="sc">+</span> <span class="fu">I</span>((x<span class="sc">+</span><span class="dv">1</span>)<span class="sc">^</span><span class="dv">3</span><span class="sc">*</span>(x<span class="sc">&gt;=-</span><span class="dv">1</span>)) <span class="sc">+</span> </span>
-<span id="cb12-3"><a href="#cb12-3"></a>    <span class="fu">I</span>((x<span class="fl">-0.5</span>)<span class="sc">^</span><span class="dv">3</span><span class="sc">*</span>(x<span class="sc">&gt;=</span><span class="fl">0.5</span>)) <span class="sc">+</span> <span class="fu">I</span>((x<span class="fl">-1.5</span>)<span class="sc">^</span><span class="dv">3</span><span class="sc">*</span>(x<span class="sc">&gt;=</span><span class="fl">1.5</span>)) <span class="sc">+</span> <span class="fu">I</span>((x<span class="dv">-3</span>)<span class="sc">^</span><span class="dv">3</span><span class="sc">*</span>(x<span class="sc">&gt;=</span><span class="dv">3</span>)), </span>
+<span id="cb12-2"><a href="#cb12-2"></a>  y <span class="sc">~</span> x <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">3</span>) <span class="sc">+</span> <span class="fu">I</span>((x <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">^</span><span class="dv">3</span> <span class="sc">*</span> (x <span class="sc">&gt;=</span> <span class="sc">-</span><span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>    <span class="fu">I</span>((x <span class="sc">-</span> <span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">3</span> <span class="sc">*</span> (x <span class="sc">&gt;=</span> <span class="fl">0.5</span>)) <span class="sc">+</span> <span class="fu">I</span>((x <span class="sc">-</span> <span class="fl">1.5</span>)<span class="sc">^</span><span class="dv">3</span> <span class="sc">*</span> (x <span class="sc">&gt;=</span> <span class="fl">1.5</span>)) <span class="sc">+</span> <span class="fu">I</span>((x <span class="sc">-</span> <span class="dv">3</span>)<span class="sc">^</span><span class="dv">3</span> <span class="sc">*</span> (x <span class="sc">&gt;=</span> <span class="dv">3</span>)),</span>
 <span id="cb12-4"><a href="#cb12-4"></a>  <span class="at">data =</span> dat</span>
 <span id="cb12-5"><a href="#cb12-5"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 <img data-src="Lecture2a_files/figure-revealjs/unnamed-chunk-20-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="splines-1" class="slide level2">
+<section id="splines-1" class="slide level2" style="font-size: 80%;">
 <h2>Splines</h2>
 <p>A spline of order n is a piecewise polynomial function of degree <span class="math inline">\(n-1\)</span> in a variable <span class="math inline">\(x\)</span>.</p>
 <p>(Basis) Splines can be:</p>
@@ -782,64 +788,74 @@ Y_i &amp;= \beta_0^{(5)} + \beta_1^{(5)}x + \epsilon \qquad x\geq3\\
 <li><p>This stabilises the fitting and makes a more reasonable assumption.</p></li>
 </ul>
 </section>
-<section id="natural-cubic-splines-in-r" class="slide level2">
+<section id="natural-cubic-splines-in-r" class="slide level2" style="font-size: 90%;">
 <h2>Natural cubic splines in R</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>fit_ns <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">ns</span>(x, <span class="at">knots=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="dv">3</span>)), <span class="at">data =</span> dat)</span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>fit_ns <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">ns</span>(x, <span class="at">knots =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="dv">3</span>)), <span class="at">data =</span> dat)</span>
 <span id="cb13-2"><a href="#cb13-2"></a></span>
-<span id="cb13-3"><a href="#cb13-3"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb13-4"><a href="#cb13-4"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">cex =</span> <span class="fl">1.3</span>, <span class="at">col =</span> cols[<span class="dv">1</span>]) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb13-5"><a href="#cb13-5"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb13-6"><a href="#cb13-6"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>dat<span class="sc">$</span>x, <span class="at">y =</span> fit_ns<span class="sc">$</span>fitted.values), <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb13-7"><a href="#cb13-7"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">cex =</span> <span class="fl">1.3</span>, <span class="at">col =</span> cols[<span class="dv">1</span>]) <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a>  <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb13-8"><a href="#cb13-8"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> dat<span class="sc">$</span>x, <span class="at">y =</span> fit_ns<span class="sc">$</span>fitted.values), <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb13-9"><a href="#cb13-9"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="Lecture2a_files/figure-revealjs/unnamed-chunk-21-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="well-better-fit-be-achieved-with-more-knots" class="slide level2">
+<section id="well-better-fit-be-achieved-with-more-knots" class="slide level2" style="font-size: 90%;">
 <h2>Well, better fit be achieved with more knots</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>fit_ns2 <span class="ot">&lt;-</span> <span class="fu">lm</span>( y <span class="sc">~</span> <span class="fu">ns</span>(x, <span class="at">df =</span> <span class="dv">10</span>), <span class="at">data =</span> dat)</span>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>fit_ns2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">ns</span>(x, <span class="at">df =</span> <span class="dv">10</span>), <span class="at">data =</span> dat)</span>
 <span id="cb14-2"><a href="#cb14-2"></a></span>
-<span id="cb14-3"><a href="#cb14-3"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb14-4"><a href="#cb14-4"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">cex =</span> <span class="fl">1.3</span>, <span class="at">col =</span> cols[<span class="dv">1</span>]) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb14-5"><a href="#cb14-5"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb14-6"><a href="#cb14-6"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>dat<span class="sc">$</span>x, <span class="at">y =</span> fit_ns2<span class="sc">$</span>fitted.values), <span class="at">lwd =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">cex =</span> <span class="fl">1.3</span>, <span class="at">col =</span> cols[<span class="dv">1</span>]) <span class="sc">+</span></span>
+<span id="cb14-5"><a href="#cb14-5"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7"></a>  <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> dat<span class="sc">$</span>x, <span class="at">y =</span> fit_ns2<span class="sc">$</span>fitted.values), <span class="at">lwd =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="Lecture2a_files/figure-revealjs/unnamed-chunk-22-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="and-more" class="slide level2">
+<section id="and-more" class="slide level2" style="font-size: 90%;">
 <h2>… and more</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>fit_ns2 <span class="ot">&lt;-</span> <span class="fu">lm</span>( y <span class="sc">~</span> <span class="fu">ns</span>(x, <span class="at">df =</span> <span class="dv">50</span>), <span class="at">data =</span> dat)</span>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>fit_ns2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">ns</span>(x, <span class="at">df =</span> <span class="dv">50</span>), <span class="at">data =</span> dat)</span>
 <span id="cb15-2"><a href="#cb15-2"></a></span>
-<span id="cb15-3"><a href="#cb15-3"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb15-4"><a href="#cb15-4"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">cex =</span> <span class="fl">1.3</span>, <span class="at">col =</span> cols[<span class="dv">1</span>]) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb15-5"><a href="#cb15-5"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb15-6"><a href="#cb15-6"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>dat<span class="sc">$</span>x, <span class="at">y =</span> fit_ns2<span class="sc">$</span>fitted.values), <span class="at">lwd =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">cex =</span> <span class="fl">1.3</span>, <span class="at">col =</span> cols[<span class="dv">1</span>]) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7"></a>  <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> dat<span class="sc">$</span>x, <span class="at">y =</span> fit_ns2<span class="sc">$</span>fitted.values), <span class="at">lwd =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="Lecture2a_files/figure-revealjs/unnamed-chunk-23-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="and-more-1" class="slide level2">
+<section id="and-more-1" class="slide level2" style="font-size: 90%;">
 <h2>… and more</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>fit_ns3 <span class="ot">&lt;-</span> <span class="fu">lm</span>( y <span class="sc">~</span> <span class="fu">ns</span>(x, <span class="at">df =</span> <span class="dv">100</span>), <span class="at">data =</span> dat)</span>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>fit_ns3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">ns</span>(x, <span class="at">df =</span> <span class="dv">100</span>), <span class="at">data =</span> dat)</span>
 <span id="cb16-2"><a href="#cb16-2"></a></span>
-<span id="cb16-3"><a href="#cb16-3"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb16-4"><a href="#cb16-4"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">cex =</span> <span class="fl">1.3</span>, <span class="at">col =</span> cols[<span class="dv">1</span>]) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb16-5"><a href="#cb16-5"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb16-6"><a href="#cb16-6"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>dat<span class="sc">$</span>x, <span class="at">y =</span> fit_ns3<span class="sc">$</span>fitted.values), <span class="at">lwd =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">cex =</span> <span class="fl">1.3</span>, <span class="at">col =</span> cols[<span class="dv">1</span>]) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7"></a>  <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> dat<span class="sc">$</span>x, <span class="at">y =</span> fit_ns3<span class="sc">$</span>fitted.values), <span class="at">lwd =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="Lecture2a_files/figure-revealjs/unnamed-chunk-24-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="and-more-2" class="slide level2">
+<section id="and-more-2" class="slide level2" style="font-size: 90%;">
 <h2>… and more</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>fit_ns4 <span class="ot">&lt;-</span> <span class="fu">lm</span>( y <span class="sc">~</span> <span class="fu">ns</span>(x, <span class="at">df =</span> <span class="dv">1000</span>), <span class="at">data =</span> dat)</span>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>fit_ns4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">ns</span>(x, <span class="at">df =</span> <span class="dv">1000</span>), <span class="at">data =</span> dat)</span>
 <span id="cb17-2"><a href="#cb17-2"></a></span>
-<span id="cb17-3"><a href="#cb17-3"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb17-4"><a href="#cb17-4"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">cex =</span> <span class="fl">1.3</span>, <span class="at">col =</span> cols[<span class="dv">1</span>]) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb17-5"><a href="#cb17-5"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb17-6"><a href="#cb17-6"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>dat<span class="sc">$</span>x, <span class="at">y =</span> fit_ns4<span class="sc">$</span>fitted.values), <span class="at">lwd =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-3"><a href="#cb17-3"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb17-4"><a href="#cb17-4"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">cex =</span> <span class="fl">1.3</span>, <span class="at">col =</span> cols[<span class="dv">1</span>]) <span class="sc">+</span></span>
+<span id="cb17-5"><a href="#cb17-5"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb17-7"><a href="#cb17-7"></a>  <span class="fu">ylab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb17-8"><a href="#cb17-8"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> dat<span class="sc">$</span>x, <span class="at">y =</span> fit_ns4<span class="sc">$</span>fitted.values), <span class="at">lwd =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="Lecture2a_files/figure-revealjs/unnamed-chunk-25-1.png" width="960" class="r-stretch quarto-figure-center"><p>is this a useful model?</p>
@@ -852,7 +868,8 @@ Y_i &amp;= \beta_0^{(5)} + \beta_1^{(5)}x + \epsilon \qquad x\geq3\\
 <li><p>Understand more flexible non-parametric functions (focus on splines)</p></li>
 </ul>
 <p>Questions?</p>
-<div class="footer footer-default">
+
+<img src="../../assets/logo_trans.png" class="slide-logo r-stretch"><div class="footer footer-default">
 
 </div>
 </section>

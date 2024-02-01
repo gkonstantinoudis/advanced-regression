@@ -23,17 +23,16 @@ format:
 
 ##
 
-- Motivation for decision trees
-- Technical definition
-- Decision trees in `R`
+-   Motivation for decision trees
+-   Technical definition
+-   Decision trees in `R`
 
 ## Decision trees and ensemble methods
 
-- **Decision tree**: A single tree
-- **Bagging**: A meta-algorithm over trees
-- **Random forest**: A meta-algorithm over random trees
-- **Boosting**: A meta-algorithm over sequential trees
-
+-   **Decision tree**: A single tree
+-   **Bagging**: A meta-algorithm over trees
+-   **Random forest**: A meta-algorithm over random trees
+-   **Boosting**: A meta-algorithm over sequential trees
 
 ```{r load-packages-and-data}
 #| echo: false
@@ -46,6 +45,7 @@ library(ggparty)
 library(latex2exp)
 library(patchwork)
 library(palmerpenguins)
+library(tree)
 ```
 
 ## Decision trees: an introduction
@@ -54,6 +54,7 @@ library(palmerpenguins)
 #| echo: false
 #| eval: true
 #| fig-align: "center"
+
 df <- tibble(
   x = seq(from = 0, to = 2 * pi, length = 500),
   y = sin(x) + rnorm(length(x), sd = 0.5),
@@ -68,33 +69,32 @@ py2 <- as.party(fit)
 
 ggparty(py2) +
   geom_edge(size = 0.6, colour = "grey60") +
-  geom_edge_label(aes(label = prettyNum(breaks_label, digits = 1)), size = 5) +
-  geom_node_label(aes(label = splitvar), size = 8, ids = "inner") +
+  geom_edge_label(aes(label = prettyNum(breaks_label, digits = 1)), size = 4) +
+  geom_node_label(aes(label = splitvar), size = 4, ids = "inner") +
   geom_node_label(aes(label = str_c("Node ", id)),
     ids = "terminal",
-    size = 8
+    size = 4
   )
 ```
 
 ## Decision trees: an introduction
 
-- Decision trees are drawn upside down.
+-   Decision trees are drawn upside down.
 
-![](assets/upside-down-tree.png){width=80%, fig-align="center"}
+![](assets/upside-down-tree.png){width="80%," fig-align="center"}
 
 ## Decision trees: an introduction
 
 Notation:
 
-- **Nodes** or **splits**: Points along the tree where the predictor
-space is split.
-- **Leaves**: Terminal nodes
-- **Branch**: Segments of a tree that connect the nodes
+-   **Nodes** or **splits**: Points along the tree where the predictor space is split.
+-   **Leaves**: Terminal nodes
+-   **Branch**: Segments of a tree that connect the nodes
 
 Outcomes:
 
-- **Quantitative**: Regression trees
-- **Categorical**: Classification trees considering $k = K$ categories
+-   **Quantitative**: Regression trees
+-   **Categorical**: Classification trees considering $k = K$ categories
 
 ## Decision trees: an introduction
 
@@ -154,21 +154,18 @@ Problem: How to select the partition?
 ## How to fit a decision tree?
 
 ::: {style="font-size: 85%;"}
+1.  Divide the predictor space ($x_1, x_2,..., x_p$) into $J$ distinct and non-overlapping regions, $r_1,r_m, ..., r_M$, where $m \in 1,...,M$.
+2.  For every observation that falls in the same region $r_m$ we make the same prediction based on the mean (median) of all observations in region $r_m$.
+3.  Define regions $r_1,r_2, ..., r_M$ to minimise the residual sum of squares $$
+    RSS =  \sum_{m =1 }^M \sum_{i \in m} (y_i-\bar{y}_m)^2 \nonumber
+    $$
 
-1. Divide the predictor space ($x_1, x_2,..., x_p$) into $J$ distinct and non-overlapping regions, $r_1,r_m, ..., r_M$, where $m \in 1,...,M$.
-2. For every observation that falls in the same region $r_m$ we make the same prediction based on the mean (median) of all observations in region $r_m$.
-3. Define regions $r_1,r_2, ..., r_M$ to minimise the residual sum of squares
-$$
-RSS =  \sum_{m =1 }^M \sum_{i \in m} (y_i-\bar{y}_m)^2 \nonumber
-$$
-  - Algorithm: Recursive binary splitting
-
+-   Algorithm: Recursive binary splitting
 :::
 
 ## Exercise: Reconstruct the tree
 
-:::: {.columns}
-
+::: columns
 ::: {.column width="60%"}
 ```{r decision-boundary}
 #| echo: false
@@ -209,15 +206,12 @@ p_tree
 
 ::: {.column width="40%"}
 ::: {style="font-size: 80%;"}
-- Assume we have two variables, $X_1$ on the x-axis and $X_2$ on the y-axis.
-- $R_1$ to $R_5$ map out a
-partition.
-- $t_1$ to $t_4$ are the split
-values.
+-   Assume we have two variables, $X_1$ on the x-axis and $X_2$ on the y-axis.
+-   $R_1$ to $R_5$ map out a partition.
+-   $t_1$ to $t_4$ are the split values.
 :::
 :::
-
-::::
+:::
 
 Reconstruct the respective tree
 
@@ -256,7 +250,7 @@ py <- party(pn, df)
 p <- ggparty(py) +
   geom_edge() +
   geom_node_label(aes(label = splitvar), ids = "inner", size = 8) +
-  geom_node_label(aes(label = info, col = factor(level)), ids = "terminal", size = 12) +
+  geom_node_label(aes(label = info, col = factor(level)), ids = "terminal", size = 6) +
   theme(legend.position = "none")
 
 p_tree + p
@@ -267,11 +261,12 @@ p_tree + p
 ::: {style="font-size: 80%;"}
 For each variable $x_k$:
 
-- Find the optimal cutoff point $t$ :
-  - $$ \text{min}_s \text{MSE}(y_i |x_{ik} < t) + \text{MSE}(y_i |x_{ik} \geq t) $$
-- Choose variable yielding lowest MSE
-- Stop when MSE gain is too small
+-   Find the optimal cutoff point $t$ :
+    -   $$ \text{min}_s \text{MSE}(y_i |x_{ik} < t) + \text{MSE}(y_i |x_{ik} \geq t) $$
+-   Choose variable yielding lowest MSE
+-   Stop when MSE gain is too small
 :::
+
 ```{r tree-reconstructed}
 #| echo: false
 #| eval: true
@@ -284,7 +279,6 @@ p
 ```{r tree-example-1-data}
 #| echo: false
 #| eval: true
-#| fig-align: "left"
 
 data_sim <- tibble(
   x = c(runif(10, 0, 0.2), runif(10, 0.2, 0.6), runif(10, 0.6, 0.8), runif(10, 0.8, 1.0)),
@@ -297,7 +291,7 @@ p_data <- ggplot() +
   scale_y_continuous(limits = c(0, 1)) +
   theme_minimal() +
   theme(
-    axis.text = element_blank(), ,
+    axis.text = element_blank(),
     axis.ticks = element_blank(),
     axis.title = element_text(size = 20)
   )
@@ -331,10 +325,10 @@ py <- party(pn, df)
 p_tree <- ggparty(py) +
   geom_edge() +
   geom_node_label(aes(label = splitvar), ids = "inner", size = 4) +
-  geom_node_label(aes(label = info, col = factor(level)), ids = "terminal", size = 5) +
+  geom_node_label(aes(label = info, col = factor(level)), ids = "terminal", size = 4) +
   theme(legend.position = "none")
 
-p + inset_element(p_tree, left = 0.0, bottom = 0.6, right = 0.3, top = 1.0, clip = FALSE)
+p+p_tree
 ```
 
 ## Example 1
@@ -372,7 +366,7 @@ p_tree <- ggparty(py) +
   geom_node_label(aes(label = info, col = factor(level)), ids = "terminal", size = 5) +
   theme(legend.position = "none")
 
-p + inset_element(p_tree, left = 0.0, bottom = 0.5, right = 0.3, top = 1.0, clip = FALSE)
+p + p_tree
 ```
 
 ## Example 1
@@ -415,7 +409,7 @@ p_tree <- ggparty(py) +
   geom_node_label(aes(label = info, col = factor(level)), ids = "terminal", size = 5) +
   theme(legend.position = "none")
 
-p + inset_element(p_tree, left = 0.0, bottom = 0.5, right = 0.3, top = 1.0, clip = FALSE)
+p + p_tree
 ```
 
 ## Example 2
@@ -433,8 +427,8 @@ py2 <- as.party(tree2)
 
 p_tree <- ggparty(py2) +
   geom_edge(size = 0.6, colour = "grey60") +
-  geom_edge_label(aes(label = prettyNum(breaks_label, digits = 1)), size = 4) +
-  geom_node_label(aes(label = splitvar), size = 4, ids = "inner")
+  geom_edge_label(aes(label = prettyNum(breaks_label, digits = 1)), size = 2) +
+  geom_node_label(aes(label = splitvar), size = 2, ids = "inner")
 
 p_part <- ggplot(data = penguins, aes(x = flipper_length_mm, y = bill_length_mm)) +
   geom_parttree(data = tree2, aes(fill = body_mass_g), alpha = 0.3) +
@@ -450,35 +444,30 @@ p_tree + p_part
 
 Classification trees:
 
-- **Gini index** of leaf $m$:
-$$
-G_m =  \sum_{k=1}^K p_{mk}(1-p_{mk}),
-$$
-$p_{mk}$: proportion of observations in region $R_m$ of class $k$.
+-   **Gini index** of leaf $m$: $$
+    G_m =  \sum_{k=1}^K p_{mk}(1-p_{mk}),
+    $$ $p_{mk}$: proportion of observations in region $R_m$ of class $k$.
 
-- **Entropy** of leaf $m$
-$$
-D_m =  - \sum_{k=1}^K p_{mk} \log(p_{mk})
-$$
+-   **Entropy** of leaf $m$ $$
+    D_m =  - \sum_{k=1}^K p_{mk} \log(p_{mk})
+    $$
 :::
 
 ::: {style="font-size: 80%;"}
 ## Measures for model fit (node impurity)
 
-Regression trees, use **deviance** in leaf $m$
-$$
+Regression trees, use **deviance** in leaf $m$ $$
 \text{dev}_m =  \sum_{i \in m} (y_i-\mu_m)^2
-$$
-where
+$$ where
 
-- $i \in m$: Individuals in leaf $m$
-- $\mu_m$: Mean in leaf $m$
+-   $i \in m$: Individuals in leaf $m$
+-   $\mu_m$: Mean in leaf $m$
 :::
 
 ## Overfitting
 
-- Regression trees tend to overfit
-- In principle, they could assign each observation to one leaf
+-   Regression trees tend to overfit
+-   In principle, they could assign each observation to one leaf
 
 ## Tree pruning
 
@@ -486,17 +475,15 @@ A smaller tree with fewer splits may generalise better to new observations.
 
 Solution: **Pruning**
 
-![](assets/pruning.png){width=80%, fig-align="center"}
+![](assets/pruning.png){width="80%," fig-align="center"}
 
 ## Tree pruning
 
 A smaller tree with fewer splits may generalise better to new observations.
 
-Cost complexity pruning or weakest link pruning: Find tree $T$
-$$
+Cost complexity pruning or weakest link pruning: Find tree $T$ $$
 \underset{T}{argmin} \sum_{m=1}^{\mid T \mid }  \sum_{i \in m} (y_i-\mu_m)^2 + \alpha \mid T \mid
-$$
-where $\mid T \mid$ is the number of leaves and $\alpha$ a regularisation parameter.
+$$ where $\mid T \mid$ is the number of leaves and $\alpha$ a regularisation parameter.
 
 ## Tree pruning
 
@@ -535,7 +522,7 @@ fit <- rpart(y ~ x1 + x2, data = df, control = list(
   cp = 0.01, # Any split that does not decrease the overall lack of fit by a factor of cp is not attempted
   minbucket = 5, # minimum number of observations in a terminal node
   maxdepth = 4, # maximum depth of any node
-  xval = 10 #  number of cross validation splits
+  xval = 10 # number of cross validation splits
 ))
 
 summary(fit)
@@ -551,6 +538,7 @@ rpart.plot(fit)
 ```
 
 ## Decision trees in `R`: `rpart`
+
 ```{r decision-trees-r-4}
 #| echo: true
 #| eval: true
@@ -560,21 +548,46 @@ rpart.plot(fit)
 prune(fit, cp = 0.1)
 ```
 
+## Decision trees in `R`: `tree`
+
+```{r decision-trees-r-5}
+#| echo: true
+#| eval: true
+
+x <- cbind(df$x1, df$x2) %>% as.matrix()
+tree.out = tree(y ~ x)
+plot(tree.out)
+text(tree.out)
+# tree.control(nobs, mincut = 5, minsize = 10, mindev = 0.01)
+```
+
+
+## Decision trees in `R`: `tree`
+
+```{r decision-trees-r-6}
+#| echo: true
+#| eval: true
+
+cv.tree(tree.out)
+# prune.tree(tree.out, best)
+# prune.tree(tree.out, k)
+```
+
+
 ::: {style="font-size: 80%;"}
 ## Overview: decision trees
 
 Advantages:
 
-- Interpretability
-- Intuitive, mirror human decision making
-- Allowing for non-linear effects
+-   Interpretability
+-   Intuitive, mirror human decision making
+-   Allowing for non-linear effects
 
 Disadvantages:
 
-- Overfitting is an issue
-- Highly unstable and variable, small changes in the input data can cause big changes in the tree structure
-- Minimal bias, but high variance
+-   Overfitting is an issue
+-   Highly unstable and variable, small changes in the input data can cause big changes in the tree structure
+-   Minimal bias, but high variance
 
 > **Ensemble methods**: Fit not one, but multiple trees.
-
 :::

@@ -447,7 +447,9 @@ y_i = \begin{cases}
 <li>Additionally, we have for each subject a predictor matrix <span class="math inline">\(x_i\)</span> including <span class="math inline">\(p\)</span> predictors or features.</li>
 </ul>
 <blockquote>
-<p><span class="math inline">\(K=2\)</span> Classification of two classes. Aim is to predict the outcome of a new observation <span class="math inline">\(i\)</span> based on <span class="math inline">\(x_i\)</span> and to assign observation <span class="math inline">\(i\)</span> to either class <span class="math inline">\(k=0\)</span> or <span class="math inline">\(k=1\)</span>. Decisions are based on the probability to belong to class <span class="math inline">\(k\)</span> conditional on <span class="math inline">\(x_i\)</span>.</p>
+<p><span class="math inline">\(K=2\)</span> Classification of two classes.</p>
+<p>Aim is to predict the outcome of a new observation <span class="math inline">\(i\)</span> based on <span class="math inline">\(x_i\)</span> and to assign observation <span class="math inline">\(i\)</span> to either class <span class="math inline">\(k=0\)</span> or <span class="math inline">\(k=1\)</span>.</p>
+<p>Decisions are based on the probability to belong to class <span class="math inline">\(k\)</span> conditional on <span class="math inline">\(x_i\)</span>.</p>
 </blockquote>
 <p><span class="math display">\[
 \mathbb{P}(y_i=k \mid x_i)
@@ -458,23 +460,23 @@ y_i = \begin{cases}
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 
-<div id="rjunywggse" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#rjunywggse table {
+<div id="kbeupdrmbw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#kbeupdrmbw table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#rjunywggse thead, #rjunywggse tbody, #rjunywggse tfoot, #rjunywggse tr, #rjunywggse td, #rjunywggse th {
+#kbeupdrmbw thead, #kbeupdrmbw tbody, #kbeupdrmbw tfoot, #kbeupdrmbw tr, #kbeupdrmbw td, #kbeupdrmbw th {
   border-style: none;
 }
 
-#rjunywggse p {
+#kbeupdrmbw p {
   margin: 0;
   padding: 0;
 }
 
-#rjunywggse .gt_table {
+#kbeupdrmbw .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -500,12 +502,12 @@ y_i = \begin{cases}
   border-left-color: #D3D3D3;
 }
 
-#rjunywggse .gt_caption {
+#kbeupdrmbw .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#rjunywggse .gt_title {
+#kbeupdrmbw .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -517,7 +519,7 @@ y_i = \begin{cases}
   border-bottom-width: 0;
 }
 
-#rjunywggse .gt_subtitle {
+#kbeupdrmbw .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -529,7 +531,7 @@ y_i = \begin{cases}
   border-top-width: 0;
 }
 
-#rjunywggse .gt_heading {
+#kbeupdrmbw .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -541,13 +543,13 @@ y_i = \begin{cases}
   border-right-color: #D3D3D3;
 }
 
-#rjunywggse .gt_bottom_border {
+#kbeupdrmbw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#rjunywggse .gt_col_headings {
+#kbeupdrmbw .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -562,7 +564,7 @@ y_i = \begin{cases}
   border-right-color: #D3D3D3;
 }
 
-#rjunywggse .gt_col_heading {
+#kbeupdrmbw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -582,7 +584,7 @@ y_i = \begin{cases}
   overflow-x: hidden;
 }
 
-#rjunywggse .gt_column_spanner_outer {
+#kbeupdrmbw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -594,15 +596,15 @@ y_i = \begin{cases}
   padding-right: 4px;
 }
 
-#rjunywggse .gt_column_spanner_outer:first-child {
+#kbeupdrmbw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#rjunywggse .gt_column_spanner_outer:last-child {
+#kbeupdrmbw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#rjunywggse .gt_column_spanner {
+#kbeupdrmbw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -614,11 +616,11 @@ y_i = \begin{cases}
   width: 100%;
 }
 
-#rjunywggse .gt_spanner_row {
+#kbeupdrmbw .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#rjunywggse .gt_group_heading {
+#kbeupdrmbw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -644,7 +646,7 @@ y_i = \begin{cases}
   text-align: left;
 }
 
-#rjunywggse .gt_empty_group_heading {
+#kbeupdrmbw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -659,15 +661,15 @@ y_i = \begin{cases}
   vertical-align: middle;
 }
 
-#rjunywggse .gt_from_md > :first-child {
+#kbeupdrmbw .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#rjunywggse .gt_from_md > :last-child {
+#kbeupdrmbw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#rjunywggse .gt_row {
+#kbeupdrmbw .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -686,7 +688,7 @@ y_i = \begin{cases}
   overflow-x: hidden;
 }
 
-#rjunywggse .gt_stub {
+#kbeupdrmbw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -699,7 +701,7 @@ y_i = \begin{cases}
   padding-right: 5px;
 }
 
-#rjunywggse .gt_stub_row_group {
+#kbeupdrmbw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -713,15 +715,15 @@ y_i = \begin{cases}
   vertical-align: top;
 }
 
-#rjunywggse .gt_row_group_first td {
+#kbeupdrmbw .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#rjunywggse .gt_row_group_first th {
+#kbeupdrmbw .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#rjunywggse .gt_summary_row {
+#kbeupdrmbw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -731,16 +733,16 @@ y_i = \begin{cases}
   padding-right: 5px;
 }
 
-#rjunywggse .gt_first_summary_row {
+#kbeupdrmbw .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#rjunywggse .gt_first_summary_row.thick {
+#kbeupdrmbw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#rjunywggse .gt_last_summary_row {
+#kbeupdrmbw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -750,7 +752,7 @@ y_i = \begin{cases}
   border-bottom-color: #D3D3D3;
 }
 
-#rjunywggse .gt_grand_summary_row {
+#kbeupdrmbw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -760,7 +762,7 @@ y_i = \begin{cases}
   padding-right: 5px;
 }
 
-#rjunywggse .gt_first_grand_summary_row {
+#kbeupdrmbw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -770,7 +772,7 @@ y_i = \begin{cases}
   border-top-color: #D3D3D3;
 }
 
-#rjunywggse .gt_last_grand_summary_row_top {
+#kbeupdrmbw .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -780,11 +782,11 @@ y_i = \begin{cases}
   border-bottom-color: #D3D3D3;
 }
 
-#rjunywggse .gt_striped {
+#kbeupdrmbw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#rjunywggse .gt_table_body {
+#kbeupdrmbw .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -793,7 +795,7 @@ y_i = \begin{cases}
   border-bottom-color: #D3D3D3;
 }
 
-#rjunywggse .gt_footnotes {
+#kbeupdrmbw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -807,7 +809,7 @@ y_i = \begin{cases}
   border-right-color: #D3D3D3;
 }
 
-#rjunywggse .gt_footnote {
+#kbeupdrmbw .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -816,7 +818,7 @@ y_i = \begin{cases}
   padding-right: 5px;
 }
 
-#rjunywggse .gt_sourcenotes {
+#kbeupdrmbw .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -830,7 +832,7 @@ y_i = \begin{cases}
   border-right-color: #D3D3D3;
 }
 
-#rjunywggse .gt_sourcenote {
+#kbeupdrmbw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -838,69 +840,68 @@ y_i = \begin{cases}
   padding-right: 5px;
 }
 
-#rjunywggse .gt_left {
+#kbeupdrmbw .gt_left {
   text-align: left;
 }
 
-#rjunywggse .gt_center {
+#kbeupdrmbw .gt_center {
   text-align: center;
 }
 
-#rjunywggse .gt_right {
+#kbeupdrmbw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#rjunywggse .gt_font_normal {
+#kbeupdrmbw .gt_font_normal {
   font-weight: normal;
 }
 
-#rjunywggse .gt_font_bold {
+#kbeupdrmbw .gt_font_bold {
   font-weight: bold;
 }
 
-#rjunywggse .gt_font_italic {
+#kbeupdrmbw .gt_font_italic {
   font-style: italic;
 }
 
-#rjunywggse .gt_super {
+#kbeupdrmbw .gt_super {
   font-size: 65%;
 }
 
-#rjunywggse .gt_footnote_marks {
+#kbeupdrmbw .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#rjunywggse .gt_asterisk {
+#kbeupdrmbw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#rjunywggse .gt_indent_1 {
+#kbeupdrmbw .gt_indent_1 {
   text-indent: 5px;
 }
 
-#rjunywggse .gt_indent_2 {
+#kbeupdrmbw .gt_indent_2 {
   text-indent: 10px;
 }
 
-#rjunywggse .gt_indent_3 {
+#kbeupdrmbw .gt_indent_3 {
   text-indent: 15px;
 }
 
-#rjunywggse .gt_indent_4 {
+#kbeupdrmbw .gt_indent_4 {
   text-indent: 20px;
 }
 
-#rjunywggse .gt_indent_5 {
+#kbeupdrmbw .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
   <thead>
-
     <tr class="gt_col_headings gt_spanner_row">
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="2" colspan="2" scope="colgroup" id=""></th>
       <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Unobserved truth">
@@ -1005,6 +1006,23 @@ PPV = \frac{TP}{\text{Declared } P} = \frac{TP}{TP+FP} = 1-FDR
 <img data-src="Lecture4a_files/figure-revealjs/discriminant-analysis-1.png" width="960" class="r-stretch quarto-figure-center"></section>
 <section id="motivation-for-discriminant-analysis-1" class="slide level2" style="font-size: 80%;">
 <h2>Motivation for discriminant analysis</h2>
+
+<img data-src="Lecture4a_files/figure-revealjs/discriminant-analysis-mot1-1.png" width="960" class="r-stretch quarto-figure-center"><p>Example of classification rule: Assign the new value <span class="math inline">\(x\)</span> to the class with the greatest likelihood</p>
+<p><span class="math display">\[
+\hat{y} = \text{argmax}L(\mu_i, \sigma_i|x)
+\]</span></p>
+</section>
+<section id="motivation-for-discriminant-analysis-2" class="slide level2" style="font-size: 80%;">
+<h2>Motivation for discriminant analysis</h2>
+<ul>
+<li><p>DA partitions <span class="math inline">\(X=R^d\)</span> into regions with the same class predictions via separating hyperplanes.</p></li>
+<li><p>Fit a Gaussian distribution for each class</p></li>
+<li><p>Find the line where the probability if being in both classes is the same</p></li>
+</ul>
+
+<img data-src="Lecture4a_files/figure-revealjs/discriminant-analysis-mot2-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="motivation-for-discriminant-analysis-3" class="slide level2" style="font-size: 80%;">
+<h2>Motivation for discriminant analysis</h2>
 <p>Derive the posterior probability for subject <span class="math inline">\(i\)</span> to belong to class <span class="math inline">\(k\)</span> based on</p>
 <ul>
 <li><p><strong>Likelihood</strong> of the data for <span class="math inline">\(p=1\)</span> predictor (univariate Gaussian distribution) conditional on class <span class="math inline">\(k\)</span> <span class="math display">\[
@@ -1018,7 +1036,7 @@ f (x\mid k) = \frac{1}{\sqrt{2\pi} \sigma_k} \exp\left\{ -\frac{1}{2} (\frac{x- 
 <li><p><strong>Prior probability</strong> of belonging to class <span class="math inline">\(k\)</span> is <span class="math inline">\(\pi_k\)</span></p></li>
 </ul>
 </section>
-<section id="motivation-for-discriminant-analysis-2" class="slide level2" style="font-size: 80%;">
+<section id="motivation-for-discriminant-analysis-4" class="slide level2" style="font-size: 80%;">
 <h2>Motivation for discriminant analysis</h2>
 <p>Derive the posterior probability for subject <span class="math inline">\(i\)</span> to belong to class <span class="math inline">\(k\)</span> based on:</p>
 <ul>
@@ -1183,10 +1201,26 @@ Proportion of trace:
 <section id="masslda-iris-1" class="slide level2">
 <h2><code>MASS::lda()</code>: Iris</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>lda_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(lda.out, newdata)</span>
-<span id="cb5-2"><a href="#cb5-2"></a>lda_pred<span class="sc">$</span>class     <span class="co"># predicted class</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a>lda_pred<span class="sc">$</span>posterior <span class="co"># posterior probabilities for group</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a>lda_pred<span class="sc">$</span>x         <span class="co"># discriminant score</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>lda_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod,</span>
+<span id="cb5-2"><a href="#cb5-2"></a>                    <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">Sepal.Length =</span> <span class="dv">1</span>,</span>
+<span id="cb5-3"><a href="#cb5-3"></a>                                         <span class="at">Sepal.Width =</span> <span class="dv">2</span>,</span>
+<span id="cb5-4"><a href="#cb5-4"></a>                                         <span class="at">Petal.Length =</span> <span class="dv">3</span>,</span>
+<span id="cb5-5"><a href="#cb5-5"></a>                                         <span class="at">Petal.Width =</span> <span class="dv">2</span>))</span>
+<span id="cb5-6"><a href="#cb5-6"></a>lda_pred<span class="sc">$</span>class <span class="co"># predicted class</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] virginica
+Levels: setosa versicolor virginica</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>lda_pred<span class="sc">$</span>posterior <span class="co"># posterior probabilities for group</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        setosa   versicolor virginica
+1 3.081122e-42 3.005304e-05 0.9999699</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>lda_pred<span class="sc">$</span>x <span class="co"># discriminant score</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        LD1        LD2
+1 -6.221125 -0.5742842</code></pre>
+</div>
 </div>
 </section>
 <section id="shrinkage-estimate" class="slide level2" style="font-size: 80%;">
@@ -1198,22 +1232,167 @@ Proportion of trace:
 <li>Shrinkage estimates for <span class="math inline">\(\Sigma\)</span> ensure lda and qda can be computed for high-dimensional data.</li>
 <li>Implementation <code>sda</code> package in <code>R</code>.</li>
 </ul>
-<p>NOT CURRENTLY WORKING</p>
 </section>
-<!-- ::: {style="font-size: 80%;"}
-## Application: Imaging data to predict breast cancer diagnosis
+<section id="application-imaging-data-to-predict-breast-cancer-diagnosis" class="slide level2" style="font-size: 80%;">
+<h2>Application: Imaging data to predict breast cancer diagnosis</h2>
+<ul>
+<li><p>Outcome: Diagnosis (M=malignant, B=benign)</p></li>
+<li><p><span class="math inline">\(n-569\)</span> Breast cancer patients</p></li>
+<li><p><span class="math inline">\(p=30\)</span> Predictors</p>
+<ul>
+<li><p>Derived from digitized images to define characteristics of the cell nuclei present in the image</p></li>
+<li><p>Ten real-valued features summarised in mean, se and worst (mean of the three largest values)</p></li>
+</ul></li>
+<li><p><a href="http://archive.ics.uci.edu/ml/datasets/Breast+%20Cancer+Wisconsin+%28Diagnostic%29">Dataset</a> from the UCI Machine Learning Repository</p></li>
+</ul>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>y
+  B   M
+357 212 </code></pre>
+</div>
+</div>
+</section>
+<section id="sda-package-in-r" class="slide level2" style="font-size: 60%;">
+<h2><code>sda</code> package in <code>R</code></h2>
+<ul>
+<li>dda: <code>sda(x, y, diagonal=TRUE)</code></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>dda.out <span class="ot">&lt;-</span> <span class="fu">sda</span>(x <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>(), y, <span class="at">diagonal =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of variables: 31
+Number of observations: 569
+Number of classes: 2
 
-- Derived from digitized images to define characteristics of the cell nuclei present in the image.
-- Ten real-valued features summarised in mean, se and worst (mean of the three largest values).
+Estimating optimal shrinkage intensity lambda.freq (frequencies): 0.0254
+Estimating variances (pooled across classes)
+Estimating optimal shrinkage intensity lambda.var (variance vector): 0.0771 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>dda.pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(dda.out, x <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>(), <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><code>confusionMatrix</code> from the <code>crossval</code> package</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>cM <span class="ot">=</span> crossval<span class="sc">::</span><span class="fu">confusionMatrix</span>(y, dda.pred<span class="sc">$</span>class, <span class="at">negative =</span> <span class="st">"B"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2"></a>cM</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> FP  TP  TN  FN
+  3 181 354  31
+attr(,"negative")
+[1] "B"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>TPR <span class="ot">=</span> cM[<span class="dv">2</span>]<span class="sc">/</span>(cM[<span class="dv">2</span>] <span class="sc">+</span> cM[<span class="dv">4</span>])</span>
+<span id="cb17-2"><a href="#cb17-2"></a>TPR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       TP
+0.8537736 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>TNR <span class="ot">=</span> cM[<span class="dv">1</span>]<span class="sc">/</span>(cM[<span class="dv">1</span>] <span class="sc">+</span> cM[<span class="dv">3</span>])</span>
+<span id="cb19-2"><a href="#cb19-2"></a>TNR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         FP
+0.008403361 </code></pre>
+</div>
+</div>
+</section>
+<section id="sda-package-in-r-1" class="slide level2" style="font-size: 60%;">
+<h2><code>sda</code> package in <code>R</code></h2>
+<ul>
+<li>lda: <code>sda(x, y, diagonal=FALSE)</code></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>lda.out <span class="ot">&lt;-</span> <span class="fu">sda</span>(x <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>(), y, <span class="at">diagonal =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of variables: 31
+Number of observations: 569
+Number of classes: 2
 
-data(BreastCancer)
-summary(BreastCancer$Class)
+Estimating optimal shrinkage intensity lambda.freq (frequencies): 0.0254
+Estimating variances (pooled across classes)
+Estimating optimal shrinkage intensity lambda.var (variance vector): 0.0771
 
-X <- as.matrix(BreastCancer[2:10] |> mutate(across(everything(), as.numeric)))
-y <- BreastCancer$Class
 
-dda.out <- sda(X, y, diagonal=TRUE)
-dda.pred <- predict(dda.out, X) -->
+Computing inverse correlation matrix (pooled across classes)
+Estimating optimal shrinkage intensity lambda (correlation matrix): 0.0333 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>lda.pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(lda.out, x <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>(), <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><code>confusionMatrix</code> from the <code>crossval</code> package</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>cM <span class="ot">=</span> crossval<span class="sc">::</span><span class="fu">confusionMatrix</span>(y, lda.pred<span class="sc">$</span>class, <span class="at">negative =</span> <span class="st">"B"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2"></a>cM</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> FP  TP  TN  FN
+  3 196 354  16
+attr(,"negative")
+[1] "B"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>TPR <span class="ot">=</span> cM[<span class="dv">2</span>]<span class="sc">/</span>(cM[<span class="dv">2</span>] <span class="sc">+</span> cM[<span class="dv">4</span>])</span>
+<span id="cb26-2"><a href="#cb26-2"></a>TPR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       TP
+0.9245283 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>TNR <span class="ot">=</span> cM[<span class="dv">1</span>]<span class="sc">/</span>(cM[<span class="dv">1</span>] <span class="sc">+</span> cM[<span class="dv">3</span>])</span>
+<span id="cb28-2"><a href="#cb28-2"></a>TNR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         FP
+0.008403361 </code></pre>
+</div>
+</div>
+</section>
+<section id="roc-curve" class="slide level2" style="font-size: 70%;">
+<h2>ROC curve</h2>
+<ol type="1">
+<li>Define foreground (<code>fg</code>) and background (<code>bg</code>):</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>fg <span class="ot">=</span> dda.pred<span class="sc">$</span>posterior[y <span class="sc">==</span> <span class="st">'M'</span>, <span class="dv">2</span>]</span>
+<span id="cb30-2"><a href="#cb30-2"></a>bg <span class="ot">=</span> dda.pred<span class="sc">$</span>posterior[y <span class="sc">==</span> <span class="st">'B'</span>, <span class="dv">2</span>]</span>
+<span id="cb30-3"><a href="#cb30-3"></a>roc.dda <span class="ot">=</span> <span class="fu">roc.curve</span>(fg, bg, <span class="at">curve=</span>T)</span>
+<span id="cb30-4"><a href="#cb30-4"></a></span>
+<span id="cb30-5"><a href="#cb30-5"></a>fg <span class="ot">=</span> lda.pred<span class="sc">$</span>posterior[y <span class="sc">==</span> <span class="st">'M'</span>, <span class="dv">2</span>]</span>
+<span id="cb30-6"><a href="#cb30-6"></a>bg <span class="ot">=</span> lda.pred<span class="sc">$</span>posterior[y <span class="sc">==</span> <span class="st">'B'</span>, <span class="dv">2</span>]</span>
+<span id="cb30-7"><a href="#cb30-7"></a>roc.lda <span class="ot">=</span> <span class="fu">roc.curve</span>(fg, bg, <span class="at">curve=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="2" type="1">
+<li>Compute the ROC curve:</li>
+</ol>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">0</span>))</span>
+<span id="cb31-2"><a href="#cb31-2"></a><span class="fu">plot</span>(roc.dda, <span class="at">color =</span> <span class="cn">FALSE</span>, <span class="at">main =</span> <span class="st">"Diagonal discriminant analysis"</span>)</span>
+<span id="cb31-3"><a href="#cb31-3"></a><span class="fu">plot</span>(roc.dda, <span class="at">color =</span> <span class="cn">FALSE</span>, <span class="at">main =</span> <span class="st">"Linear discriminant analysis"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Lecture4a_files/figure-revealjs/sda-7-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="precision-recall-curve-1" class="slide level2" style="font-size: 70%;">
+<h2>Precision-recall curve</h2>
+<ol type="1">
+<li>Define foreground (<code>fg</code>) and background (<code>bg</code>):</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>fg <span class="ot">=</span> dda.pred<span class="sc">$</span>posterior[y <span class="sc">==</span> <span class="st">'M'</span>, <span class="dv">2</span>]</span>
+<span id="cb32-2"><a href="#cb32-2"></a>bg <span class="ot">=</span> dda.pred<span class="sc">$</span>posterior[y <span class="sc">==</span> <span class="st">'B'</span>, <span class="dv">2</span>]</span>
+<span id="cb32-3"><a href="#cb32-3"></a>pr.dda <span class="ot">=</span> <span class="fu">pr.curve</span>(fg, bg, <span class="at">curve=</span>T)</span>
+<span id="cb32-4"><a href="#cb32-4"></a></span>
+<span id="cb32-5"><a href="#cb32-5"></a>fg <span class="ot">=</span> lda.pred<span class="sc">$</span>posterior[y <span class="sc">==</span> <span class="st">'M'</span>, <span class="dv">2</span>]</span>
+<span id="cb32-6"><a href="#cb32-6"></a>bg <span class="ot">=</span> lda.pred<span class="sc">$</span>posterior[y <span class="sc">==</span> <span class="st">'B'</span>, <span class="dv">2</span>]</span>
+<span id="cb32-7"><a href="#cb32-7"></a>pr.lda <span class="ot">=</span> <span class="fu">pr.curve</span>(fg, bg, <span class="at">curve=</span>T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="2" type="1">
+<li>Compute the ROC curve:</li>
+</ol>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">0</span>))</span>
+<span id="cb33-2"><a href="#cb33-2"></a><span class="fu">plot</span>(pr.dda, <span class="at">color =</span> <span class="cn">FALSE</span>, <span class="at">main =</span> <span class="st">"Diagonal discriminant analysis"</span>)</span>
+<span id="cb33-3"><a href="#cb33-3"></a><span class="fu">plot</span>(pr.lda, <span class="at">color =</span> <span class="cn">FALSE</span>, <span class="at">main =</span> <span class="st">"Linear discriminant analysis"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="Lecture4a_files/figure-revealjs/sda-9-1.png" width="960" class="r-stretch quarto-figure-center"></section>
 <section id="an-introduction-to-support-vector-machines" class="slide level2" style="font-size: 80%;">
 <h2>An introduction to support vector machines</h2>
 <p>Evolution of support vector machines:</p>
@@ -1286,8 +1465,7 @@ y_i (\beta_0 +  \beta_1 x_{i1} +  ... + \beta_p  x_{ip} ) \geq M \quad  \forall 
 \]</span></p>
 <ul>
 <li><span class="math inline">\(\beta_0, \beta_1, ..., \beta_p\)</span> parameters to be fitted</li>
-<li><span class="math inline">\(i \in 1,...,n\)</span> observations<br>
-</li>
+<li><span class="math inline">\(i \in 1,...,n\)</span> observations</li>
 <li><span class="math inline">\(M\)</span> is the margin, distance of observation to decision boundary</li>
 <li>Outcome: <span class="math display">\[
 y_i = \begin{cases} 1 &amp; \text{ if $i$ in group 1} \\
@@ -1370,7 +1548,7 @@ maximum number of iterations reached 0.002679655 0.002679193 Setting default ker
 </ul></li>
 </ul>
 </section>
-<section id="kernel-functions" class="slide level2" style="font-size: 70%;">
+<section id="kernel-functions" class="slide level2" style="font-size: 60%;">
 <h2>Kernel functions</h2>
 <p>The dot product is also known as <strong>linear</strong> kernel</p>
 <p><span class="math display">\[
@@ -1388,10 +1566,23 @@ K(x_i,x_{i'}) = \gamma \sum_{j=1}^{p} x_{ij} x_{i'j} + r
 \]</span></p></li>
 </ul>
 </section>
-<section id="polynomial-kernel-of-degree-2-example" class="slide level2">
+<section id="polynomial-kernel-of-degree-2-example" class="slide level2" style="font-size: 70%;">
 <h2>Polynomial kernel of degree 2 example</h2>
-<p>NOT REALLY SURE WHAT THIS EXAMPLE IS SHOWING</p>
-</section>
+<p>Idea: Convert to higher dimension and separate using a hyperplane</p>
+
+<img data-src="Lecture4a_files/figure-revealjs/svc-1-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="polynomial-kernel-of-degree-2-example-1" class="slide level2" style="font-size: 70%;">
+<h2>Polynomial kernel of degree 2 example</h2>
+
+<img data-src="Lecture4a_files/figure-revealjs/svc-2-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="polynomial-kernel-of-degree-2-example-2" class="slide level2" style="font-size: 70%;">
+<h2>Polynomial kernel of degree 2 example</h2>
+
+<img data-src="Lecture4a_files/figure-revealjs/svc-3-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="polynomial-kernel-of-degree-2-example-3" class="slide level2" style="font-size: 70%;">
+<h2>Polynomial kernel of degree 2 example</h2>
+
+<img data-src="Lecture4a_files/figure-revealjs/svc-4-1.png" width="960" class="r-stretch quarto-figure-center"></section>
 <section id="kernel-functions-1" class="slide level2">
 <h2>Kernel functions</h2>
 
@@ -1399,19 +1590,64 @@ K(x_i,x_{i'}) = \gamma \sum_{j=1}^{p} x_{ij} x_{i'j} + r
 <section id="e1071svm" class="slide level2">
 <h2><code>e1071::svm()</code></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">svm</span>(</span>
-<span id="cb8-2"><a href="#cb8-2"></a>  y <span class="sc">~</span> X1 <span class="sc">+</span> X2,</span>
-<span id="cb8-3"><a href="#cb8-3"></a>  <span class="at">data =</span> data,</span>
-<span id="cb8-4"><a href="#cb8-4"></a>  <span class="at">kernel =</span> <span class="st">"linear"</span>, <span class="co"># kernel function</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a>  <span class="at">cost =</span> <span class="dv">1</span>, <span class="co"># Regularisation parameter C or budget</span></span>
-<span id="cb8-6"><a href="#cb8-6"></a>  <span class="at">probability =</span> <span class="cn">TRUE</span>, <span class="co"># to output posterior probabilities of class membership</span></span>
-<span id="cb8-7"><a href="#cb8-7"></a>)</span>
-<span id="cb8-8"><a href="#cb8-8"></a></span>
-<span id="cb8-9"><a href="#cb8-9"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, X)</span>
-<span id="cb8-10"><a href="#cb8-10"></a><span class="fu">summary</span>(pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">svm</span>(</span>
+<span id="cb36-2"><a href="#cb36-2"></a>  X, data<span class="sc">$</span>y,</span>
+<span id="cb36-3"><a href="#cb36-3"></a>)</span>
+<span id="cb36-4"><a href="#cb36-4"></a>fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> A  B
+<pre><code>
+Call:
+svm.default(x = X, y = data$y)
+
+
+Parameters:
+   SVM-Type:  C-classification
+ SVM-Kernel:  radial
+       cost:  1
+
+Number of Support Vectors:  17</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, X)</span>
+<span id="cb38-2"><a href="#cb38-2"></a><span class="fu">table</span>(pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>pred
+ A  B
 13  7 </code></pre>
+</div>
+</div>
+</section>
+<section id="confusion-matrix-in-caret-package" class="slide level2">
+<h2>Confusion matrix in <code>caret</code> package</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a>caret<span class="sc">::</span><span class="fu">confusionMatrix</span>(data<span class="sc">$</span>y, pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction  A  B
+         A 10  0
+         B  3  7
+
+               Accuracy : 0.85
+                 95% CI : (0.6211, 0.9679)
+    No Information Rate : 0.65
+    P-Value [Acc &gt; NIR] : 0.04438
+
+                  Kappa : 0.7
+
+ Mcnemar's Test P-Value : 0.24821
+
+            Sensitivity : 0.7692
+            Specificity : 1.0000
+         Pos Pred Value : 1.0000
+         Neg Pred Value : 0.7000
+             Prevalence : 0.6500
+         Detection Rate : 0.5000
+   Detection Prevalence : 0.5000
+      Balanced Accuracy : 0.8846
+
+       'Positive' Class : A
+                                          </code></pre>
 </div>
 </div>
 </section>
@@ -1421,8 +1657,7 @@ K(x_i,x_{i'}) = \gamma \sum_{j=1}^{p} x_{ij} x_{i'j} + r
 <li>Evaluation of classification performance based on parameters derived from the confusion matrix.</li>
 <li>Visualisation using ROC and precision-recall curves.</li>
 <li>Discriminant analysis is a parametric approach for classification.</li>
-<li>Diagonal, linear and quadratic discriminant analysis are based on different assumptions on the covariance matrix and allow for different flexibility in model fit.<br>
-</li>
+<li>Diagonal, linear and quadratic discriminant analysis are based on different assumptions on the covariance matrix and allow for different flexibility in model fit.</li>
 <li>Support vector machines are non-parametric machine-learning type of approaches which offer the most flexibility.</li>
 <li>Support vector machines are optimized for prediction and operate in a black box type of implementation (hard to understand mechanics and interpret).</li>
 </ul>

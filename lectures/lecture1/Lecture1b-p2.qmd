@@ -8,13 +8,13 @@ editor: visual
 date-format: medium
 title-slide-attributes:
   data-background-color: "#f3f4f4"
-  data-background-image: "../../assets/bmeh_normal.png"
-  data-background-size: 80%
-  data-background-position: 60% 120%
+  data-background-image: "../../assets/logo_trans.png"
+  data-background-size: 50%
+  data-background-position: 90% 120%
 format:
     revealjs:
       theme: [default, ../../assets/style.scss]
-      logo: "../../assets/bmeh_normal.png"
+      logo: "../../assets/logo_trans.png"
       slide-number: true
       incremental: false
       chalkboard:
@@ -31,6 +31,8 @@ format:
 
 -   Generalised linear models in R
 
+::: {style="font-size:90%;"}
+
 ## Generalised linear model (GLM)
 
 -   Linear models can only model a quantitative outcome.
@@ -45,6 +47,7 @@ format:
 
 ::: {.callout-note icon="false"}
 Flexible generalization of ordinary linear regression that allows for response variables that have error distribution models other than a normal distribution. Residuals are an important quantity for model diagnostics.
+:::
 :::
 
 ## Binary outcome and logistic regression
@@ -83,6 +86,7 @@ ggplot() +
   theme(text = element_text(size = 20))
 ```
 
+::: {style="font-size: 70%;"}
 ## Binary outcome and logistic regression
 
 $$y = \underbrace{\alpha + \beta x}_{\text{Linear predictor}} + \epsilon$$
@@ -117,6 +121,7 @@ ggplot() +
   xlab("glucose level") +
   theme(text = element_text(size = 20))
 ```
+:::
 
 ## How should we model this data?
 
@@ -130,6 +135,7 @@ Notes on probabilities for binary data:
 
 -   Probabilities are symmetric: $P(y=1\mid x) = 1- P(y=0\mid x)$
 
+::: {style="font-size: 90%;"}
 ## How should we model this data?
 
 **Key idea 2:** Transform the linear predictor $\eta= \alpha + \beta x_{i}$ (quantitative, can take values from $-\inf$ to $-inf$) to lie in the Interval $[0,1]$, which is valid for probabilities.
@@ -157,6 +163,7 @@ data.frame(
   theme_bw() +
   theme(text = element_text(size = 15))
 ```
+:::
 
 ## Logistic regression
 
@@ -168,6 +175,7 @@ $$
 
 -   **Estimation**: Maximum likelihood
 
+::: {style="font-size: 80%;"}
 ## Technical details
 
 -   Many important outcome types can be accommodated by GLMs.
@@ -183,6 +191,7 @@ $$
 | Counts      | Poison       | $\lambda$ | $\log$         |
 
 <https://en.wikipedia.org/wiki/Generalized_linear_model>
+:::
 
 ## Technical details: GLM
 
@@ -208,6 +217,7 @@ where
 
 -   $\eta(\theta)$ is the natural parameter or link function.
 
+::: {style="font-size: 80%;"}
 ## Gaussian distribution as exponential distribution
 
 Gaussian distribution with unknown $\mu$, but known $\sigma$:
@@ -225,7 +235,9 @@ $$
 -   $\eta(\mu) = \frac{\mu}{\sigma}$
 
 -   $A(\mu) = \frac{\mu^2}{2\sigma^2}$
+:::
 
+::: {style="font-size: 80%;"}
 ## Logistic regression and binary outcomes
 
 Binomial distribution with known number of trials $n$, but unknown probability $p$:
@@ -241,7 +253,9 @@ $$ \begin{align} f(x \mid p) &= {n\choose x} p^x (1-p)^{n-x} = \\ &= {n \choose 
 -   $\eta(p) = \log(\frac{p}{1-p})$
 
 -   $A(p) = - n \log(1-p)$
+:::
 
+::: {style="font-size: 80%;"}
 ## Logistic regression and binary outcomes
 
 Formulate model: Three elements
@@ -255,7 +269,9 @@ The three elements of the logistic regression model are:
 1.  The Bernoulli probability distribution modelling the data: $P( y_i= 1 \mid x_i ) = p_i$
 2.  The linear predictor: $\alpha + \sum_{j=1}^p \beta_j x_{ij}$
 3.  The link function $g$ associating the mean of $y$, $P( y_i= 1 \mid x_i )$ to the linear predictor: here the link is the [logistic link]{style="color:red;"} as we set $g(P( y_i= 1 \mid x_i ))=\text{logit}(p_i) = \beta_0 + \sum_{j=1}^p\beta_jx_{ij}$
+:::
 
+::: {style="font-size: 70%;"}
 ## glm() in R
 
 -   GLMs can be called in R just as linear models.
@@ -272,7 +288,9 @@ y <- ifelse(diabetes$y > mean(diabetes$y), 1, 0)
 
 glm(y ~ age + sex + bmi + map + ltg, data = x, family = binomial) %>% summary()
 ```
+:::
 
+::: {style="font-size: 85%;"}
 ## glm() in R
 
 -   Different types of exponential families can be called using the $\text{family}$ option:
@@ -294,7 +312,10 @@ glm(y ~ age + sex + bmi + map + ltg, data = x, family = binomial) %>% summary()
     -   fitted.values
 
     -   linear.predictors: the linear fit on the link scale
+:::
 
+
+::: {style="font-size: 80%;"}
 ## Making predictions
 
 1.  Train the prediction rule
@@ -321,6 +342,7 @@ xnew %>% head()
 
 eta <- predict.glm(glm_predict, xnew)
 ```
+:::
 
 ## Plot the predictions
 
@@ -328,6 +350,7 @@ eta <- predict.glm(glm_predict, xnew)
 #| echo: true
 #| eval: true
 #| warnings: false
+#| fig-align: center
 ggplot() +
   geom_histogram(aes(x = eta)) |
   ggplot() +

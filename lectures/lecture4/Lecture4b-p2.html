@@ -407,8 +407,8 @@ Garyfallos Konstantinoudis
 
   <p class="date">Aug 3, 2025</p>
 </section>
-<section id="section" class="slide level2">
-<h2></h2>
+<section class="slide level2">
+
 <p><strong>Ensemble methods:</strong></p>
 <ul>
 <li>Bagging</li>
@@ -421,8 +421,7 @@ Garyfallos Konstantinoudis
 <section id="bootstrap-aggregation-bagging" class="slide level2" style="font-size: 70%;">
 <h2>Bootstrap aggregation (bagging)</h2>
 <ul>
-<li>Let the original dataset contain <span class="math inline">\(n\)</span> samples<br>
-</li>
+<li>Let the original dataset contain <span class="math inline">\(n\)</span> samples</li>
 <li>Take <span class="math inline">\(n' &lt; n\)</span> repeated samples (with replacement) of the original dataset to create <span class="math inline">\(B\)</span> new datasets (<span class="math inline">\(b \in 1,...,B\)</span> bootstrapped training datasets).</li>
 <li>Grow a tree on each bootstrapped training datasets.</li>
 <li>Each of the trees has little bias, but high variance.</li>
@@ -491,7 +490,7 @@ f_{bag}(x) = \frac{1}{B} \sum_{b=1}^B f_b(x)
 </ul>
 </div>
 </section>
-<section id="section-1" class="slide level2">
+<section id="section" class="slide level2">
 <h2></h2>
 <div class="quarto-layout-panel">
 <div class="quarto-layout-row quarto-layout-valign-top">
@@ -586,13 +585,13 @@ f_{boost}(x) = \sum_{b=1}^B \lambda f_b(x)
 <h2>Bagging and random forests in <code>randomForest</code></h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">randomForest</span>(</span>
-<span id="cb1-2"><a href="#cb1-2"></a>    x, y, <span class="co"># train data</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a>    <span class="at">xtest =</span> <span class="cn">NULL</span>, <span class="at">ytest =</span> <span class="cn">NULL</span>, <span class="co"># test data</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a>    <span class="at">ntree =</span> <span class="dv">500</span>, <span class="co"># number of trees to grow</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a>    <span class="co"># number of variables to consider in each tree</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a>    <span class="at">mtry =</span> <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(y) <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">is.factor</span>(y)) <span class="fu">max</span>(<span class="fu">floor</span>(<span class="fu">ncol</span>(x)<span class="sc">/</span><span class="dv">3</span>), <span class="dv">1</span>) <span class="cf">else</span> <span class="fu">floor</span>(<span class="fu">sqrt</span>(<span class="fu">ncol</span>(x)))</span>
-<span id="cb1-7"><a href="#cb1-7"></a>    <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="co"># sample with replacement</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a>    <span class="at">importance =</span> <span class="cn">TRUE</span> <span class="co"># computes variable importance</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>  x, y, <span class="co"># train data</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a>  <span class="at">xtest =</span> <span class="cn">NULL</span>, <span class="at">ytest =</span> <span class="cn">NULL</span>, <span class="co"># test data</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a>  <span class="at">ntree =</span> <span class="dv">500</span>, <span class="co"># number of trees to grow</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>  <span class="co"># number of variables to consider in each tree</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>  <span class="at">mtry =</span> <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(y) <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">is.factor</span>(y)) <span class="fu">max</span>(<span class="fu">floor</span>(<span class="fu">ncol</span>(x) <span class="sc">/</span> <span class="dv">3</span>), <span class="dv">1</span>) <span class="cf">else</span> <span class="fu">floor</span>(<span class="fu">sqrt</span>(<span class="fu">ncol</span>(x))),</span>
+<span id="cb1-7"><a href="#cb1-7"></a>  <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="co"># sample with replacement</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>  <span class="at">importance =</span> <span class="cn">TRUE</span> <span class="co"># computes variable importance</span></span>
 <span id="cb1-9"><a href="#cb1-9"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
@@ -618,8 +617,8 @@ Call:
                      Number of trees: 500
 No. of variables tried at each split: 4
 
-          Mean of squared residuals: 10.05656
-                    % Var explained: 88.09</code></pre>
+          Mean of squared residuals: 9.62576
+                    % Var explained: 88.6</code></pre>
 </div>
 </div>
 </section>

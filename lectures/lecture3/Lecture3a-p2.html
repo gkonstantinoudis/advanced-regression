@@ -391,7 +391,7 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" data-background-color="#f3f4f4" data-background-position="60% 120%" data-background-size="80%" class="quarto-title-block center">
+<section id="title-slide" data-background-color="#f3f4f4" data-background-image="../../assets/logo_trans.png" data-background-position="90% 120%" data-background-size="50%" class="quarto-title-block center">
   <h1 class="title">Advanced Regression: A note on collinearity</h1>
 
 <div class="quarto-title-authors">
@@ -407,16 +407,16 @@ Garyfallos Konstantinoudis
 
   <p class="date">Aug 2, 2024</p>
 </section>
-<section id="introduction" class="slide level2">
+<section id="introduction" class="slide level2" style="font-size: 80%;">
 <h2>Introduction</h2>
 <p>We consider again the diabetes outcome looking at the outcome disease progression <span class="math inline">\(y\)</span> and we try to fit the following linear model:</p>
 <p><span class="math inline">\(y = \alpha + age + male + female + map + ltg\)</span></p>
 
 <img data-src="Lecture3a-p2_files/figure-revealjs/unnamed-chunk-1-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="fitting-an-lm-when-high-correlation" class="slide level2">
+<section id="fitting-an-lm-when-high-correlation" class="slide level2" style="font-size: 80%;">
 <h2>Fitting an lm when high correlation</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">lm</span>(y<span class="sc">~</span>age<span class="sc">+</span>male<span class="sc">+</span>female<span class="sc">+</span>map<span class="sc">+</span>ltg, <span class="at">data=</span>x) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> age <span class="sc">+</span> male <span class="sc">+</span> female <span class="sc">+</span> map <span class="sc">+</span> ltg, <span class="at">data =</span> x) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -446,13 +446,13 @@ F-statistic: 68.57 on 4 and 437 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Option in <code>lm()</code> function: <code>singular.ok = TRUE</code> automatically removes female.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">lm</span>(y<span class="sc">~</span>age<span class="sc">+</span>male<span class="sc">+</span>female<span class="sc">+</span>map<span class="sc">+</span>ltg, <span class="at">data=</span>x, <span class="at">singular.ok =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> age <span class="sc">+</span> male <span class="sc">+</span> female <span class="sc">+</span> map <span class="sc">+</span> ltg, <span class="at">data =</span> x, <span class="at">singular.ok =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in lm.fit(x, y, offset = offset, singular.ok = singular.ok, ...): singular fit encountered</code></pre>
 </div>
 </div>
 </section>
-<section id="fitting-an-lm-when-high-correlation-1" class="slide level2">
+<section id="fitting-an-lm-when-high-correlation-1" class="slide level2" style="font-size: 80%;">
 <h2>Fitting an lm when high correlation</h2>
 <ul>
 <li>The <code>lm()</code> function checks for singularities in the design matrix <span class="math inline">\(x\)</span>, but not all methods have this safety check.</li>
@@ -463,7 +463,7 @@ F-statistic: 68.57 on 4 and 437 DF,  p-value: &lt; 2.2e-16</code></pre>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">library</span>(glmnet)</span>
-<span id="cb5-2"><a href="#cb5-2"></a>lm.lasso <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(<span class="at">y=</span>y, <span class="at">x=</span>x, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda=</span><span class="fl">0.5</span>, <span class="at">family =</span> <span class="st">"gaussian"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>lm.lasso <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda =</span> <span class="fl">0.5</span>, <span class="at">family =</span> <span class="st">"gaussian"</span>)</span>
 <span id="cb5-3"><a href="#cb5-3"></a>lm.lasso<span class="sc">$</span>beta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>12 x 1 sparse Matrix of class "dgCMatrix"
@@ -483,7 +483,7 @@ female -2.153821e-12</code></pre>
 </div>
 </div>
 </section>
-<section id="what-are-singularity-and-multicollinearity" class="slide level2">
+<section id="what-are-singularity-and-multicollinearity" class="slide level2" style="font-size: 80%;">
 <h2>What are singularity and multicollinearity?</h2>
 <p><strong>Singularity</strong></p>
 <p>One predictor variable in a multiple regression model can be exactly explained by the other <span class="math inline">\(p-1\)</span> predictor variables.</p>
@@ -495,7 +495,7 @@ female -2.153821e-12</code></pre>
 <li><p>Do not include multiple measurement that are measured on different scales (e.g., <span class="math inline">\(m\)</span> and <span class="math inline">\(cm\)</span>)</p></li>
 </ul>
 </section>
-<section id="what-is-the-impact-of-multicollinearity" class="slide level2">
+<section id="what-is-the-impact-of-multicollinearity" class="slide level2" style="font-size: 80%;">
 <h2>What is the impact of multicollinearity?</h2>
 <p>True biological processes do not cause singularity (because they are random, not deterministic), but can cause multicollinearity.</p>
 <ul>
@@ -520,7 +520,7 @@ female -2.153821e-12</code></pre>
 <li>Variance inflation factor</li>
 </ul>
 </section>
-<section id="covariance-matrix" class="slide level2">
+<section id="covariance-matrix" class="slide level2" style="font-size: 80%;">
 <h2>Covariance matrix</h2>
 <p>Computing the sample covariance matrix using matrix multiplication</p>
 <p><span class="math display">\[\hat{cov}(x) = \frac{1}{n-1} \underbrace{x^t_c}_{p \times n} \underbrace{x_c}_{n \times p}\]</span></p>
@@ -536,7 +536,7 @@ female -2.153821e-12</code></pre>
 <li><p><span class="math inline">\(x^t\)</span> transposed predictor matrix of <span class="math inline">\(p\)</span> rows and <span class="math inline">\(n\)</span> columns</p></li>
 </ul>
 </section>
-<section id="matrix-multiplication" class="slide level2">
+<section id="matrix-multiplication" class="slide level2" style="font-size: 80%;">
 <h2>Matrix multiplication</h2>
 <p>Matrix multiplication: <span class="math inline">\(\underbrace{c}_{n \times p} = \underbrace{a}_{n \times m} \underbrace{b}_{m \times p}\)</span></p>
 <p><span class="math display">\[c_{ij} =  \sum_{k=1}^m a_{ik}b_{kj}\]</span></p>
@@ -547,7 +547,7 @@ female -2.153821e-12</code></pre>
 <li><p>Can be computed in R using the <code>\%*\%</code> command.</p></li>
 </ul>
 </section>
-<section id="correlation-matrix" class="slide level2">
+<section id="correlation-matrix" class="slide level2" style="font-size: 80%;">
 <h2>Correlation matrix</h2>
 <p>Computing the sample correlation matrix using matrix multiplication</p>
 <p><span class="math display">\[\hat{cor}(x) = \frac{1}{n-1} \underbrace{x^t_s}_{p \times n} \underbrace{x_s}_{n \times p} \nonumber\]</span></p>
@@ -559,7 +559,7 @@ female -2.153821e-12</code></pre>
 <p>This is equivalent to writing</p>
 <p><span class="math display">\[\hat{cor}(x_j, x_k) = \frac{\sum_{i=1}^n (x_{ij}-\bar{x}_j)(x_{ik} - \bar{x}_k) }{ \sqrt{\sum_{i=1}^n (x_{ij}-\bar{x}_j)^2 } \sqrt{\sum_{i=1}^n (x_{ik} - \bar{x}_k)^2 }} \]</span></p>
 </section>
-<section id="correlation-matrix-1" class="slide level2">
+<section id="correlation-matrix-1" class="slide level2" style="font-size: 80%;">
 <h2>Correlation matrix</h2>
 <ul>
 <li>Correlation matrices are symmetric and have a vector of <span class="math inline">\(1\)</span>’s on the diagonal.</li>
@@ -580,7 +580,7 @@ ltg     0.2707768 -0.1499176  0.1499176  0.3934781  1.0000000</code></pre>
 </ul>
 <p><span class="math display">\[\hat{cor}(x^t) = \frac{1}{p-1} \underbrace{x_s}_{n \times p} \underbrace{x_s^t}_{p \times n}\]</span></p>
 </section>
-<section id="correlation-matrix-2" class="slide level2">
+<section id="correlation-matrix-2" class="slide level2" style="font-size: 80%;">
 <h2>Correlation matrix</h2>
 <p>R commands</p>
 <ul>
@@ -600,7 +600,7 @@ ltg     0.2707768 -0.1499176  0.1499176  0.3934781  1.0000000</code></pre>
 </ul>
 <p>If we have less samples than variables (<span class="math inline">\(n&lt;p\)</span>) the rank is <span class="math inline">\(n\)</span>.</p>
 </section>
-<section id="the-rank-of-the-correlation-matrix" class="slide level2">
+<section id="the-rank-of-the-correlation-matrix" class="slide level2" style="font-size: 80%;">
 <h2>The rank of the correlation matrix</h2>
 <ul>
 <li>Let us consider again the correlation matrix</li>
@@ -612,10 +612,13 @@ ltg     0.2707768 -0.1499176  0.1499176  0.3934781  1.0000000</code></pre>
 </ul>
 <p>If the rank of a correlation matrix is smaller than <span class="math inline">\(min(n,p)\)</span> the correlation matrix is singular and thus cannot be inverted.</p>
 </section>
-<section id="the-rank-of-the-correlation-matrix-in-r" class="slide level2">
+<section id="the-rank-of-the-correlation-matrix-in-r" class="slide level2" style="font-size: 80%;">
 <h2>The rank of the correlation matrix in R</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(age, male, female, map, ltg) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>() <span class="sc">%&gt;%</span> <span class="fu">cor</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>x <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(age, male, female, map, ltg) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">as.matrix</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a>  <span class="fu">cor</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>              age       male     female        map        ltg
 age     1.0000000 -0.1737371  0.1737371  0.3354267  0.2707768
@@ -624,7 +627,11 @@ female  0.1737371 -1.0000000  1.0000000  0.2410132  0.1499176
 map     0.3354267 -0.2410132  0.2410132  1.0000000  0.3934781
 ltg     0.2707768 -0.1499176  0.1499176  0.3934781  1.0000000</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>x <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(age, male, female, map, ltg) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>() <span class="sc">%&gt;%</span> <span class="fu">cor</span>() <span class="sc">%&gt;%</span> <span class="fu">rankMatrix</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>x <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(age, male, female, map, ltg) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>  <span class="fu">as.matrix</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a>  <span class="fu">cor</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a>  <span class="fu">rankMatrix</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 4
 attr(,"method")
@@ -637,9 +644,8 @@ attr(,"tol")
 </div>
 <p>Interpretation: The correlation matrix of the design matrix with 5 predictors is of dimension <span class="math inline">\(5\times5\)</span>, yet the rank is 4 which indicates singularity.</p>
 </section>
-<section id="variance-in" class="slide level2">
-<h2>Variance in</h2>
-<p>ation factor (VIF)</p>
+<section id="variance-ination-factor-vif" class="slide level2">
+<h2>Variance ination factor (VIF)</h2>
 <ul>
 <li><p>The VIF is the ratio of the variance of <span class="math inline">\(\beta_j\)</span> when fitting the full model divided by the variance of <span class="math inline">\(\beta_{UNI}(j)\)</span> in a unvariable linear model.</p></li>
 <li><p>Lowest possible value is 1 (no collinearity).</p></li>
@@ -647,7 +653,7 @@ attr(,"tol")
 <li><p>It provides an indication how much the variance of an estimated regression coefficient is increased because of multicollinearity.</p></li>
 </ul>
 </section>
-<section id="variance-inflation-factor-vif" class="slide level2">
+<section id="variance-inflation-factor-vif" class="slide level2" style="font-size: 70%;">
 <h2>Variance inflation factor (VIF)</h2>
 <p>Consider the following linear model including <span class="math inline">\(p\)</span> predictors with inde <span class="math inline">\(j \in 1,…,p\)</span></p>
 <p><span class="math display">\[y =  \alpha + \beta_1 x_1 + \beta_2 x_2 + … + \beta_j x_j + … + \beta_p x_p + \epsilon.\]</span></p>
@@ -671,7 +677,7 @@ attr(,"tol")
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">library</span>(car)</span>
-<span id="cb13-2"><a href="#cb13-2"></a>lm2 <span class="ot">=</span> <span class="fu">lm</span>(y<span class="sc">~</span>age<span class="sc">+</span>male<span class="sc">+</span>map<span class="sc">+</span>ltg, <span class="at">data=</span>x)</span>
+<span id="cb13-2"><a href="#cb13-2"></a>lm2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> age <span class="sc">+</span> male <span class="sc">+</span> map <span class="sc">+</span> ltg, <span class="at">data =</span> x)</span>
 <span id="cb13-3"><a href="#cb13-3"></a><span class="fu">vif</span>(lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     age     male      map      ltg
@@ -694,7 +700,8 @@ attr(,"tol")
 </ul></li>
 </ul>
 <p>Questions?</p>
-<div class="footer footer-default">
+
+<img src="../../assets/logo_trans.png" class="slide-logo r-stretch"><div class="footer footer-default">
 
 </div>
 </section>

@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression: Overview of the course"
-date: "20-02-2024"
+date: "02-20-2024"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -8,13 +8,13 @@ editor: visual
 date-format: medium
 title-slide-attributes:
   data-background-color: "#f3f4f4"
-  data-background-image: "../../assets/bmeh_normal.png"
-  data-background-size: 80%
-  data-background-position: 60% 120%
+  data-background-image: "../../assets/logo_trans.png"
+  data-background-size: 50%
+  data-background-position: 90% 120%
 format:
     revealjs:
       theme: [default, ../../assets/style.scss]
-      logo: "../../assets/bmeh_normal.png"
+      logo: "../../assets/logo_trans.png"
       slide-number: true
       incremental: false
       chalkboard:
@@ -163,7 +163,7 @@ Make your code accessible and reproducible.
 
 ## Drop in sessions
 
--   Wednesdays (16:00-17:00).
+-   Wednesdays (11:00-12:00).
 
 -   In person and/or online.
 
@@ -173,7 +173,7 @@ Make your code accessible and reproducible.
 
 2 exams:
 
-1.  An interim exam (30%) during the 3rd week. Not in person, analyse data based on lectures 1 and 2 and 24h deadline.
+1.  An interim exam (30%) during the 3rd week. Not in person, analyse data based on lectures 1 and 2 and 24h deadline: Wednesday 06.03 at 09:00.
 2.  A final 1.5h open book exam during the exam period (70%).
 
 The total mark and pass will be calculated after **combining** these two marks.
@@ -184,7 +184,8 @@ The total mark and pass will be calculated after **combining** these two marks.
 
 -   Practical facilitators:
 
-    -   Christina Liang
+    -   Theo Rashid
+    -   Manyue Hu
 
 Looking forward to welcoming you to the AR module!
 

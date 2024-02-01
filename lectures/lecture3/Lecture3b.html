@@ -391,7 +391,7 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" data-background-color="#f3f4f4" data-background-position="60% 120%" data-background-size="80%" class="quarto-title-block center">
+<section id="title-slide" data-background-color="#f3f4f4" data-background-image="../../assets/logo_trans.png" data-background-position="90% 120%" data-background-size="50%" class="quarto-title-block center">
   <h1 class="title">Penalised regression models</h1>
 
 <div class="quarto-title-authors">
@@ -508,7 +508,7 @@ RSS(\alpha, \beta) &amp; =   \epsilon_1^2  + … +  \epsilon_i^2   + … + \epsi
 <p><span class="math display">\[\lambda f(\beta) =  \lambda_1 \sum_{j=1}^p \left| \beta_j \right|  +  \lambda_2 \sum_{j=1}^p \beta_j^2\]</span></p></li>
 </ul>
 </section>
-<section id="ridge-regression" class="slide level2">
+<section id="ridge-regression" class="slide level2" style="font-size: 90%;">
 <h2>Ridge regression</h2>
 <p>Ridge regression uses the L2 norm as penalty:<span class="math display">\[\underset{\alpha, \hat{\beta}_{Ridge}}{argmin} =  \underbrace{RSS(\alpha,\beta)}_{\text{Residual Sum of Squares}} +  \underbrace{\lambda \sum_{j=1}^p \beta_j^2}_{\text{penalty}}\]</span></p>
 <p>Interpretation:</p>
@@ -565,7 +565,7 @@ RSS(\alpha, \beta) &amp; =   \epsilon_1^2  + … +  \epsilon_i^2   + … + \epsi
 <h2>Ridge regression and OLS</h2>
 
 <img data-src="Lecture3b_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section>
-<section id="lasso-regression" class="slide level2">
+<section id="lasso-regression" class="slide level2" style="font-size: 80%;">
 <h2>Lasso regression</h2>
 <p><span class="math display">\[\underset{\hat{\alpha}, \hat{\beta}_{Lasso}}{argmin} =  \underbrace{RSS(\alpha,\beta)}_{\text{Residual Sum of Squares}} +  \underbrace{\lambda \sum_{j=1}^p \left| \beta_j \right| }_{\text{penalty}} \]</span></p>
 <p>Interpretation:</p>
@@ -622,7 +622,7 @@ RSS(\alpha, \beta) &amp; =   \epsilon_1^2  + … +  \epsilon_i^2   + … + \epsi
 <li><p><strong>Cross-validation</strong></p></li>
 </ul>
 </section>
-<section id="prediction-using-penalised-regression" class="slide level2">
+<section id="prediction-using-penalised-regression" class="slide level2" style="font-size: 95%;">
 <h2>Prediction using penalised regression</h2>
 <ul>
 <li><p>Regularized regression is an ideal tool for prediction.</p></li>
@@ -635,9 +635,11 @@ RSS(\alpha, \beta) &amp; =   \epsilon_1^2  + … +  \epsilon_i^2   + … + \epsi
 <section id="penalised-regression-in-r-glmnet" class="slide level2">
 <h2>Penalised regression in R: <code>glmnet()</code></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">glmnet</span>(x, y, family, alpha,<span class="at">nlambda =</span> <span class="dv">100</span>,</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="at">lambda.min.ratio =</span> <span class="fu">ifelse</span>(nobs<span class="sc">&lt;</span>nvars,<span class="fl">0.01</span>,<span class="fl">0.0001</span>),</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="at">lambda=</span><span class="cn">NULL</span>, <span class="at">standardize =</span> <span class="cn">TRUE</span>, <span class="at">intercept=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">glmnet</span>(x, y, family, alpha,</span>
+<span id="cb1-2"><a href="#cb1-2"></a>  <span class="at">nlambda =</span> <span class="dv">100</span>,</span>
+<span id="cb1-3"><a href="#cb1-3"></a>  <span class="at">lambda.min.ratio =</span> <span class="fu">ifelse</span>(nobs <span class="sc">&lt;</span> nvars, <span class="fl">0.01</span>, <span class="fl">0.0001</span>),</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  <span class="at">lambda =</span> <span class="cn">NULL</span>, <span class="at">standardize =</span> <span class="cn">TRUE</span>, <span class="at">intercept =</span> <span class="cn">TRUE</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Input</p>
 <ul>
@@ -652,10 +654,11 @@ RSS(\alpha, \beta) &amp; =   \epsilon_1^2  + … +  \epsilon_i^2   + … + \epsi
 <section id="penalised-regression-in-r-glmnet-1" class="slide level2">
 <h2>Penalised regression in R: <code>glmnet()</code></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">glmnet</span>(x, y, family, </span>
-<span id="cb2-2"><a href="#cb2-2"></a>       alpha, </span>
-<span id="cb2-3"><a href="#cb2-3"></a>       <span class="at">nlambda =</span> <span class="dv">100</span>, <span class="at">lambda.min.ratio =</span> <span class="fu">ifelse</span>(nobs<span class="sc">&lt;</span>nvars,<span class="fl">0.01</span>,<span class="fl">0.0001</span>), <span class="at">lambda=</span><span class="cn">NULL</span>, </span>
-<span id="cb2-4"><a href="#cb2-4"></a>       <span class="at">standardize =</span> <span class="cn">TRUE</span>, <span class="at">intercept=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">glmnet</span>(x, y, family,</span>
+<span id="cb2-2"><a href="#cb2-2"></a>  alpha,</span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="at">nlambda =</span> <span class="dv">100</span>, <span class="at">lambda.min.ratio =</span> <span class="fu">ifelse</span>(nobs <span class="sc">&lt;</span> nvars, <span class="fl">0.01</span>, <span class="fl">0.0001</span>), <span class="at">lambda =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="at">standardize =</span> <span class="cn">TRUE</span>, <span class="at">intercept =</span> <span class="cn">TRUE</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Penalised regression models</p>
 <ul>
@@ -671,7 +674,7 @@ RSS(\alpha, \beta) &amp; =   \epsilon_1^2  + … +  \epsilon_i^2   + … + \epsi
 <section id="penalised-regression-in-r-glmnet-2" class="slide level2">
 <h2>Penalised regression in R: <code>glmnet()</code></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>glmnet.out <span class="ot">=</span> <span class="fu">glmnet</span>(x, y, family, alpha)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>glmnet.out <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(x, y, family, alpha)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Values:</p>
 <ul>
@@ -747,9 +750,9 @@ RSS(\alpha, \beta) &amp; =   \epsilon_1^2  + … +  \epsilon_i^2   + … + \epsi
 <h2>Ridge regression and diabetes data</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">cbind</span>(</span>
-<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">lm</span>(y<span class="sc">~</span>x) <span class="sc">%&gt;%</span> <span class="fu">coef</span>(),</span>
-<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">glmnet</span>(x,y,<span class="at">family=</span><span class="st">"gaussian"</span>,<span class="at">alpha=</span><span class="dv">0</span>,<span class="at">lambda=</span><span class="fl">0.1</span>) <span class="sc">%&gt;%</span> <span class="fu">coef</span>(),</span>
-<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">glmnet</span>(x,y,<span class="at">family=</span><span class="st">"gaussian"</span>,<span class="at">alpha=</span><span class="dv">0</span>,<span class="at">lambda=</span><span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">coef</span>()</span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">lm</span>(y <span class="sc">~</span> x) <span class="sc">%&gt;%</span> <span class="fu">coef</span>(),</span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">glmnet</span>(x, y, <span class="at">family =</span> <span class="st">"gaussian"</span>, <span class="at">alpha =</span> <span class="dv">0</span>, <span class="at">lambda =</span> <span class="fl">0.1</span>) <span class="sc">%&gt;%</span> <span class="fu">coef</span>(),</span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">glmnet</span>(x, y, <span class="at">family =</span> <span class="st">"gaussian"</span>, <span class="at">alpha =</span> <span class="dv">0</span>, <span class="at">lambda =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">coef</span>()</span>
 <span id="cb6-5"><a href="#cb6-5"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>11 x 3 sparse Matrix of class "dgCMatrix"
@@ -772,9 +775,9 @@ glu           67.62539   68.277472   71.865726</code></pre>
 <h2>Lasso regression and diabetes data</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">cbind</span>(</span>
-<span id="cb8-2"><a href="#cb8-2"></a>  <span class="fu">lm</span>(y<span class="sc">~</span>x) <span class="sc">%&gt;%</span> <span class="fu">coef</span>(),</span>
-<span id="cb8-3"><a href="#cb8-3"></a>  <span class="fu">glmnet</span>(x,y,<span class="at">family=</span><span class="st">"gaussian"</span>,<span class="at">alpha=</span><span class="dv">1</span>,<span class="at">lambda=</span><span class="fl">0.1</span>) <span class="sc">%&gt;%</span> <span class="fu">coef</span>(),</span>
-<span id="cb8-4"><a href="#cb8-4"></a>  <span class="fu">glmnet</span>(x,y,<span class="at">family=</span><span class="st">"gaussian"</span>,<span class="at">alpha=</span><span class="dv">1</span>,<span class="at">lambda=</span><span class="dv">40</span>) <span class="sc">%&gt;%</span> <span class="fu">coef</span>()</span>
+<span id="cb8-2"><a href="#cb8-2"></a>  <span class="fu">lm</span>(y <span class="sc">~</span> x) <span class="sc">%&gt;%</span> <span class="fu">coef</span>(),</span>
+<span id="cb8-3"><a href="#cb8-3"></a>  <span class="fu">glmnet</span>(x, y, <span class="at">family =</span> <span class="st">"gaussian"</span>, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda =</span> <span class="fl">0.1</span>) <span class="sc">%&gt;%</span> <span class="fu">coef</span>(),</span>
+<span id="cb8-4"><a href="#cb8-4"></a>  <span class="fu">glmnet</span>(x, y, <span class="at">family =</span> <span class="st">"gaussian"</span>, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda =</span> <span class="dv">40</span>) <span class="sc">%&gt;%</span> <span class="fu">coef</span>()</span>
 <span id="cb8-5"><a href="#cb8-5"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>11 x 3 sparse Matrix of class "dgCMatrix"
@@ -797,9 +800,9 @@ glu           67.62539   66.410644   .      </code></pre>
 <h2>Elastic regression and diabetes data</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">cbind</span>(</span>
-<span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">lm</span>(y<span class="sc">~</span>x) <span class="sc">%&gt;%</span> <span class="fu">coef</span>(),</span>
-<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">glmnet</span>(x,y,<span class="at">family=</span><span class="st">"gaussian"</span>,<span class="at">alpha=</span><span class="fl">0.5</span>,<span class="at">lambda=</span><span class="fl">0.1</span>) <span class="sc">%&gt;%</span> <span class="fu">coef</span>(),</span>
-<span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">glmnet</span>(x,y,<span class="at">family=</span><span class="st">"gaussian"</span>,<span class="at">alpha=</span><span class="fl">0.5</span>,<span class="at">lambda=</span><span class="dv">40</span>) <span class="sc">%&gt;%</span> <span class="fu">coef</span>()</span>
+<span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">lm</span>(y <span class="sc">~</span> x) <span class="sc">%&gt;%</span> <span class="fu">coef</span>(),</span>
+<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">glmnet</span>(x, y, <span class="at">family =</span> <span class="st">"gaussian"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">lambda =</span> <span class="fl">0.1</span>) <span class="sc">%&gt;%</span> <span class="fu">coef</span>(),</span>
+<span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">glmnet</span>(x, y, <span class="at">family =</span> <span class="st">"gaussian"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">lambda =</span> <span class="dv">40</span>) <span class="sc">%&gt;%</span> <span class="fu">coef</span>()</span>
 <span id="cb10-5"><a href="#cb10-5"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>11 x 3 sparse Matrix of class "dgCMatrix"
@@ -854,7 +857,7 @@ glu           67.62539   67.483126   .      </code></pre>
 <span id="cb12-4"><a href="#cb12-4"></a>x <span class="ot">&lt;-</span> data_bc<span class="sc">$</span>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>glm.out <span class="ot">=</span> <span class="fu">glm</span>(severity<span class="sc">~</span><span class="fu">as.matrix</span>(x), <span class="at">family=</span><span class="st">'binomial'</span>)</span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>glm.out <span class="ot">&lt;-</span> <span class="fu">glm</span>(severity <span class="sc">~</span> <span class="fu">as.matrix</span>(x), <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
 <span id="cb13-2"><a href="#cb13-2"></a>glm.out<span class="sc">$</span>converged</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Takes a lot of time and eventually you will get a warning that the algorithm did not converge!</p>
@@ -862,13 +865,13 @@ glu           67.62539   67.483126   .      </code></pre>
 <section id="breast-cancer-data-and-lasso" class="slide level2">
 <h2>Breast cancer data and lasso</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>lasso.out <span class="ot">=</span> <span class="fu">glmnet</span>(<span class="at">x=</span><span class="fu">as.matrix</span>(x), <span class="at">y=</span>severity, <span class="at">family=</span><span class="st">'binomial'</span>, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda =</span> <span class="fl">0.001</span>)</span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="fu">sum</span>(<span class="fu">abs</span>(lasso.out<span class="sc">$</span>beta)<span class="sc">&gt;</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>lasso.out <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(<span class="at">x =</span> <span class="fu">as.matrix</span>(x), <span class="at">y =</span> severity, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda =</span> <span class="fl">0.001</span>)</span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="fu">sum</span>(<span class="fu">abs</span>(lasso.out<span class="sc">$</span>beta) <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 288</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>lasso.out <span class="ot">=</span> <span class="fu">glmnet</span>(<span class="at">x=</span><span class="fu">as.matrix</span>(x), <span class="at">y=</span>severity, <span class="at">family=</span><span class="st">'binomial'</span>, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda =</span> <span class="fl">0.12</span>)</span>
-<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">sum</span>(<span class="fu">abs</span>(lasso.out<span class="sc">$</span>beta)<span class="sc">&gt;</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>lasso.out <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(<span class="at">x =</span> <span class="fu">as.matrix</span>(x), <span class="at">y =</span> severity, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda =</span> <span class="fl">0.12</span>)</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">sum</span>(<span class="fu">abs</span>(lasso.out<span class="sc">$</span>beta) <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 6</code></pre>
 </div>
@@ -893,13 +896,13 @@ glu           67.62539   67.483126   .      </code></pre>
 <section id="breast-cancer-data-and-elastic-net" class="slide level2">
 <h2>Breast cancer data and elastic net</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>enet.out <span class="ot">=</span> <span class="fu">glmnet</span>(<span class="at">x=</span><span class="fu">as.matrix</span>(x), <span class="at">y=</span>severity, <span class="at">family=</span><span class="st">'binomial'</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">lambda =</span> <span class="fl">0.003</span>)</span>
-<span id="cb22-2"><a href="#cb22-2"></a><span class="fu">sum</span>(<span class="fu">abs</span>(enet.out<span class="sc">$</span>beta)<span class="sc">&gt;</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>enet.out <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(<span class="at">x =</span> <span class="fu">as.matrix</span>(x), <span class="at">y =</span> severity, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">lambda =</span> <span class="fl">0.003</span>)</span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="fu">sum</span>(<span class="fu">abs</span>(enet.out<span class="sc">$</span>beta) <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 486</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>enet.out <span class="ot">=</span> <span class="fu">glmnet</span>(<span class="at">x=</span><span class="fu">as.matrix</span>(x), <span class="at">y=</span>severity, <span class="at">family=</span><span class="st">'binomial'</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">lambda =</span> <span class="fl">0.26</span>)</span>
-<span id="cb24-2"><a href="#cb24-2"></a><span class="fu">sum</span>(<span class="fu">abs</span>(enet.out<span class="sc">$</span>beta)<span class="sc">&gt;</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>enet.out <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(<span class="at">x =</span> <span class="fu">as.matrix</span>(x), <span class="at">y =</span> severity, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">lambda =</span> <span class="fl">0.26</span>)</span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="fu">sum</span>(<span class="fu">abs</span>(enet.out<span class="sc">$</span>beta) <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 6</code></pre>
 </div>
@@ -942,7 +945,8 @@ glu           67.62539   67.483126   .      </code></pre>
 <li><p>The regularisation parameter <span class="math inline">\(\lambda\)</span> can be chosen using cross-validation.</p></li>
 </ul>
 <p>Questions?</p>
-<div class="footer footer-default">
+
+<img src="../../assets/logo_trans.png" class="slide-logo r-stretch"><div class="footer footer-default">
 
 </div>
 </section>

@@ -391,7 +391,7 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" data-background-color="#f3f4f4" data-background-image="../../assets/bmeh_normal.png" data-background-position="60% 120%" data-background-size="80%" class="quarto-title-block center">
+<section id="title-slide" data-background-color="#f3f4f4" data-background-image="../../assets/logo_trans.png" data-background-position="90% 120%" data-background-size="50%" class="quarto-title-block center">
   <h1 class="title">Advanced Regression: Linear and generalised linear models II</h1>
 
 <div class="quarto-title-authors">
@@ -416,7 +416,7 @@ Garyfallos Konstantinoudis
 <li><p>Generalised linear models in R</p></li>
 </ul>
 </section>
-<section id="generalised-linear-model-glm" class="slide level2">
+<section id="generalised-linear-model-glm" class="slide level2" style="font-size:90%;">
 <h2>Generalised linear model (GLM)</h2>
 <ul>
 <li><p>Linear models can only model a quantitative outcome.</p></li>
@@ -450,7 +450,7 @@ y_i =
 \]</span></p>
 
 <img data-src="Lecture1b-p2_files/figure-revealjs/unnamed-chunk-1-1.png" width="576" class="r-stretch quarto-figure-center"></section>
-<section id="binary-outcome-and-logistic-regression-1" class="slide level2">
+<section id="binary-outcome-and-logistic-regression-1" class="slide level2" style="font-size: 70%;">
 <h2>Binary outcome and logistic regression</h2>
 <p><span class="math display">\[y = \underbrace{\alpha + \beta x}_{\text{Linear predictor}} + \epsilon\]</span></p>
 <ul>
@@ -471,7 +471,7 @@ y_i =
 <li><p>Probabilities are symmetric: <span class="math inline">\(P(y=1\mid x) = 1- P(y=0\mid x)\)</span></p></li>
 </ul>
 </section>
-<section id="how-should-we-model-this-data-1" class="slide level2">
+<section id="how-should-we-model-this-data-1" class="slide level2" style="font-size: 90%;">
 <h2>How should we model this data?</h2>
 <p><strong>Key idea 2:</strong> Transform the linear predictor <span class="math inline">\(\eta= \alpha + \beta x_{i}\)</span> (quantitative, can take values from <span class="math inline">\(-\inf\)</span> to <span class="math inline">\(-inf\)</span>) to lie in the Interval <span class="math inline">\([0,1]\)</span>, which is valid for probabilities.</p>
 <p>This can be achieved using the logit function: <span class="math inline">\(\text{logit}(p) = \log (p/(1-p))\)</span></p>
@@ -487,7 +487,7 @@ y_i =
 <li><p><strong>Estimation</strong>: Maximum likelihood</p></li>
 </ul>
 </section>
-<section id="technical-details" class="slide level2">
+<section id="technical-details" class="slide level2" style="font-size: 80%;">
 <h2>Technical details</h2>
 <ul>
 <li><p>Many important outcome types can be accommodated by GLMs.</p></li>
@@ -548,7 +548,7 @@ f_x(x \mid \theta) = h(x) \exp\{\eta(\theta) \times T(x) - A(\theta)\}
 <li><p><span class="math inline">\(\eta(\theta)\)</span> is the natural parameter or link function.</p></li>
 </ul>
 </section>
-<section id="gaussian-distribution-as-exponential-distribution" class="slide level2">
+<section id="gaussian-distribution-as-exponential-distribution" class="slide level2" style="font-size: 80%;">
 <h2>Gaussian distribution as exponential distribution</h2>
 <p>Gaussian distribution with unknown <span class="math inline">\(\mu\)</span>, but known <span class="math inline">\(\sigma\)</span>:</p>
 <p><span class="math display">\[
@@ -562,7 +562,7 @@ f_{\sigma}(x \mid \mu) =  \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\{ -\frac{(x-\mu)^
 <li><p><span class="math inline">\(A(\mu) = \frac{\mu^2}{2\sigma^2}\)</span></p></li>
 </ul>
 </section>
-<section id="logistic-regression-and-binary-outcomes" class="slide level2">
+<section id="logistic-regression-and-binary-outcomes" class="slide level2" style="font-size: 80%;">
 <h2>Logistic regression and binary outcomes</h2>
 <p>Binomial distribution with known number of trials <span class="math inline">\(n\)</span>, but unknown probability <span class="math inline">\(p\)</span>:</p>
 <p><span class="math display">\[ \begin{align} f(x \mid p) &amp;= {n\choose x} p^x (1-p)^{n-x} = \\ &amp;= {n \choose x} \exp \{x \log (\frac{p}{1-p}) + n\log(1-p)\}  \end{align} \]</span></p>
@@ -574,7 +574,7 @@ f_{\sigma}(x \mid \mu) =  \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\{ -\frac{(x-\mu)^
 <li><p><span class="math inline">\(A(p) = - n \log(1-p)\)</span></p></li>
 </ul>
 </section>
-<section id="logistic-regression-and-binary-outcomes-1" class="slide level2">
+<section id="logistic-regression-and-binary-outcomes-1" class="slide level2" style="font-size: 80%;">
 <h2>Logistic regression and binary outcomes</h2>
 <p>Formulate model: Three elements</p>
 <ol type="1">
@@ -589,7 +589,7 @@ f_{\sigma}(x \mid \mu) =  \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\{ -\frac{(x-\mu)^
 <li>The link function <span class="math inline">\(g\)</span> associating the mean of <span class="math inline">\(y\)</span>, <span class="math inline">\(P( y_i= 1 \mid x_i )\)</span> to the linear predictor: here the link is the <span style="color:red;">logistic link</span> as we set <span class="math inline">\(g(P( y_i= 1 \mid x_i ))=\text{logit}(p_i) = \beta_0 + \sum_{j=1}^p\beta_jx_{ij}\)</span></li>
 </ol>
 </section>
-<section id="glm-in-r" class="slide level2">
+<section id="glm-in-r" class="slide level2" style="font-size: 70%;">
 <h2>glm() in R</h2>
 <ul>
 <li>GLMs can be called in R just as linear models.</li>
@@ -630,7 +630,7 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 </div>
 </section>
-<section id="glm-in-r-1" class="slide level2">
+<section id="glm-in-r-1" class="slide level2" style="font-size: 85%;">
 <h2>glm() in R</h2>
 <ul>
 <li><p>Different types of exponential families can be called using the <span class="math inline">\(\text{family}\)</span> option:</p>
@@ -649,7 +649,7 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </ul></li>
 </ul>
 </section>
-<section id="making-predictions" class="slide level2">
+<section id="making-predictions" class="slide level2" style="font-size: 80%;">
 <h2>Making predictions</h2>
 <ol type="1">
 <li>Train the prediction rule</li>
@@ -683,14 +683,14 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </section>
 <section id="plot-the-predictions" class="slide level2">
 <h2>Plot the predictions</h2>
-<div class="cell" data-warnings="false">
+<div class="cell" data-layout-align="center" data-warnings="false">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> eta)) <span class="sc">|</span></span>
 <span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
 <span id="cb6-4"><a href="#cb6-4"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">exp</span>(eta) <span class="sc">/</span> (<span class="fu">exp</span>(eta) <span class="sc">+</span> <span class="dv">1</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="Lecture1b-p2_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"><div class="cell">
+<img data-src="Lecture1b-p2_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch quarto-figure-center"><div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">rbinom</span>(</span>
 <span id="cb7-2"><a href="#cb7-2"></a>  <span class="at">n =</span> <span class="fu">length</span>(eta),</span>
 <span id="cb7-3"><a href="#cb7-3"></a>  <span class="at">size =</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">length</span>(eta)),</span>
@@ -716,7 +716,7 @@ Number of Fisher Scoring iterations: 4</code></pre>
 <li><p>Counts <span class="math inline">\(\rightarrow\)</span> Poisson or Binomial (with known number of trial) distribution</p></li>
 </ul>
 
-<img src="../../assets/bmeh_normal.png" class="slide-logo r-stretch"><div class="footer footer-default">
+<img src="../../assets/logo_trans.png" class="slide-logo r-stretch"><div class="footer footer-default">
 
 </div>
 </section>

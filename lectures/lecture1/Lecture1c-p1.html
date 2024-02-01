@@ -391,7 +391,7 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" data-background-color="#f3f4f4" data-background-image="../../assets/bmeh_normal.png" data-background-position="60% 120%" data-background-size="80%" class="quarto-title-block center">
+<section id="title-slide" data-background-color="#f3f4f4" data-background-image="../../assets/logo_trans.png" data-background-position="90% 120%" data-background-size="50%" class="quarto-title-block center">
   <h1 class="title">Advanced Regression: Random effects and hierarchical models I</h1>
 
 <div class="quarto-title-authors">
@@ -407,7 +407,7 @@ Garyfallos Konstantinoudis
 
   <p class="date">Aug 2, 2025</p>
 </section>
-<section id="motivation" class="slide level2">
+<section id="motivation" class="slide level2" style="font-size:90%;">
 <h2>Motivation</h2>
 <p>All methods presented so far assume that the observations are iid – <strong>i</strong>ndependent and <strong>i</strong>dentically <strong>d</strong>istributed</p>
 <ul>
@@ -419,9 +419,7 @@ cor(x_i, x_{i'}) = 0  \text{ for all }  i, i' \in 1,….,n
 <ul>
 <li><strong>Identically</strong>: All observations come from the same distribution. For example, from a Normal distribution with the same mean and variance.</li>
 </ul>
-<!-- ::: aside
-**Exchangeability**: Allows for dependence between observations and only states that future observations behave like past ones.
-::: -->
+<p><strong>Exchangeability</strong>: Allows for dependence between observations and only states that future observations behave like past ones.</p>
 </section>
 <section id="motivation-how-realistic-is-iid" class="slide level2">
 <h2>Motivation: How realistic is iid?</h2>
@@ -509,17 +507,41 @@ F-statistic: 142.1 on 1 and 439 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </section>
-<section id="gp-data-pooled-analysis-2" class="slide level2">
+<section id="gp-data-pooled-analysis-2" class="slide level2" style="font-size:80%;">
 <h2>GP data: pooled analysis</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>data_chol <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>  <span class="fu">mutate</span>(<span class="at">doctor_name =</span> <span class="fu">factor</span>(<span class="fu">str_c</span>(<span class="st">"Dr "</span>, doctor), <span class="at">levels =</span> <span class="fu">str_c</span>(<span class="st">"Dr "</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> chol, <span class="at">colour =</span> doctor_name)) <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
+</div>
 <img data-src="Lecture1c-p1_files/figure-revealjs/gp-data-colour-doctor-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="gp-data-pooled-analysis-3" class="slide level2">
+<section id="gp-data-pooled-analysis-3" class="slide level2" style="font-size:80%;">
 <h2>GP data: pooled analysis</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>data_chol <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">mutate</span>(<span class="at">doctor_name =</span> <span class="fu">factor</span>(<span class="fu">str_c</span>(<span class="st">"Dr "</span>, doctor), <span class="at">levels =</span> <span class="fu">str_c</span>(<span class="st">"Dr "</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> chol)) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>doctor_name) <span class="sc">+</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
+</div>
 <img data-src="Lecture1c-p1_files/figure-revealjs/gp-data-facet-doctor-1.png" width="960" class="r-stretch quarto-figure-center"></section>
 <section id="accounting-for-dependence" class="slide level2">
 <h2>Accounting for dependence</h2>
-<p>When we ignore dependence: - standard <strong>errors too small</strong> - p−values too small / confidence intervals too narrow - we <strong>over-estimate significance</strong>.</p>
+<p>When we ignore dependence:</p>
+<ul>
+<li>standard <strong>errors too small</strong></li>
+</ul>
+<!-- -->
+<ul>
+<li><p>p−values too small / confidence intervals too narrow</p></li>
+<li><p>we <strong>over-estimate significance</strong>.</p></li>
+</ul>
 <p>Intuitively, there is less information in the data than an independent sample.</p>
 </section>
 <section id="accounting-for-dependence-1" class="slide level2">
@@ -549,27 +571,36 @@ F-statistic: 142.1 on 1 and 439 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Multiple testing is an issue.</li>
 </ul>
 </section>
-<section id="separate-analysis-1" class="slide level2">
+<section id="separate-analysis-1" class="slide level2" style="font-size:90%;">
 <h2>1. Separate analysis</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>model_separate <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> age <span class="sc">|</span> doctor, <span class="at">data =</span> data_chol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>model_separate <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> age <span class="sc">|</span> doctor, <span class="at">data =</span> data_chol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>data_chol <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a>  <span class="fu">mutate</span>(<span class="at">doctor_name =</span> <span class="fu">factor</span>(<span class="fu">str_c</span>(<span class="st">"Dr "</span>, doctor), <span class="at">levels =</span> <span class="fu">str_c</span>(<span class="st">"Dr "</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> chol)) <span class="sc">+</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>doctor_name) <span class="sc">+</span></span>
+<span id="cb11-7"><a href="#cb11-7"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
+</div>
 <img data-src="Lecture1c-p1_files/figure-revealjs/gp-data-model-separate-plot-1.png" width="960" class="r-stretch quarto-figure-center"></section>
 <section id="group-level-analysis" class="slide level2">
 <h2>2. Group-level analysis</h2>
 <p>Summarise outcome and predictors for each group <span class="math inline">\(k\)</span>, e.g.&nbsp;using mean or median.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>data_grouped <span class="ot">&lt;-</span> data_chol <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">group_by</span>(doctor) <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">summarise</span>(<span class="at">chol_grouped =</span> <span class="fu">mean</span>(chol), <span class="at">age_grouped =</span> <span class="fu">mean</span>(age))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>data_grouped <span class="ot">&lt;-</span> data_chol <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">group_by</span>(doctor) <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>  <span class="fu">summarise</span>(<span class="at">chol_grouped =</span> <span class="fu">mean</span>(chol), <span class="at">age_grouped =</span> <span class="fu">mean</span>(age))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="group-level-analysis-1" class="slide level2">
 <h2>2. Group-level analysis</h2>
 <p>Treat the group summaries as observations</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>model_grouped <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol_grouped <span class="sc">~</span> age_grouped, <span class="at">data =</span> data_grouped)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>model_grouped <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol_grouped <span class="sc">~</span> age_grouped, <span class="at">data =</span> data_grouped)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Consequences:</p>
 <ul>
@@ -585,7 +616,7 @@ F-statistic: 142.1 on 1 and 439 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="group-level-analysis-3" class="slide level2">
 <h2>2. Group-level analysis</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">summary</span>(model_grouped)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">summary</span>(model_grouped)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -648,7 +679,7 @@ y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
 <li>Residual errors <span class="math inline">\(\epsilon_i\)</span> are assumed independent.</li>
 </ul>
 </section>
-<section id="fixed-effects-2" class="slide level2">
+<section id="fixed-effects-2" class="slide level2" style="font-size:95%;">
 <h2>3. Fixed effects</h2>
 <p>A fixed effects model is fit in the same way as the simple linear model including the group as a covariate.</p>
 <p>Assumptions: Information on αk comes from observations in group k only.</p>
@@ -679,13 +710,13 @@ y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
 \]</span></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>model_varying_intercept <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> <span class="fu">as.factor</span>(doctor) <span class="sc">+</span> age, <span class="at">data =</span> data_chol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>model_varying_intercept <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> <span class="fu">as.factor</span>(doctor) <span class="sc">+</span> age, <span class="at">data =</span> data_chol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="varying-intercept-with-lm-1" class="slide level2">
 <h2>Varying intercept with <code>lm()</code></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">summary</span>(model_varying_intercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">summary</span>(model_varying_intercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -731,13 +762,13 @@ y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
 \]</span></li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>model_varying_slope <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> age <span class="sc">:</span> <span class="fu">as.factor</span>(doctor), <span class="at">data =</span> data_chol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>model_varying_slope <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> age<span class="sc">:</span><span class="fu">as.factor</span>(doctor), <span class="at">data =</span> data_chol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="varying-slope-with-lm-1" class="slide level2">
 <h2>Varying slope with <code>lm()</code></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">summary</span>(model_varying_slope)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">summary</span>(model_varying_slope)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -799,15 +830,14 @@ F-statistic: 64.39 on 12 and 428 DF,  p-value: &lt; 2.2e-16</code></pre>
 <ul>
 <li>If we add new groups to the dataset we may not consistently estimate <span class="math inline">\(\alpha_k\)</span>:
 <ul>
-<li>Consider <span class="math inline">\(\alpha_1\)</span>, the intercept for the first group.<br>
-</li>
+<li>Consider <span class="math inline">\(\alpha_1\)</span>, the intercept for the first group.</li>
 <li>When we add new groups, the slope may vary.</li>
 <li>Changing slope will change the intercept, also <span class="math inline">\(\alpha_1\)</span>.</li>
 </ul></li>
 <li>Information on <span class="math inline">\(\alpha_k\)</span> or <span class="math inline">\(\beta_k\)</span> comes only from observations in group <span class="math inline">\(k\)</span> and we need to estimate one parameter per group.</li>
 </ul>
 </section>
-<section id="take-away-structured-data" class="slide level2">
+<section id="take-away-structured-data" class="slide level2" style="font-size:90%;">
 <h2>Take away: Structured Data</h2>
 <ul>
 <li>Most statistical methods are developed for independent and identically distributed (iid) data, but often in practice we observe structured data, where <strong>there is an intrinsic group structure</strong>.</li>
@@ -815,11 +845,11 @@ F-statistic: 64.39 on 12 and 428 DF,  p-value: &lt; 2.2e-16</code></pre>
 <li>Ignoring the group structure can lead to over-confident results or even false positives.</li>
 <li>Analysing each group separately, we do not assume any shared mechanisms and need to fit a model on the samples within a group only. Aggregating and working only on the group-level drastically reduces the sample size <span class="math inline">\(k\)</span>.</li>
 </ul>
-
-<img src="../../assets/bmeh_normal.png" class="slide-logo r-stretch"><div class="footer footer-default">
+</section>
+<p><img src="../../assets/logo_trans.png" class="slide-logo"></p>
+<div class="footer footer-default">
 
 </div>
-</section>
     </div>
   </div>
 

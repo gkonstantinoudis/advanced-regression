@@ -8,17 +8,20 @@ editor: visual
 date-format: medium
 title-slide-attributes:
   data-background-color: "#f3f4f4"
-  data-background-size: 80%
-  data-background-position: 60% 120%
+  data-background-image: "../../assets/logo_trans.png"
+  data-background-size: 50%
+  data-background-position: 90% 120%
 format:
     revealjs:
-      slide-number: true
       theme: [default, ../../assets/style.scss]
+      logo: "../../assets/logo_trans.png"
+      slide-number: true
       incremental: false
       chalkboard:
         buttons: false
 ---
 
+::: {style="font-size: 90%;"}
 ## Non-linear regression
 
 So far we have studied the linear regression models, which are very flexible tool for estimating relationships in a set of data. In particular, we have seen:
@@ -34,7 +37,9 @@ So far we have studied the linear regression models, which are very flexible too
 ::: {.callout-note icon="false"}
 One of the most crucial assumptions of the previous lecture was that the associations between the outcome and the covariates are linear. What if the association was not linear?
 :::
+:::
 
+::: {style="font-size: 90%;"}
 ## A clarification
 
 In the name normal (or Poisson, binomial, etc.) linear model, the word 'linear' refers to the response being modelled as a linear combination of covariates, i.e.
@@ -46,6 +51,7 @@ It does not refer to each covariate-response relationship being linear. Therefor
 $$Y_i \sim N(\beta_1 + \beta_2X_{i} + \beta_3X_{i}^2, \sigma^2)$$
 
 Here, the relationship between Y and x is quadratic, but it is still a linear model.
+:::
 
 ## So how do you tell if the relationship is linear?
 
@@ -57,6 +63,7 @@ Here, the relationship between Y and x is quadratic, but it is still a linear mo
 
 -   Fit as simple a model as possible, do not overcomplicate it unnecessarily. (Occam's razor)
 
+::: {style="font-size: 80%;"}
 ## Example
 
 Associations are not solely linear
@@ -80,6 +87,7 @@ ggplot(data = data.frame(x = x, y = y), aes(x = x, y = y)) +
   geom_smooth(method = "lm", formula = y ~ x, se = FALSE, linewidth = 1) +
   theme(text = element_text(size = 15))
 ```
+:::
 
 ## Basis Expansions
 
@@ -325,6 +333,7 @@ chicagoNMMAPS %>%
 p1 | p2
 ```
 
+::: {style="font-size: 80%;"}
 ## Example
 
 ```{r}
@@ -356,6 +365,7 @@ ggplot(data = data.frame(x = x, y = y), aes(x = x, y = y)) +
   geom_smooth(method = "lm", formula = y ~ x, se = FALSE, linewidth = 2) +
   theme(text = element_text(size = 15))
 ```
+:::
 
 ## Fit a polynomial in R
 
@@ -380,6 +390,7 @@ mod2 <- lm(y ~ x + I(x^2) + I(x^3))
 anova(mod1, mod2)
 ```
 
+::: {style="font-size: 80%;"}
 ## Pros and cons
 
 Pros
@@ -397,6 +408,7 @@ Cons
 -   They use more degrees of freedom than linear, and therefore have less power
 
 -   There is still some sensitivity to influential observations
+:::
 
 ## Other types of basis function
 
@@ -442,6 +454,7 @@ chicagoNMMAPS %>%
 p1 | p2
 ```
 
+::: {style="font-size: 90%;"}
 ## Pros and cons
 
 Pros
@@ -455,6 +468,7 @@ Pros
 Cons
 
 -   functions are periodic; this can be a problem if the data are, for example, growth curves.
+:::
 
 ## Parametric non-linear effects
 
@@ -566,6 +580,7 @@ ggplot() +
   theme(text = element_text(size = 15))
 ```
 
+::: {style="font-size: 80%;"}
 ## Linear splines
 
 Linear threshold model
@@ -585,6 +600,7 @@ Linear spline model
 $Y_i = \beta_0 + \beta_1x + \beta_2(x+1)_+ + \beta_3(x-0.5)_+ + \beta_4 (x-1.5)_+ + \beta_5(x-3)_+ + \epsilon$
 
 $$(x-k)_+=\begin{cases} 0, \quad x<k \\ x-k, \quad x\geq k\\\end{cases}$$
+:::
 
 ## Linear splines in R without a package
 
@@ -605,6 +621,7 @@ ggplot() +
   theme(text = element_text(size = 15))
 ```
 
+::: {style="font-size: 80%;"}
 ## Cubic splines
 
 Similarly we can define higher order polynomial splines, for instance:
@@ -614,7 +631,9 @@ $\begin{align} Y_i = \beta_0 &+ \beta_1 x + \beta_2x^2 + \beta_3x^3 + \\&\beta_4
 which reduces to the following to ensure smooth curvature on the knots (it can be seen after deriving the first and second derivative):
 
 $Y_i = \begin{align}\beta_0 &+ \beta_1 x + \beta_2x^2_+ + \beta_3x^3 + \\&+\beta_6 (x+1)_+^3 + \beta_9 (x-0.5)_+^3 + \dots + \epsilon \\\end{align}$
+:::
 
+::: {style="font-size: 80%;"}
 ## Cubic splines in R
 
 ```{r}
@@ -648,7 +667,9 @@ ggplot() +
   geom_line(aes(x = dat$x, y = fit_nopack$fitted.values), lwd = 1) +
   theme(text = element_text(size = 15))
 ```
+:::
 
+::: {style="font-size: 80%;"}
 ## Splines
 
 A spline of order n is a piecewise polynomial function of degree $n-1$ in a variable $x$.
@@ -668,6 +689,7 @@ A spline of order n is a piecewise polynomial function of degree $n-1$ in a vari
 -   etc.
 
 Why are the borders so wiggly?
+:::
 
 ## Natural cubic splines
 
@@ -679,6 +701,7 @@ Why are the borders so wiggly?
 
 -   This stabilises the fitting and makes a more reasonable assumption.
 
+::: {style="font-size: 90%;"}
 ## Natural cubic splines in R
 
 ```{r}
@@ -697,7 +720,9 @@ ggplot() +
   geom_line(aes(x = dat$x, y = fit_ns$fitted.values), lwd = 1) +
   theme(text = element_text(size = 15))
 ```
+:::
 
+::: {style="font-size: 90%;"}
 ## Well, better fit be achieved with more knots
 
 ```{r}
@@ -714,7 +739,9 @@ ggplot() +
   ylab("") +
   geom_line(aes(x = dat$x, y = fit_ns2$fitted.values), lwd = 1)
 ```
+:::
 
+::: {style="font-size: 90%;"}
 ## ... and more
 
 ```{r}
@@ -731,7 +758,9 @@ ggplot() +
   ylab("") +
   geom_line(aes(x = dat$x, y = fit_ns2$fitted.values), lwd = 1)
 ```
+:::
 
+::: {style="font-size: 90%;"}
 ## ... and more
 
 ```{r}
@@ -748,7 +777,9 @@ ggplot() +
   ylab("") +
   geom_line(aes(x = dat$x, y = fit_ns3$fitted.values), lwd = 1)
 ```
+:::
 
+::: {style="font-size: 90%;"}
 ## ... and more
 
 ```{r}
@@ -767,6 +798,7 @@ ggplot() +
 ```
 
 is this a useful model?
+:::
 
 ## Summary
 

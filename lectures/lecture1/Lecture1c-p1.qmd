@@ -8,13 +8,13 @@ editor: visual
 date-format: medium
 title-slide-attributes:
   data-background-color: "#f3f4f4"
-  data-background-image: "../../assets/bmeh_normal.png"
-  data-background-size: 80%
-  data-background-position: 60% 120%
+  data-background-image: "../../assets/logo_trans.png"
+  data-background-size: 50%
+  data-background-position: 90% 120%
 format:
     revealjs:
       theme: [default, ../../assets/style.scss]
-      logo: "../../assets/bmeh_normal.png"
+      logo: "../../assets/logo_trans.png"
       slide-number: true
       incremental: false
       chalkboard:
@@ -28,9 +28,10 @@ library(tidyverse)
 data_chol <- read_csv("assets/cholesterol.csv")
 ```
 
+::: {style="font-size:90%;"}
 ## Motivation
 
-All methods presented so far assume that the observations are iid – **i**ndependent and **i**dentically **d**istributed
+All methods presented so far assume that the observations are iid -- **i**ndependent and **i**dentically **d**istributed
 
 -   **Independent**: The observations are conditionally independent from each other
 
@@ -40,25 +41,22 @@ $$
 
 -   **Identically**: All observations come from the same distribution. For example, from a Normal distribution with the same mean and variance.
 
-<!-- ::: aside
 **Exchangeability**: Allows for dependence between observations and only states that future observations behave like past ones.
-::: -->
+:::
 
 ## Motivation: How realistic is iid?
 
-- Often our data contains structure depending on how our data was sampled.
-  - Within $K$ boroughs in London we select $n$ participants...
-  - From $K$ schools we sample $n$ students...
-  - From $K$ hospitals we select $n$ patients...
-  <!-- - At $K$ stores we sampled $n$ costumers... -->
-  <!-- - $k \in 1,…,K$ group index -->
+-   Often our data contains structure depending on how our data was sampled.
+    -   Within $K$ boroughs in London we select $n$ participants...
+    -   From $K$ schools we sample $n$ students...
+    -   From $K$ hospitals we select $n$ patients... <!-- - At $K$ stores we sampled $n$ costumers... --> <!-- - $k \in 1,…,K$ group index -->
 
 **Grouping creates dependence**: Observations within a group are likely to be more similar to each other than to observations from other groups.
 
 ## Motivation: GP patient data
 
-- We are interested in **the relationship between cholesterol and age**.
-- We take measurements of patients from $K=12$ GPs.
+-   We are interested in **the relationship between cholesterol and age**.
+-   We take measurements of patients from $K=12$ GPs.
 
 ```{r count-gp-data}
 #| echo: true
@@ -80,8 +78,8 @@ $$
 
 **Consequences**:
 
-- Estimated errors on regression coefficients are too small.
-- Overstate significance of association.
+-   Estimated errors on regression coefficients are too small.
+-   Overstate significance of association.
 
 ## GP data: pooled analysis
 
@@ -109,10 +107,11 @@ data_chol |>
 summary(model_pooled)
 ```
 
+::: {style="font-size:80%;"}
 ## GP data: pooled analysis
 
 ```{r gp-data-colour-doctor}
-#| echo: false
+#| echo: true
 #| eval: true
 #| fig-align: "center"
 data_chol |>
@@ -122,10 +121,13 @@ data_chol |>
   theme_minimal() +
   theme(legend.position = "none")
 ```
+:::
 
+::: {style="font-size:80%;"}
 ## GP data: pooled analysis
+
 ```{r gp-data-facet-doctor}
-#| echo: false
+#| echo: true
 #| eval: true
 #| fig-align: "center"
 data_chol |>
@@ -135,13 +137,20 @@ data_chol |>
   facet_wrap(~doctor_name) +
   theme_minimal()
 ```
+:::
 
 ## Accounting for dependence
 
 When we ignore dependence:
-- standard **errors too small**
-- p−values too small / confidence intervals too narrow
-- we **over-estimate significance**.
+
+-   standard **errors too small**
+
+```{=html}
+<!-- -->
+```
+-   p−values too small / confidence intervals too narrow
+
+-   we **over-estimate significance**.
 
 Intuitively, there is less information in the data than an independent sample.
 
@@ -149,10 +158,10 @@ Intuitively, there is less information in the data than an independent sample.
 
 We can account for **dependence** by:
 
-1. Perform analysis for each group separately.
-1. Calculate summary measures for each group and use standard analysis (group-level analysis).
-1. Fixed effects model to account for group structures.
-1. Use random effects models that explicitly model the similarity of observations in a group.
+1.  Perform analysis for each group separately.
+2.  Calculate summary measures for each group and use standard analysis (group-level analysis).
+3.  Fixed effects model to account for group structures.
+4.  Use random effects models that explicitly model the similarity of observations in a group.
 
 ## Motivation: individual-level and group-level
 
@@ -162,6 +171,8 @@ Observations are **grouped** with grouping information known.
 
 Variables can be measured on the individual and group level.
 
+
+
 ## 1. Separate analysis
 
 Estimate **separate regression coefficients** for each group.
@@ -170,18 +181,20 @@ Assumptions: Independence between groups.
 
 Consequences:
 
-- This is a reasonable approach to exploratory analysis.
-- If the number of individuals in each group is small, we will get imprecise estimates.
-- Multiple testing is an issue.
+-   This is a reasonable approach to exploratory analysis.
+-   If the number of individuals in each group is small, we will get imprecise estimates.
+-   Multiple testing is an issue.
 
+::: {style="font-size:90%;"}
 ## 1. Separate analysis
+
 ```{r gp-data-model-separate}
 #| echo: true
 model_separate <- lm(chol ~ age | doctor, data = data_chol)
 ```
 
 ```{r gp-data-model-separate-plot}
-#| echo: false
+#| echo: true
 #| eval: true
 #| fig-align: "center"
 data_chol |>
@@ -192,6 +205,7 @@ data_chol |>
   facet_wrap(~doctor_name) +
   theme_minimal()
 ```
+:::
 
 ## 2. Group-level analysis
 
@@ -215,9 +229,9 @@ model_grouped <- lm(chol_grouped ~ age_grouped, data = data_grouped)
 
 Consequences:
 
-- One regression line fit: Associations between outcome and predictors are the same for each group.
-- Independence between groups.
-- All groups are treated equal, irrespective of size
+-   One regression line fit: Associations between outcome and predictors are the same for each group.
+-   Independence between groups.
+-   All groups are treated equal, irrespective of size
 
 ## 2. Group-level analysis
 
@@ -242,15 +256,13 @@ summary(model_grouped)
 
 ## 2. Group-level analysis
 
-- This model **lacks power** as the number of data points used is the number of groups ($k < n$)
-- Regression coefficients will be **averaged over all groups** so real within-group effects may be diluted.
-- Regression coefficients will only be significant if there are similar significant association effects across all groups.
+-   This model **lacks power** as the number of data points used is the number of groups ($k < n$)
+-   Regression coefficients will be **averaged over all groups** so real within-group effects may be diluted.
+-   Regression coefficients will only be significant if there are similar significant association effects across all groups.
 
 ## Inverse variance weighted (IVW) meta-analysis
 
-Each random variable is **weighted in inverse proportion to its variance**.
-Assume we have independent observations $y_k$ with variance $\sigma_k$.
-Then the IVW estimate is defined as
+Each random variable is **weighted in inverse proportion to its variance**. Assume we have independent observations $y_k$ with variance $\sigma_k$. Then the IVW estimate is defined as
 
 $$
 \hat{y}_{\text{IVW}}  = \frac{\sum_{k=1}^{K} y_k/\sigma_k}{\sum_{k=1}^{K} 1/\sigma_k}
@@ -260,8 +272,7 @@ $$
 
 **Weighted regression over groups**
 
-Assume $y_k$ is a vector of group summaries, $x_k$ is a $k \times p$ matrix of group summaries.
-Assume $w$ is a diagonal matrix with $w[k,k] = \frac{1}{\sigma_k^2}$, then the **weighted least squares** estimate is defined as
+Assume $y_k$ is a vector of group summaries, $x_k$ is a $k \times p$ matrix of group summaries. Assume $w$ is a diagonal matrix with $w[k,k] = \frac{1}{\sigma_k^2}$, then the **weighted least squares** estimate is defined as
 
 $$
 \hat{\beta}_w = (x_k^t w x_k)^{-1} x^t_k w y_k
@@ -271,8 +282,8 @@ $$
 
 Motivation:
 
-- Keep the idea of modelling within groups, Allow **associations to differ across groups**.
-- But now we model all the data (n observations) together: Maximise the power to detect associations.
+-   Keep the idea of modelling within groups, Allow **associations to differ across groups**.
+-   But now we model all the data (n observations) together: Maximise the power to detect associations.
 
 ## 3. Fixed effects
 
@@ -280,12 +291,12 @@ Motivation:
 
 $$
 y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
-$$
-where $\alpha_k$ is a fixed effect.
+$$ where $\alpha_k$ is a fixed effect.
 
-- $\alpha_k$ captures the effect of unobserved group specific confounders.
-- Residual errors $\epsilon_i$ are assumed independent.
+-   $\alpha_k$ captures the effect of unobserved group specific confounders.
+-   Residual errors $\epsilon_i$ are assumed independent.
 
+::: {style="font-size:95%;"}
 ## 3. Fixed effects
 
 A fixed effects model is fit in the same way as the simple linear model including the group as a covariate.
@@ -294,30 +305,28 @@ Assumptions: Information on αk comes from observations in group k only.
 
 Consequences:
 
-- By including group effects we adjust for group characteristics.
-- But introduces a number of parameters (one for each group).
-- May be a problem if there are few observations in some groups.
+-   By including group effects we adjust for group characteristics.
+-   But introduces a number of parameters (one for each group).
+-   May be a problem if there are few observations in some groups.
+:::
 
 ## 3. Fixed effects with `lm()`
 
 There are two different types of fixed effect:
 
-1. Group-specific intercept $\alpha_k$
-$$
-y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
-$$
+1.  Group-specific intercept $\alpha_k$ $$
+    y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
+    $$
 
-2. Group-specific slope $\beta_k$
-$$
-y_i = \alpha_0 + \color{red}{\beta_k} x_i  + \epsilon_i
-$$
+2.  Group-specific slope $\beta_k$ $$
+    y_i = \alpha_0 + \color{red}{\beta_k} x_i  + \epsilon_i
+    $$
 
 ## Varying intercept with `lm()`
 
-1. Group-specific intercept $\alpha_k$
-$$
-y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
-$$
+1.  Group-specific intercept $\alpha_k$ $$
+    y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
+    $$
 
 ```{r gp-data-model-varying-intercept}
 #| echo: true
@@ -352,10 +361,9 @@ data_chol |>
 
 ## Varying slope with `lm()`
 
-2. Group-specific slope $\beta_k$
-$$
-y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
-$$
+2.  Group-specific slope $\beta_k$ $$
+    y_i = \color{red}{\alpha_k} + \beta x_i  + \epsilon_i
+    $$
 
 ```{r gp-data-model-varying-slope}
 #| echo: true
@@ -394,30 +402,31 @@ Main formula: `y ∼ x`, where `y` is the outcome and `x` the predictor(s)
 
 Predictors can be added as
 
-| `+` | main effect |
-| `:` | interaction only |
-| `*` | main effect and interaction |
+| `+` \| main effect \|
+| `:` \| interaction only \|
+| `*` \| main effect and interaction \|
 
 Use `summary()`, `coef()` and `fitted()` to get values.
 
 ## Fixed effects: Disadvantages
 
-- Fixed effects account for **any** unobserved group-specific confounders, so including both a group-specific intercept and slope is not identifiable.
-  - When the intercept $\alpha_k$ is group-specific, then the slope is assumed to be the same for all groups.
-  - When slope $\beta_k$ is group-specific, then the intercept is assumed to be the same for all groups.
+-   Fixed effects account for **any** unobserved group-specific confounders, so including both a group-specific intercept and slope is not identifiable.
+    -   When the intercept $\alpha_k$ is group-specific, then the slope is assumed to be the same for all groups.
+    -   When slope $\beta_k$ is group-specific, then the intercept is assumed to be the same for all groups.
 
 ## Fixed effects: Disadvantages
 
-- If we add new groups to the dataset we may not consistently estimate $\alpha_k$:
-  - Consider $\alpha_1$, the intercept for the first group.
-  - When we add new groups, the slope may vary.
-  - Changing slope will change the intercept, also  $\alpha_1$.
+-   If we add new groups to the dataset we may not consistently estimate $\alpha_k$:
+    -   Consider $\alpha_1$, the intercept for the first group.
+    -   When we add new groups, the slope may vary.
+    -   Changing slope will change the intercept, also $\alpha_1$.
+-   Information on $\alpha_k$ or $\beta_k$ comes only from observations in group $k$ and we need to estimate one parameter per group.
 
-- Information on $\alpha_k$  or $\beta_k$ comes only from observations in group $k$ and we need to estimate one parameter per group.
-
+::: {style="font-size:90%;"}
 ## Take away: Structured Data
 
-- Most statistical methods are developed for independent and identically distributed (iid) data, but often in practice we observe structured data, where **there is an intrinsic group structure**.
-- Grouping creates dependence: Observations within a group are likely to be more similar to each other than to observations from other groups.
-- Ignoring the group structure can lead to over-confident results or even false positives.
-- Analysing each group separately, we do not assume any shared mechanisms and need to fit a model on the samples within a group only. Aggregating and working only on the group-level drastically reduces the sample size $k$.
+-   Most statistical methods are developed for independent and identically distributed (iid) data, but often in practice we observe structured data, where **there is an intrinsic group structure**.
+-   Grouping creates dependence: Observations within a group are likely to be more similar to each other than to observations from other groups.
+-   Ignoring the group structure can lead to over-confident results or even false positives.
+-   Analysing each group separately, we do not assume any shared mechanisms and need to fit a model on the samples within a group only. Aggregating and working only on the group-level drastically reduces the sample size $k$.
+:::

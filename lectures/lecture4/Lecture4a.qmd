@@ -31,6 +31,10 @@ library(yardstick)
 library(MASS)
 library(mlbench)
 library(kernlab)
+library(sda)
+library(pROC)
+library(PRROC)
+library(caret)
 library(e1071)
 ```
 
@@ -39,31 +43,31 @@ library(e1071)
 
 **Classification analysis:**
 
-- Basic concepts
-- Evaluation
+-   Basic concepts
+-   Evaluation
 
 **Discriminant analysis:**
 
-- Bayes' theorem for classification
-- Model specifications
-- Linear and quadratic discriminant analysis in `R`
-- Shrinkage estimates
-- Shrinkage discriminant analysis in `R`
+-   Bayes' theorem for classification
+-   Model specifications
+-   Linear and quadratic discriminant analysis in `R`
+-   Shrinkage estimates
+-   Shrinkage discriminant analysis in `R`
 
 **Support vector machines:**
 
-- Motivation
-- Hyperplanes
-- Maximal margin classifier
-- Support vector classifier
-- Support vector machines
-- Support vector machines in `R`
+-   Motivation
+-   Hyperplanes
+-   Maximal margin classifier
+-   Support vector classifier
+-   Support vector machines
+-   Support vector machines in `R`
 :::
 
 ::: {style="font-size: 70%;"}
 ## Classification of binary outcomes
 
-- Assume we have a binary outcome $y_i$ for subject $i$.
+-   Assume we have a binary outcome $y_i$ for subject $i$.
 
 $$
 y_i = \begin{cases}
@@ -72,9 +76,13 @@ y_i = \begin{cases}
 \end{cases}
 $$
 
-- Additionally, we have for each subject a predictor matrix $x_i$ including $p$ predictors or features.
+-   Additionally, we have for each subject a predictor matrix $x_i$ including $p$ predictors or features.
 
-> $K=2$ Classification of two classes. Aim is to predict the outcome of a new observation $i$ based on $x_i$ and to assign observation $i$ to either class $k=0$ or $k=1$. Decisions are based on the probability to belong to class $k$ conditional on $x_i$.
+> $K=2$ Classification of two classes.
+>
+> Aim is to predict the outcome of a new observation $i$ based on $x_i$ and to assign observation $i$ to either class $k=0$ or $k=1$.
+>
+> Decisions are based on the probability to belong to class $k$ conditional on $x_i$.
 
 $$
 \mathbb{P}(y_i=k \mid x_i)
@@ -110,43 +118,38 @@ The sum of the columns are the number of negatives and the number of positives i
 ::: {style="font-size: 70%;"}
 ## Characteristics derived from the confusion matrix
 
-- **Sensitivity**, recall, or true positive rate (TPR)
-$$
-TPR = \frac{TP}{P} = \frac{TP}{TP+FN}
-$$
+-   **Sensitivity**, recall, or true positive rate (TPR) $$
+    TPR = \frac{TP}{P} = \frac{TP}{TP+FN}
+    $$
 
-- **Specificity**, or true negative rate (TNR):
-$$
-TNR = \frac{TN}{N} = \frac{TN}{TN+FP} = 1-FPR
-$$
+-   **Specificity**, or true negative rate (TNR): $$
+    TNR = \frac{TN}{N} = \frac{TN}{TN+FP} = 1-FPR
+    $$
 
-- False positive rate (FPR):
-$$
-FPR = \frac{FP}{N} = \frac{FP}{TN+FP} = 1-TNR
-$$
+-   False positive rate (FPR): $$
+    FPR = \frac{FP}{N} = \frac{FP}{TN+FP} = 1-TNR
+    $$
 
-- **Precision**, or positive predictive value (PPV):
-$$
-PPV = \frac{TP}{\text{Declared } P} = \frac{TP}{TP+FP} = 1-FDR
-$$
-
+-   **Precision**, or positive predictive value (PPV): $$
+    PPV = \frac{TP}{\text{Declared } P} = \frac{TP}{TP+FP} = 1-FDR
+    $$
 :::
 
 ::: {style="font-size: 90%;"}
 ## Interpretation
 
-- **Sensitivity**, or true positive rate (TPR): The probability that the test result picks up the disease.
-- **Specificity**, or true negative rate (TNR): The probability that the test result identifies the ones that do not have the disease.
-- **False positive rate** (FPR): the expectancy of the false positive ratio, i.e. how likely is to have a negative test given that the patient has the disease.
-- **Precision**, or positive predictive value (PPV): how likely it is for someone to truly have the disease, in case of a positive test result.
+-   **Sensitivity**, or true positive rate (TPR): The probability that the test result picks up the disease.
+-   **Specificity**, or true negative rate (TNR): The probability that the test result identifies the ones that do not have the disease.
+-   **False positive rate** (FPR): the expectancy of the false positive ratio, i.e. how likely is to have a negative test given that the patient has the disease.
+-   **Precision**, or positive predictive value (PPV): how likely it is for someone to truly have the disease, in case of a positive test result.
 :::
 
 ::: {style="font-size: 70%;"}
 ## Receiver operating characteristic (ROC)
 
-- Plot sensitivity (TPR) on the $y$-axis against 1-specificity (FPR) on the $x$-axis.
-- Area under the ROC curve as summary-statistic for prediction performance.
-- [Tweetorial](https://twitter.com/cecilejanssens/status/1104134423673479169) on AUC.
+-   Plot sensitivity (TPR) on the $y$-axis against 1-specificity (FPR) on the $x$-axis.
+-   Area under the ROC curve as summary-statistic for prediction performance.
+-   [Tweetorial](https://twitter.com/cecilejanssens/status/1104134423673479169) on AUC.
 
 ```{r roc}
 #| echo: false
@@ -164,13 +167,12 @@ roc_curve(two_class_example, truth, Class1) %>%
 
 roc_auc(two_class_example, truth, Class1)
 ```
-
 :::
 
 ::: {style="font-size: 70%;"}
 ## Precision-recall curve
 
-- Plot precision or positive predictive value (PPV) on the $y$-axis against the recall or true positive rate (TPR) on the $x$-axis.
+-   Plot precision or positive predictive value (PPV) on the $y$-axis against the recall or true positive rate (TPR) on the $x$-axis.
 
 ```{r pr}
 #| echo: false
@@ -185,21 +187,19 @@ pr_curve(two_class_example, truth, Class1) %>%
 
 pr_auc(two_class_example, truth, Class1)
 ```
-
 :::
-
 
 ## ROC and precision-recall curve in `R`
 
-1. `pROC::roc(truth, predicted)`
-2. `yardstick::roc_auc(truth, predicted)`
+1.  `pROC::roc(truth, predicted)`
+2.  `yardstick::roc_auc(truth, predicted)`
 
 ::: {style="font-size: 70%;"}
 ## Motivation for discriminant analysis
 
-1. DA partitions $X = R^d$ into regions with the same class predictions via separating hyperplanes.
-2. Fit a Gaussian distribution for each class
-3. Find the line where the probability of being in both classes is the same.
+1.  DA partitions $X = R^d$ into regions with the same class predictions via separating hyperplanes.
+2.  Fit a Gaussian distribution for each class
+3.  Find the line where the probability of being in both classes is the same.
 
 ```{r discriminant-analysis}
 #| echo: false
@@ -245,19 +245,70 @@ ggplot() +
 ::: {style="font-size: 80%;"}
 ## Motivation for discriminant analysis
 
+```{r discriminant-analysis-mot1}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+
+ggplot(data = data.frame(x = c(-3, 5)), aes(x)) +
+  stat_function(fun = dnorm, n = 101,
+                args = list(mean = 0, sd = 1), col = "red") +
+  stat_function(fun = dnorm, n = 101,
+                args = list(mean = 2, sd = 0.5), col = "blue") +
+  ylab("") + theme_bw()
+
+```
+
+Example of classification rule: Assign the new value $x$ to the class with the greatest likelihood
+
+$$
+\hat{y} = \text{argmax}L(\mu_i, \sigma_i|x)
+$$
+:::
+
+::: {style="font-size: 80%;"}
+## Motivation for discriminant analysis
+
+-   DA partitions $X=R^d$ into regions with the same class predictions via separating hyperplanes.
+
+-   Fit a Gaussian distribution for each class
+
+-   Find the line where the probability if being in both classes is the same
+
+```{r discriminant-analysis-mot2}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+
+
+ggplot(data = data.frame(x = c(1, 1.2, 1.3, 1.4, 2, 2, 2.1, 2.4, 2.5, 2.7),
+                         y = c(0.3, 0.5, 0.2, 0.1, 0.3, 0.6, 0.7, 1, 0.7, 0.6),
+                         class = rep(x = c(1, 2), each = 5) %>% as.factor())) +
+  geom_point(aes(x=x, y=y, col = class), size = 3) +
+  geom_abline(slope = c(-0.15, -0.1, -0.8, -0.002, -0.2),
+              intercept = c(0.7, 0.72, 2, 0.55, 0.8),
+              lwd = 0.9, col = "darkgreen") +
+  xlim(c(0.9, 2.8)) +
+  theme_bw() +
+  ylab("") + xlab("") +
+  theme(legend.position = "none")
+```
+:::
+
+::: {style="font-size: 80%;"}
+## Motivation for discriminant analysis
+
 Derive the posterior probability for subject $i$ to belong to class $k$ based on
 
-- **Likelihood** of the data for $p=1$ predictor (univariate Gaussian distribution) conditional on class $k$
-$$
-f (x\mid k) = \frac{1}{\sqrt{2\pi} \sigma_k} \exp\left\{ -\frac{1}{2} (\frac{x- \mu_k}{\sigma_k})^2 \right\}
-$$
-where
+-   **Likelihood** of the data for $p=1$ predictor (univariate Gaussian distribution) conditional on class $k$ $$
+    f (x\mid k) = \frac{1}{\sqrt{2\pi} \sigma_k} \exp\left\{ -\frac{1}{2} (\frac{x- \mu_k}{\sigma_k})^2 \right\}
+    $$ where
 
-  - $\mu_k$ is the expectation of $x$ in group $k$ and
-  - $\sigma_k^2$ the variance of $x$ in group $k$.
-  - Note that each class $k=0$ or $k=1$  has its specific mean $\mu_k$ and variance $\sigma_k^2$.
+    -   $\mu_k$ is the expectation of $x$ in group $k$ and
+    -   $\sigma_k^2$ the variance of $x$ in group $k$.
+    -   Note that each class $k=0$ or $k=1$ has its specific mean $\mu_k$ and variance $\sigma_k^2$.
 
-- **Prior probability** of belonging to class $k$ is $\pi_k$
+-   **Prior probability** of belonging to class $k$ is $\pi_k$
 :::
 
 ::: {style="font-size: 80%;"}
@@ -265,17 +316,15 @@ where
 
 Derive the posterior probability for subject $i$ to belong to class $k$ based on:
 
-- **Likelihood** of the data for $p$ predictors (multivariate Gaussian distribution) conditional on class $k$
-$$
-f (x\mid k) = \frac{1}{ (2\pi)^{p/2} \mid \Sigma_k \mid^{1/2}} \exp \left\{ -\frac{1}{2} (x- \mu_k)^t \Sigma^{-1}_k (x - \mu_k) \right\}
-$$
-where
+-   **Likelihood** of the data for $p$ predictors (multivariate Gaussian distribution) conditional on class $k$ $$
+    f (x\mid k) = \frac{1}{ (2\pi)^{p/2} \mid \Sigma_k \mid^{1/2}} \exp \left\{ -\frac{1}{2} (x- \mu_k)^t \Sigma^{-1}_k (x - \mu_k) \right\}
+    $$ where
 
-  - $\mu_k$ is the vector of expectations (length $p$) of $x$ in group $k$ and
-  - $\Sigma_k$ the covariance matrix (dimension $p \times p$) of $x$ in group $k$.
-  - Note that each class $k=0$ or $k=1$ has its specific mean $\mu_k$ and covariance $\Sigma_k$.
+    -   $\mu_k$ is the vector of expectations (length $p$) of $x$ in group $k$ and
+    -   $\Sigma_k$ the covariance matrix (dimension $p \times p$) of $x$ in group $k$.
+    -   Note that each class $k=0$ or $k=1$ has its specific mean $\mu_k$ and covariance $\Sigma_k$.
 
-- **Prior probability** of belonging to class $k$ is $\pi_k$
+-   **Prior probability** of belonging to class $k$ is $\pi_k$
 :::
 
 ::: {style="font-size: 80%;"}
@@ -308,36 +357,31 @@ Different multivariate normals with the same mean but increasing cross-correlati
 ::: {style="font-size: 80%;"}
 ## Bayes' theorem for classification
 
-Probability of being in a class or more formally: posterior probability that $y=k$, where $k=1$ or $k=0$, given the data $x$
-$$
+Probability of being in a class or more formally: posterior probability that $y=k$, where $k=1$ or $k=0$, given the data $x$ $$
 \mathbb{P}(y=k \mid x) = \frac{\pi_k f(x\mid k)}{f(x)}
-$$
-where
+$$ where
 
-- $\pi_k$ prior probability for class $k$
-- $f(x\mid k)$ likelihood of $x$ conditional on class $k$
-- $f(x)$ joint distribution defined as mixture
+-   $\pi_k$ prior probability for class $k$
+-   $f(x\mid k)$ likelihood of $x$ conditional on class $k$
+-   $f(x)$ joint distribution defined as mixture
 
 $$
 f(x) = \pi_0 f_0(x) + \pi_1 f_1(x)
 $$
-
 :::
 
 ::: {style="font-size: 80%;"}
 ## Prediction rule
 
-The prediction rule is given by the difference between the two discriminant scores $d_0$ and $d_1$
-$$
+The prediction rule is given by the difference between the two discriminant scores $d_0$ and $d_1$ $$
 \begin{eqnarray}
 \delta(x_i) & = &  \log(\mathbb{P}(y=0 \mid x_i)) - \log(\mathbb{P}(y=1 \mid x_i))  \\
-			 & = &  d_0(x) - d_1(x)
+             & = &  d_0(x) - d_1(x)
 \end{eqnarray}
-$$
-where observation $i$ is classified as
+$$ where observation $i$ is classified as
 
-- $y_i = 1$ if $\delta(x_i)\leq 0$
-- $y_i = 0$ if $\delta(x_i) >  0$
+-   $y_i = 1$ if $\delta(x_i)\leq 0$
+-   $y_i = 0$ if $\delta(x_i) > 0$
 :::
 
 ::: {style="font-size: 75%;"}
@@ -345,21 +389,25 @@ where observation $i$ is classified as
 
 There are three types of discriminant analysis depending on the specification of the covariance $\Sigma_k$:
 
-1. **Diagonal discriminant analysis (dda)**: $\Sigma_k = diag(\sigma^2)$, assuming no covariance between predictors.
-  - Parameters to estimate: $p$ diagonal elements
-2. **Linear discriminant analysis (lda)**: $\Sigma_k = \Sigma$, assuming covariance between predictors, but it is the same for both groups $k=0$ and $k=1$.
-  - Parameters to estimate: full covariance matrix ($p(p+1)/2$ parameters)
-3. **Quadratic discriminant analysis (qda**): $\Sigma_k = \Sigma_k$, assuming covariance between predictors, which may differ between group $k=0$ and $k=1$.
-  - Parameters to estimate: twice full covariance matrix ($2 \times p(p+1)/2$ parameters)
+1.  **Diagonal discriminant analysis (dda)**: $\Sigma_k = diag(\sigma^2)$, assuming no covariance between predictors.
 
+-   Parameters to estimate: $p$ diagonal elements
+
+2.  **Linear discriminant analysis (lda)**: $\Sigma_k = \Sigma$, assuming covariance between predictors, but it is the same for both groups $k=0$ and $k=1$.
+
+-   Parameters to estimate: full covariance matrix ($p(p+1)/2$ parameters)
+
+3.  **Quadratic discriminant analysis (qda**): $\Sigma_k = \Sigma_k$, assuming covariance between predictors, which may differ between group $k=0$ and $k=1$.
+
+-   Parameters to estimate: twice full covariance matrix ($2 \times p(p+1)/2$ parameters)
 :::
 
 ::: {style="font-size: 75%;"}
 ## Diagonal discriminant analysis
 
-1. **dda**: $\Sigma_k = diag(\sigma^2)$, assuming **no covariance** between predictors.
-2. dda is also known as **naive Bayes** classifier.
-3. The discriminant function $d_k$ for dda simplifies (after dropping terms which are identical for $d_0$ and $d_1$) to:
+1.  **dda**: $\Sigma_k = diag(\sigma^2)$, assuming **no covariance** between predictors.
+2.  dda is also known as **naive Bayes** classifier.
+3.  The discriminant function $d_k$ for dda simplifies (after dropping terms which are identical for $d_0$ and $d_1$) to:
 
 $$
 d_k(x) = \mu_k^t diag(\sigma^2)^{-1} x - \frac{1}{2} \mu_k^t diag(\sigma^2)^{-1} \mu_k + log(\pi_k)
@@ -367,16 +415,15 @@ $$
 
 Advantages of dda:
 
-1. Easy to fit.
-2. Strong assumptions (no correlation between predictors and the same covariance matrix in both groups).
-
+1.  Easy to fit.
+2.  Strong assumptions (no correlation between predictors and the same covariance matrix in both groups).
 :::
 
 ::: {style="font-size: 75%;"}
 ## Linear discriminant analysis
 
-1. **lda**: $\Sigma_k = \Sigma$, allowing for covariance between predictors.
-2. The discriminant function $d_k$ for lda simplifies (after dropping terms which are identical for $d_0$ and $d_1$) to:
+1.  **lda**: $\Sigma_k = \Sigma$, allowing for covariance between predictors.
+2.  The discriminant function $d_k$ for lda simplifies (after dropping terms which are identical for $d_0$ and $d_1$) to:
 
 $$
 d_k(x) = \mu_k^t \Sigma^{-1} x - \frac{1}{2} \mu_k^t \Sigma^{-1} \mu_k + log(\pi_k)
@@ -384,10 +431,9 @@ $$
 
 Advantages of lda:
 
-1. Allowing for correlation between predictors.
-2. Issues for big data ($n<p$) to invert $\Sigma$.
-3. Assuming the same covariance matrix $\Sigma$ for group $k=0$ and $k=1$.
-
+1.  Allowing for correlation between predictors.
+2.  Issues for big data ($n<p$) to invert $\Sigma$.
+3.  Assuming the same covariance matrix $\Sigma$ for group $k=0$ and $k=1$.
 :::
 
 ## LDA example
@@ -429,8 +475,8 @@ p_iris +
 ::: {style="font-size: 75%;"}
 ## Quadratic discriminant analysis
 
-1. **qda**: $\Sigma_k$, allowing for different covariances between groups.
-2. The discriminant function $d_k$ for qda simplifies (after dropping terms which are identical for $d_0$ and $d_1$) to:
+1.  **qda**: $\Sigma_k$, allowing for different covariances between groups.
+2.  The discriminant function $d_k$ for qda simplifies (after dropping terms which are identical for $d_0$ and $d_1$) to:
 
 $$
 d_k(x) = \mu_k^t \Sigma^{-1}_k x - \frac{1}{2} \mu_k^t \Sigma^{-1}_k \mu_k + log(\pi_k)
@@ -438,9 +484,9 @@ $$
 
 Advantages of qda:
 
-1. Allowing for correlation between predictors.
-2. Issues for big data ($n<p$) to invert $\Sigma$.
-3. qda allows for the most flexibility at the cost of many additional parameters.
+1.  Allowing for correlation between predictors.
+2.  Issues for big data ($n<p$) to invert $\Sigma$.
+3.  qda allows for the most flexibility at the cost of many additional parameters.
 :::
 
 ## QDA example
@@ -481,8 +527,12 @@ Equivalently use `qda(Species ~ ., data = iris)`
 
 ```{r iris-mass-lda-predict}
 #| echo: true
-#| eval: false
-lda_pred <- predict(lda.out, newdata)
+#| eval: true
+lda_pred <- predict(mod,
+                    newdata = data.frame(Sepal.Length = 1,
+                                         Sepal.Width = 2,
+                                         Petal.Length = 3,
+                                         Petal.Width = 2))
 lda_pred$class # predicted class
 lda_pred$posterior # posterior probabilities for group
 lda_pred$x # discriminant score
@@ -491,40 +541,171 @@ lda_pred$x # discriminant score
 ::: {style="font-size: 80%;"}
 ## Shrinkage estimate
 
-- Standard implementations of discriminant analysis use the sample covariance to estimate $\Sigma$.
-- The computation of the discriminant function for lda and qda requires the inversion of $\Sigma$, a $p \times p$ matrix.
-- In high-dimensional settings where $n<p$, $\Sigma$ cannot be inverted.
-- Shrinkage estimates for $\Sigma$ ensure lda and qda can be computed for high-dimensional data.
-- Implementation `sda` package in `R`.
-
-NOT CURRENTLY WORKING
-
+-   Standard implementations of discriminant analysis use the sample covariance to estimate $\Sigma$.
+-   The computation of the discriminant function for lda and qda requires the inversion of $\Sigma$, a $p \times p$ matrix.
+-   In high-dimensional settings where $n<p$, $\Sigma$ cannot be inverted.
+-   Shrinkage estimates for $\Sigma$ ensure lda and qda can be computed for high-dimensional data.
+-   Implementation `sda` package in `R`.
 :::
 
-<!-- ::: {style="font-size: 80%;"}
+::: {style="font-size: 80%;"}
 ## Application: Imaging data to predict breast cancer diagnosis
 
-- Derived from digitized images to define characteristics of the cell nuclei present in the image.
-- Ten real-valued features summarised in mean, se and worst (mean of the three largest values).
+-   Outcome: Diagnosis (M=malignant, B=benign)
 
-data(BreastCancer)
-summary(BreastCancer$Class)
+-   $n-569$ Breast cancer patients
 
-X <- as.matrix(BreastCancer[2:10] |> mutate(across(everything(), as.numeric)))
-y <- BreastCancer$Class
+-   $p=30$ Predictors
 
-dda.out <- sda(X, y, diagonal=TRUE)
-dda.pred <- predict(dda.out, X) -->
+    -   Derived from digitized images to define characteristics of the cell nuclei present in the image
+
+    -   Ten real-valued features summarised in mean, se and worst (mean of the three largest values)
+
+-   [Dataset](http://archive.ics.uci.edu/ml/datasets/Breast+%20Cancer+Wisconsin+%28Diagnostic%29) from the UCI Machine Learning Repository
+
+```{r sda-1}
+#| echo: false
+#| eval: true
+
+breast.cancer <- read.table("data/wdbc.data", sep = ",")
+y <- breast.cancer$V2
+x <- breast.cancer
+x$V2 <- NULL
+table(y)
+```
+:::
+
+::: {style="font-size: 60%;"}
+## `sda` package in `R`
+
+-   dda: `sda(x, y, diagonal=TRUE)`
+
+```{r sda-2}
+#| echo: true
+#| eval: true
+
+dda.out <- sda(x %>% as.matrix(), y, diagonal = TRUE)
+dda.pred <- predict(dda.out, x %>% as.matrix(), verbose = FALSE)
+
+```
+
+-   `confusionMatrix` from the `crossval` package
+
+```{r sda-3}
+#| echo: true
+#| eval: true
+
+cM = crossval::confusionMatrix(y, dda.pred$class, negative = "B")
+cM
+TPR = cM[2]/(cM[2] + cM[4])
+TPR
+TNR = cM[1]/(cM[1] + cM[3])
+TNR
+```
+:::
+
+::: {style="font-size: 60%;"}
+## `sda` package in `R`
+
+-   lda: `sda(x, y, diagonal=FALSE)`
+
+```{r sda-4}
+#| echo: true
+#| eval: true
+
+lda.out <- sda(x %>% as.matrix(), y, diagonal = FALSE)
+lda.pred <- predict(lda.out, x %>% as.matrix(), verbose = FALSE)
+
+```
+
+-   `confusionMatrix` from the `crossval` package
+
+```{r sda-5}
+#| echo: true
+#| eval: true
+
+cM = crossval::confusionMatrix(y, lda.pred$class, negative = "B")
+cM
+TPR = cM[2]/(cM[2] + cM[4])
+TPR
+TNR = cM[1]/(cM[1] + cM[3])
+TNR
+```
+:::
+
+::: {style="font-size: 70%;"}
+## ROC curve
+
+1.  Define foreground (`fg`) and background (`bg`):
+
+```{r sda-6}
+#| echo: true
+#| eval: true
+
+fg = dda.pred$posterior[y == 'M', 2]
+bg = dda.pred$posterior[y == 'B', 2]
+roc.dda = roc.curve(fg, bg, curve=T)
+
+fg = lda.pred$posterior[y == 'M', 2]
+bg = lda.pred$posterior[y == 'B', 2]
+roc.lda = roc.curve(fg, bg, curve=T)
+```
+
+2.  Compute the ROC curve:
+
+```{r sda-7}
+#| echo: true
+#| eval: true
+#| fig-align: "center"
+
+par(mfrow = c(1, 2), mar = c(4, 4, 3, 0))
+plot(roc.dda, color = FALSE, main = "Diagonal discriminant analysis")
+plot(roc.dda, color = FALSE, main = "Linear discriminant analysis")
+
+```
+:::
+
+::: {style="font-size: 70%;"}
+## Precision-recall curve
+
+1.  Define foreground (`fg`) and background (`bg`):
+
+```{r sda-8}
+#| echo: true
+#| eval: true
+
+fg = dda.pred$posterior[y == 'M', 2]
+bg = dda.pred$posterior[y == 'B', 2]
+pr.dda = pr.curve(fg, bg, curve=T)
+
+fg = lda.pred$posterior[y == 'M', 2]
+bg = lda.pred$posterior[y == 'B', 2]
+pr.lda = pr.curve(fg, bg, curve=T)
+```
+
+2.  Compute the ROC curve:
+
+```{r sda-9}
+#| echo: true
+#| eval: true
+#| fig-align: "center"
+
+par(mfrow = c(1, 2), mar = c(4, 4, 3, 0))
+plot(pr.dda, color = FALSE, main = "Diagonal discriminant analysis")
+plot(pr.lda, color = FALSE, main = "Linear discriminant analysis")
+
+```
+:::
 
 ::: {style="font-size: 80%;"}
 ## An introduction to support vector machines
 
 Evolution of support vector machines:
 
-1. **Hyperplanes** to introduce simple decision boundaries.
-2. **Maximal margin classifier** as the *best* hyperplane.
-3. **Support vector classifier** allowing for soft margins.
-4. **Support vector machine** using kernels for non-linear decision boundaries.
+1.  **Hyperplanes** to introduce simple decision boundaries.
+2.  **Maximal margin classifier** as the *best* hyperplane.
+3.  **Support vector classifier** allowing for soft margins.
+4.  **Support vector machine** using kernels for non-linear decision boundaries.
 :::
 
 ::: {style="font-size: 80%;"}
@@ -532,16 +713,14 @@ Evolution of support vector machines:
 
 In a $p$-dimensional space, a hyperplane is a flat affine subspace of dimension $p − 1$:
 
-- In two dimensions, a hyperplane is a line.
-- In three dimensions, a hyperplane is a plane.
+-   In two dimensions, a hyperplane is a line.
+-   In three dimensions, a hyperplane is a plane.
 
 For example in two dimensions, a hyperplane is defined by
 
 $$
 \beta_0 + \beta_1 x_1 + \beta_2 x_2= 0
-$$
-A hyperplane separates observations $x=(x_1, x_2)$ into two groups
-$$
+$$ A hyperplane separates observations $x=(x_1, x_2)$ into two groups $$
 \beta_0 + \beta_1 x_1 + \beta_2 x_2 \begin{cases} > 0 \\
 < 0 \end{cases}
 $$
@@ -610,8 +789,8 @@ p_base +
 ::: {style="font-size: 80%;"}
 ## Maximal Margin classifier
 
-- Maximal margin classifier provide unique analytical solutions.
-- This is the optimal separating hyperplane that has the highest minimum distance (margin) to the training data.
+-   Maximal margin classifier provide unique analytical solutions.
+-   This is the optimal separating hyperplane that has the highest minimum distance (margin) to the training data.
 
 ```{r mmc-1}
 #| echo: false
@@ -669,7 +848,7 @@ p_mmc <- p_base +
 p_mmc
 ```
 
-- Note: The maximal margin classifier only depends on the three observations closest to the decision boundary, not to the other observations.
+-   Note: The maximal margin classifier only depends on the three observations closest to the decision boundary, not to the other observations.
 :::
 
 ::: {style="font-size: 80%;"}
@@ -677,9 +856,9 @@ p_mmc
 
 We need to define:
 
-1. Separating hyperplane $\beta_0 + \beta_1X1 + \beta_2X_2$
-2. Margin (distance to the closest data points from hyperplane)
-3. Support vectors (points with distance equal to the margin from hyperplane)
+1.  Separating hyperplane $\beta_0 + \beta_1X1 + \beta_2X_2$
+2.  Margin (distance to the closest data points from hyperplane)
+3.  Support vectors (points with distance equal to the margin from hyperplane)
 
 ```{r mmc-2}
 #| echo: false
@@ -691,44 +870,44 @@ p_mmc
 
 ::: {style="font-size: 80%;"}
 ## Optimisation: Maximal margin classifier
+
 $$
 \max_{\beta_0, \beta_1, ..., \beta_p}  M \quad \text{subject to} \sum_{j=1}^p \beta_j^2 =1 \text{ forces unique solution}\\
 y_i (\beta_0 +  \beta_1 x_{i1} +  ... + \beta_p  x_{ip} ) \geq M \quad  \forall i \in 1,...,n
 $$
 
-- $\beta_0, \beta_1, ..., \beta_p$ parameters to be fitted
-- $i \in 1,...,n$ observations
-- $M$ is the margin, distance of observation to decision boundary
-- Outcome:
-$$
-y_i = \begin{cases} 1 & \text{ if $i$ in group 1} \\
--1 & \text{ if $i$ in group 0} \end{cases}
-$$
+-   $\beta_0, \beta_1, ..., \beta_p$ parameters to be fitted
+-   $i \in 1,...,n$ observations
+-   $M$ is the margin, distance of observation to decision boundary
+-   Outcome: $$
+    y_i = \begin{cases} 1 & \text{ if $i$ in group 1} \\
+    -1 & \text{ if $i$ in group 0} \end{cases}
+    $$
 :::
 
 ## Maximal margin classifier
 
-- Good for separating non-Gaussian data
-- Is not possible if there is no linear separation
+-   Good for separating non-Gaussian data
+-   Is not possible if there is no linear separation
 
 ::: {style="font-size: 80%;"}
 ## Support vector classifier
 
-- **Support vectors**: Observations which support the maximal margin hyperplane.
-- In most application examples, there is no separating hyperplane that can separate two groups.
+-   **Support vectors**: Observations which support the maximal margin hyperplane.
+-   In most application examples, there is no separating hyperplane that can separate two groups.
 
 Aim: Support vector or soft margin classifier:
 
-- Develop a hyperplane that *almost* separates the classes.
-- Better classification of majority of observations.
-- Greater robustness to individual variation.
-- Avoid overfitting to the training data.
+-   Develop a hyperplane that *almost* separates the classes.
+-   Better classification of majority of observations.
+-   Greater robustness to individual variation.
+-   Avoid overfitting to the training data.
 :::
 
 ## Distinction: margin and hyperplane
 
-- **Hyperplane**: Decision boundary (solid line)
-- **Margin**: Optimised in maximal margin classifier (dashed line)
+-   **Hyperplane**: Decision boundary (solid line)
+-   **Margin**: Optimised in maximal margin classifier (dashed line)
 
 ```{r mmc-3}
 #| echo: false
@@ -736,6 +915,7 @@ Aim: Support vector or soft margin classifier:
 #| fig-align: "center"
 p_mmc
 ```
+
 :::
 
 ::: {style="font-size: 80%;"}
@@ -747,8 +927,8 @@ y_i (\beta_0 +  \beta_1 x_{i1} +  ... + \beta_p  x_{ip} ) \geq M (1-\epsilon_i) 
 \text{ where } \epsilon_i \geq 0  \text{ and  } \sum_{i=1}^n \epsilon_i \leq C
 $$
 
-- **Slack variables** allow for a few observations to be on the wrong side of the margin or the hyperplane (missclassification)
-- $C$: Budget for the amount that the margin can be violated.
+-   **Slack variables** allow for a few observations to be on the wrong side of the margin or the hyperplane (missclassification)
+-   $C$: Budget for the amount that the margin can be violated.
 
 **Difference from maximal marginal classifier**: Regularisation in form of a tuning parameter $C$ and slack variables introduces bias but provides better generalisation.
 :::
@@ -814,19 +994,23 @@ wrap_plots(p_list)
 
 ::: {style="font-size: 80%;"}
 ## Support vector machines
-- Support vector classifier assumes linear decision boundaries.
-- How can we allow for more flexibility and non-linear decision boundaries?
 
-  1. Include quadratic, cubic, or higher-order polynomial functions of the predictors.
-    - Add the squared $x_1^2, ... , x_p^2$ or cubic predictors $x_1^3, ... , x_p^3$.
-  2. Use kernel functions
-    - The optimization algorithm of the support vector classifier is based on the dot product between two observations.
-    $$
-    \langle x_i,x_{i'} \rangle  = \sum_{j=1}^{p} x_{ij} x_{i'j}
-    $$
+-   Support vector classifier assumes linear decision boundaries.
+
+-   How can we allow for more flexibility and non-linear decision boundaries?
+
+    1.  Include quadratic, cubic, or higher-order polynomial functions of the predictors.
+
+    -   Add the squared $x_1^2, ... , x_p^2$ or cubic predictors $x_1^3, ... , x_p^3$.
+
+    2.  Use kernel functions
+
+    -   The optimization algorithm of the support vector classifier is based on the dot product between two observations. $$
+          \langle x_i,x_{i'} \rangle  = \sum_{j=1}^{p} x_{ij} x_{i'j}
+          $$
 :::
 
-::: {style="font-size: 70%;"}
+::: {style="font-size: 60%;"}
 ## Kernel functions
 
 The dot product is also known as **linear** kernel
@@ -835,24 +1019,102 @@ $$
 K(x_i,x_{i'}) = \sum_{j=1}^{p} x_{ij} x_{i'j}.
 $$
 
-- **Polynomial** kernel:
-$$
-K(x_i,x_{i'}) = (1 + \sum_{j=1}^{p} x_{ij} x_{i'j})^d
-$$
-- **Radial basis**:
-$$
-K(x_i,x_{i'}) = exp( -\gamma \sum_{j=1}^{p} (x_{ij}- x_{i'j})^2)
-$$
+-   **Polynomial** kernel: $$
+    K(x_i,x_{i'}) = (1 + \sum_{j=1}^{p} x_{ij} x_{i'j})^d
+    $$
 
-- **Sigmoid** kernel:
-$$
-K(x_i,x_{i'}) = \gamma \sum_{j=1}^{p} x_{ij} x_{i'j} + r
-$$
+-   **Radial basis**: $$
+    K(x_i,x_{i'}) = exp( -\gamma \sum_{j=1}^{p} (x_{ij}- x_{i'j})^2)
+    $$
+
+-   **Sigmoid** kernel: $$
+    K(x_i,x_{i'}) = \gamma \sum_{j=1}^{p} x_{ij} x_{i'j} + r
+    $$
 :::
 
+::: {style="font-size: 70%;"}
 ## Polynomial kernel of degree 2 example
 
-NOT REALLY SURE WHAT THIS EXAMPLE IS SHOWING
+Idea: Convert to higher dimension and separate using a hyperplane
+
+```{r svc-1}
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-align: "center"
+
+dat.plot.svm <- data.frame(x = -4:4,
+                           y = 0,
+                           class = c(rep(1, times = 3), rep(2, times = 3), rep(1, times = 3)) %>% as.factor(),
+                           y.pol = .1*c(-4:4)^2)
+dat.plot.svm %>%
+  ggplot() +
+  geom_point(aes(x=x, y=y, col = class), cex=3) +
+  theme_bw() + ylim(c(-.1, 2)) +
+  theme(legend.position = "none")
+```
+:::
+
+::: {style="font-size: 70%;"}
+## Polynomial kernel of degree 2 example
+
+```{r svc-2}
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-align: "center"
+
+dat.plot.svm %>%
+  ggplot() +
+  geom_point(aes(x=x, y=y, col = class), cex=3) +
+  geom_function(fun = function(x) .1*x^2, colour = "black") +
+  theme_bw() + ylim(c(-.1, 2)) +
+  theme(legend.position = "none")
+
+```
+:::
+
+::: {style="font-size: 70%;"}
+## Polynomial kernel of degree 2 example
+
+```{r svc-3}
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-align: "center"
+
+dat.plot.svm %>%
+  ggplot() +
+  geom_point(aes(x=x, y=y, col = class), cex=3) +
+  geom_function(fun = function(x) .1*x^2, colour = "black") +
+  theme_bw() + ylim(c(-.1, 2)) +
+  geom_point(aes(x=x, y=y.pol, col = class), cex=3) +
+  geom_segment(aes(x = x, y = y, yend = y.pol, xend = x), lty = 2) +
+  theme(legend.position = "none")
+
+```
+:::
+
+::: {style="font-size: 70%;"}
+## Polynomial kernel of degree 2 example
+
+```{r svc-4}
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-align: "center"
+
+dat.plot.svm %>%
+  ggplot() +
+  geom_point(aes(x=x, y=y, col = class), cex=3) +
+  geom_function(fun = function(x) .1*x^2, colour = "black") +
+  theme_bw() + ylim(c(-.1, 2)) +
+  geom_point(aes(x=x, y=y.pol, col = class), cex=3) +
+  geom_segment(aes(x = x, y = y, yend = y.pol, xend = x), lty = 2) +
+  theme(legend.position = "none") +
+  geom_hline(yintercept = 0.22, col = "red", lwd = 2)
+```
+:::
 
 ## Kernel functions
 
@@ -931,24 +1193,29 @@ data <- tibble(X1 = X[, 1], X2 = X[, 2], y = as.factor(y))
 #| echo: true
 #| eval: true
 fit <- svm(
-  y ~ X1 + X2,
-  data = data,
-  kernel = "linear", # kernel function
-  cost = 1, # Regularisation parameter C or budget
-  probability = TRUE, # to output posterior probabilities of class membership
+  X, data$y,
 )
+fit
 
 pred <- predict(fit, X)
-summary(pred)
+table(pred)
+```
+
+## Confusion matrix in `caret` package
+
+```{r e1071-svm-3}
+#| echo: true
+#| eval: true
+caret::confusionMatrix(data$y, pred)
 ```
 
 ::: {style="font-size: 80%;"}
 ## Take away: Machine learning: Classification
 
-- Evaluation of classification performance based on parameters derived from the confusion matrix.
-- Visualisation using ROC and precision-recall curves.
-- Discriminant analysis is a parametric approach for classification.
-- Diagonal, linear and quadratic discriminant analysis are based on different assumptions on the covariance matrix and allow for different flexibility in model fit.
-- Support vector machines are non-parametric machine-learning type of approaches which offer the most flexibility.
-- Support vector machines are optimized for prediction and operate in a black box type of implementation (hard to understand mechanics and interpret).
+-   Evaluation of classification performance based on parameters derived from the confusion matrix.
+-   Visualisation using ROC and precision-recall curves.
+-   Discriminant analysis is a parametric approach for classification.
+-   Diagonal, linear and quadratic discriminant analysis are based on different assumptions on the covariance matrix and allow for different flexibility in model fit.
+-   Support vector machines are non-parametric machine-learning type of approaches which offer the most flexibility.
+-   Support vector machines are optimized for prediction and operate in a black box type of implementation (hard to understand mechanics and interpret).
 :::

@@ -8,12 +8,14 @@ editor: visual
 date-format: medium
 title-slide-attributes:
   data-background-color: "#f3f4f4"
-  data-background-size: 80%
-  data-background-position: 60% 120%
+  data-background-image: "../../assets/logo_trans.png"
+  data-background-size: 50%
+  data-background-position: 90% 120%
 format:
     revealjs:
-      slide-number: true
       theme: [default, ../../assets/style.scss]
+      logo: "../../assets/logo_trans.png"
+      slide-number: true
       incremental: false
       chalkboard:
         buttons: false
@@ -124,10 +126,11 @@ $$Y_t = \beta_0 + \beta_{10}X_t + \beta_{11}X_{t-1} + \dots+ \beta_{1q}X_{t-q} +
 
 -   $\beta_{1\ell}$ is the effect at lag $\ell=0, 1, \dots q$ and $\epsilon_t$ an error term.
 
--   The \<span style:"color:red"\> overall impact </span> for a unit change in $X$ is given by $\sum^q_{\ell=0}\beta_\ell$.
+-   The overall impact for a unit change in $X$ is given by $\sum^q_{\ell=0}\beta_\ell$.
 
 ## Example 2: PM10 in Chicago
 
+::: {style="font-size: 80%;"}
 ```{r}
 #| echo: true
 #| eval: true
@@ -141,7 +144,9 @@ mgcv::gam(death ~ s(temp) +
   s(time) + s(month) + dow + pm10_laggeg0 + pm10_laggeg1 + pm10_laggeg2 +
   pm10_laggeg3, data = chicagoNMMAPS, family = "poisson") %>% summary()
 ```
+:::
 
+::: {style="font-size: 80%;"}
 ## Considerations
 
 -   Easy implementation when lags are few; overparametrized when we want to assess a lot of lags
@@ -157,7 +162,9 @@ Alternative: to impose some constraints:
 -   Describing the coefficients with a smooth curve using continuous functions such as splines, polynomials, and other basis functions.
 
 The idea: $\beta_{\ell}$ can be modelled using a basis function.
+:::
 
+::: {style="font-size: 80%;"}
 ## Polynomial DLM
 
 Let $\beta_\ell = \sum_j^p\tau_j\ell^j, \;\;\; \ell = 0, \dots, q$ , lets write it for 2 lags using a 3rd degree polynomial to see it explicitly:
@@ -169,6 +176,8 @@ and we can modify as per first lecture to model more localized structures using:
 $$\begin{align*}\beta_{10} &= \tau_0 + \nu_1(0-\kappa_1)^3_+ + \dots + \nu_K(0-\kappa_K)^3_+, \\\beta_{11} &= \tau_0 + \tau_1 + \tau_2 + \tau_3 + \nu_1(1-\kappa_1)^3_+ + \dots + \nu_K(1-\kappa_K)^3_+, \\\beta_{12} &= \tau_0 + \tau_1 2  + \tau_2 2^2 + \tau_3 2^3 + \nu_1(2-\kappa_1)^3_+ + \dots + \nu_K(2-\kappa_K)^3_+\end{align*}$$
 
 and similarly we can penalize it can estimate *the penalised spline distributed lag estimate* of $\beta_{\ell}$
+
+:::
 
 ## Polynomial DLM in R: Chicago
 
@@ -297,6 +306,7 @@ plot(pred2.temp,
 )
 ```
 
+::: {style="font-size: 70%;"}
 ## Example 3: Temperature in Chicago
 
 ```{r}
@@ -313,6 +323,7 @@ layout(p, scene = list(
   zaxis = list(title = "Relative risk")
 ))
 ```
+:::
 
 ## Example 3: Temperature in Chicago
 
@@ -320,6 +331,7 @@ layout(p, scene = list(
 #| echo: true
 #| eval: true
 #| fig-align: "center"
+#| fig-width: 2.5
 plot(pred2.temp, "contour",
   xlab = "Temperature", key.title = title("RR"),
   plot.title = title("Contour plot", xlab = "Temperature", ylab = "Lag")

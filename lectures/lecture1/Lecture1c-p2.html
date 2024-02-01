@@ -521,7 +521,7 @@ y_i =  \alpha_0 + \beta x_i  + u_k + \epsilon_i
 <section id="r-random-intercept-using-lme" class="slide level2">
 <h2><code>R</code>: Random intercept using <code>lme()</code></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>model_random_intercept <span class="ot">=</span> <span class="fu">lme</span>(chol <span class="sc">~</span> age, <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> doctor, <span class="at">data =</span> data_chol)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>model_random_intercept <span class="ot">&lt;-</span> <span class="fu">lme</span>(chol <span class="sc">~</span> age, <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> doctor, <span class="at">data =</span> data_chol)</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="fu">summary</span>(model_random_intercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed-effects model fit by REML
@@ -551,9 +551,21 @@ Number of Groups: 12 </code></pre>
 </div>
 </div>
 </section>
-<section id="r-random-intercept-using-lme-1" class="slide level2">
+<section id="r-random-intercept-using-lme-1" class="slide level2" style="font-size: 75%;">
 <h2><code>R</code>: Random intercept using <code>lme()</code></h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>data_chol <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-3"><a href="#cb3-3"></a>    <span class="at">doctor_name =</span> <span class="fu">factor</span>(<span class="fu">str_c</span>(<span class="st">"Dr "</span>, doctor), <span class="at">levels =</span> <span class="fu">str_c</span>(<span class="st">"Dr "</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>)),</span>
+<span id="cb3-4"><a href="#cb3-4"></a>    <span class="at">.fitted =</span> <span class="fu">fitted</span>(model_random_intercept)</span>
+<span id="cb3-5"><a href="#cb3-5"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age)) <span class="sc">+</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> chol)) <span class="sc">+</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted)) <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>doctor_name) <span class="sc">+</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
+</div>
 <img data-src="Lecture1c-p2_files/figure-revealjs/gp-data-model-random-intercept-plot-1.png" width="960" class="r-stretch quarto-figure-center"></section>
 <section id="random-effect-model-and-variance-partition" class="slide level2">
 <h2>Random effect model and variance partition</h2>
@@ -595,7 +607,7 @@ Number of Groups: 12 </code></pre>
 <h2>Variance partition in <code>R</code></h2>
 <div style="font-size: 90%;">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">VarCorr</span>(model_random_intercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">VarCorr</span>(model_random_intercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>doctor = pdLogChol(1)
             Variance  StdDev
@@ -657,8 +669,8 @@ w_k \sim N(0,\sigma_w^2)
 <section id="r-random-intercept-and-slope-using-lme" class="slide level2">
 <h2><code>R</code>: Random intercept and slope using <code>lme()</code></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>model_random_slope <span class="ot">=</span> <span class="fu">lme</span>(chol <span class="sc">~</span> age, <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> age <span class="sc">|</span> doctor, <span class="at">data =</span> data_chol)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">summary</span>(model_random_slope)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>model_random_slope <span class="ot">&lt;-</span> <span class="fu">lme</span>(chol <span class="sc">~</span> age, <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> age <span class="sc">|</span> doctor, <span class="at">data =</span> data_chol)</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">summary</span>(model_random_slope)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed-effects model fit by REML
   Data: data_chol
@@ -669,30 +681,42 @@ Random effects:
  Formula: ~1 + age | doctor
  Structure: General positive-definite, Log-Cholesky parametrization
             StdDev     Corr
-(Intercept) 1.28163851 (Intr)
-age         0.01771587 -0.872
-Residual    0.55997508
+(Intercept) 1.28163949 (Intr)
+age         0.01771589 -0.872
+Residual    0.55997507
 
 Fixed effects:  chol ~ age
                 Value Std.Error  DF  t-value p-value
-(Intercept) 2.8791744 0.4215201 428 6.830455       0
-age         0.0500704 0.0060597 428 8.262831       0
+(Intercept) 2.8791744 0.4215204 428 6.830451       0
+age         0.0500704 0.0060597 428 8.262823       0
  Correlation:
     (Intr)
 age -0.901
 
 Standardized Within-Group Residuals:
        Min         Q1        Med         Q3        Max
--2.8523390 -0.6664557 -0.1141925  0.6206844  3.0809629
+-2.8523390 -0.6664557 -0.1141924  0.6206844  3.0809629
 
 Number of Observations: 441
 Number of Groups: 12 </code></pre>
 </div>
 </div>
 </section>
-<section id="r-random-intercept-and-slope-using-lme-1" class="slide level2">
+<section id="r-random-intercept-and-slope-using-lme-1" class="slide level2" style="font-size: 70%;">
 <h2><code>R</code>: Random intercept and slope using <code>lme()</code></h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>data_chol <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-3"><a href="#cb8-3"></a>    <span class="at">doctor_name =</span> <span class="fu">factor</span>(<span class="fu">str_c</span>(<span class="st">"Dr "</span>, doctor), <span class="at">levels =</span> <span class="fu">str_c</span>(<span class="st">"Dr "</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>)),</span>
+<span id="cb8-4"><a href="#cb8-4"></a>    <span class="at">.fitted =</span> <span class="fu">fitted</span>(model_random_slope)</span>
+<span id="cb8-5"><a href="#cb8-5"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age)) <span class="sc">+</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> chol)) <span class="sc">+</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted)) <span class="sc">+</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>doctor_name) <span class="sc">+</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
+</div>
 <img data-src="Lecture1c-p2_files/figure-revealjs/gp-data-model-random-slope-plot-1.png" width="960" class="r-stretch quarto-figure-center"></section>
 <section id="variables-on-individual-and-group-level" class="slide level2">
 <h2>Variables on individual and group level</h2>
@@ -722,14 +746,14 @@ Number of Groups: 12 </code></pre>
 </div>
 </div>
 </section>
-<section id="variables-on-individual-and-group-level-1" class="slide level2">
+<section id="variables-on-individual-and-group-level-1" class="slide level2" style="font-size: 75%;">
 <h2>Variables on individual and group level</h2>
 <p><span class="math display">\[
 y_i = (\alpha_0 + u_k) + (\beta + w_k) x_i  + {\color{red}{\gamma x_g}} +\epsilon_i
 \]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>model_random_cov <span class="ot">=</span> <span class="fu">lme</span>(chol <span class="sc">~</span> age <span class="sc">+</span> agedoc, <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> age <span class="sc">|</span> doctor, <span class="at">data =</span> data_chol)</span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">summary</span>(model_random_cov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>model_random_cov <span class="ot">&lt;-</span> <span class="fu">lme</span>(chol <span class="sc">~</span> age <span class="sc">+</span> agedoc, <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> age <span class="sc">|</span> doctor, <span class="at">data =</span> data_chol)</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="fu">summary</span>(model_random_cov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed-effects model fit by REML
   Data: data_chol
@@ -740,7 +764,7 @@ Random effects:
  Formula: ~1 + age | doctor
  Structure: General positive-definite, Log-Cholesky parametrization
             StdDev     Corr
-(Intercept) 1.10559522 (Intr)
+(Intercept) 1.10559524 (Intr)
 age         0.01775586 -0.951
 Residual    0.55992053
 
@@ -762,7 +786,9 @@ Number of Observations: 441
 Number of Groups: 12 </code></pre>
 </div>
 </div>
-<p>##&nbsp;Model comparison</p>
+</section>
+<section id="model-comparison" class="slide level2">
+<h2>Model comparison</h2>
 <p>Likelihood-ratio test for nested models:</p>
 <ul>
 <li>Models must have the same fixed effects. Does not work with group-level covariates.</li>
@@ -773,7 +799,7 @@ Number of Groups: 12 </code></pre>
 <li>Model with the smaller AIC is better (less information loss).</li>
 </ul>
 </section>
-<section id="model-comparison" class="slide level2">
+<section id="model-comparison-1" class="slide level2">
 <h2>Model comparison</h2>
 <p>GP example:</p>
 <div style="font-size: 60%;">
@@ -784,11 +810,11 @@ Number of Groups: 12 </code></pre>
 </ul>
 </div>
 </section>
-<section id="model-comparison-1" class="slide level2">
+<section id="model-comparison-2" class="slide level2">
 <h2>Model comparison</h2>
 <p>Likelihood-ratio test for nested models:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">anova</span>(model_random_intercept, model_random_slope)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">anova</span>(model_random_intercept, model_random_slope)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                       Model df      AIC      BIC    logLik   Test L.Ratio
 model_random_intercept     1  4 828.6970 845.0350 -410.3485
@@ -800,7 +826,7 @@ model_random_slope      0.0047</code></pre>
 </div>
 <p>Akaike information criterion (AIC):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">anova</span>(model_random_slope, model_random_cov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">anova</span>(model_random_slope, model_random_cov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   Model df      AIC      BIC    logLik   Test  L.Ratio p-value
 model_random_slope     1  6 821.9886 846.4956 -404.9943
@@ -815,7 +841,7 @@ model_random_cov       2  7 815.6956 844.2712 -400.8478 1 vs 2 8.292926   0.004<
 <li>The package <code>lme4</code> includes the function <code>glmer</code> that can fit GLMMs.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">glmer</span>(<span class="at">formula =</span> y <span class="sc">~</span> x <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> x <span class="sc">|</span> factor), <span class="at">family =</span> gaussian)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">glmer</span>(<span class="at">formula =</span> y <span class="sc">~</span> x <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> x <span class="sc">|</span> factor), <span class="at">family =</span> gaussian)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="take-away-fixed-and-random-effects" class="slide level2">

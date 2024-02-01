@@ -8,7 +8,7 @@
 <link href="Lecture2b_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="Lecture2b_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="Lecture2b_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.3.353">
+  <meta name="generator" content="quarto-1.3.450">
 
   <meta name="author" content="Garyfallos Konstantinoudis">
   <title>Advanced Regression: Bias and variance trade off and penalised splines</title>
@@ -391,7 +391,7 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" data-background-color="#f3f4f4" data-background-position="60% 120%" data-background-size="80%" class="quarto-title-block center">
+<section id="title-slide" data-background-color="#f3f4f4" data-background-image="../../assets/logo_trans.png" data-background-position="90% 120%" data-background-size="50%" class="quarto-title-block center">
   <h1 class="title">Advanced Regression: Bias and variance trade off and penalised splines</h1>
 
 <div class="quarto-title-authors">
@@ -435,7 +435,7 @@ Garyfallos Konstantinoudis
 <li><p>Test data to assess the generalisation properties</p></li>
 </ul>
 </section>
-<section id="training-and-test-data" class="slide level2">
+<section id="training-and-test-data" class="slide level2" style="font-size: 80%;">
 <h2>Training and test data</h2>
 <p>Assume we have the following data:</p>
 <ul>
@@ -453,7 +453,7 @@ Garyfallos Konstantinoudis
 </ul>
 <p><span class="math display">\[y = f(x)  + \epsilon\]</span></p>
 </section>
-<section id="measuring-the-quality-of-fit" class="slide level2">
+<section id="measuring-the-quality-of-fit" class="slide level2" style="font-size: 80%;">
 <h2>Measuring the quality of fit</h2>
 <ol type="1">
 <li>Based on the training data we build a prediction rule <span class="math inline">\(\hat{f}(x)\)</span></li>
@@ -518,7 +518,7 @@ Garyfallos Konstantinoudis
 <li><p>Thus, they do not generalise well to new data and do not provide a good prediction rule.</p></li>
 </ul>
 </section>
-<section id="measuring-the-quality-of-fit-binary-outcome" class="slide level2">
+<section id="measuring-the-quality-of-fit-binary-outcome" class="slide level2" style="font-size: 90%;">
 <h2>Measuring the quality of fit: Binary outcome</h2>
 <ul>
 <li><p>Quantitative outcomes: Mean squared error (MSE)</p></li>
@@ -544,7 +544,7 @@ Garyfallos Konstantinoudis
 <p><strong>Bias of an estimate</strong></p>
 <p><span class="math inline">\(Bias (\hat{\theta}) = E \left( \hat{\theta} - \theta \right) \nonumber\)</span></p>
 </section>
-<section id="bias-variance-trade-off-in-estimation-1" class="slide level2">
+<section id="bias-variance-trade-off-in-estimation-1" class="slide level2" style="font-size: 90%;">
 <h2>Bias-variance trade-off in estimation</h2>
 <p>Mean squared error (MSE) of an estimate <span class="math inline">\(\hat{\theta}\)</span>:</p>
 <p>MSE is the squared average difference between an estimate <span class="math inline">\(\hat{\theta}\)</span> and the true parameter <span class="math inline">\(\theta\)</span>.</p>
@@ -593,7 +593,7 @@ Garyfallos Konstantinoudis
 <p><span class="math display">\[Y_i = \beta_0 + f(x;\beta) + \sum_p\gamma_pz_p + \epsilon_i\]</span></p>
 <p>The idea is to define a flexible function and control the smoothness through a penalty term, usually on the second derivative.</p>
 </section>
-<section id="curvature" class="slide level2">
+<section id="curvature" class="slide level2" style="font-size: 80%;">
 <h2>Curvature</h2>
 <p>The second derivative of a function corresponds to the curvature or concavity of the graph. What do you observe?</p>
 
@@ -605,7 +605,7 @@ Garyfallos Konstantinoudis
 <p><span class="math display">\[\sum_i\Bigg(Y_i - \beta_0 - f(x;\beta) + \sum_p\gamma_pz_p\Bigg)^2 + \lambda \int [f''(x; \beta)]^2dx\]</span></p>
 <p>with <span class="math inline">\(\lambda\)</span> being the smoothing parameter (variance-bias trade off).</p>
 </section>
-<section id="smoothers" class="slide level2">
+<section id="smoothers" class="slide level2" style="font-size: 95%;">
 <h2>Smoothers</h2>
 <p>Alternative smoothers available, differing by parameterization and penalty:</p>
 <ul>
@@ -619,7 +619,7 @@ Garyfallos Konstantinoudis
 <li><p>…</p></li>
 </ul>
 </section>
-<section id="selecting-smoothness" class="slide level2">
+<section id="selecting-smoothness" class="slide level2" style="font-size: 95%;">
 <h2>Selecting smoothness</h2>
 <p>There are different ways of selecting/estimating <span class="math inline">\(\lambda\)</span></p>
 <ul>
@@ -660,23 +660,29 @@ Garyfallos Konstantinoudis
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">library</span>(pspline)</span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">1</span>, <span class="at">to =</span> <span class="dv">100</span>, <span class="at">length.out =</span> <span class="dv">100</span>) <span class="ot">-&gt;</span> loop.i</span>
-<span id="cb3-3"><a href="#cb3-3"></a>gcv <span class="ot">&lt;-</span>  <span class="fu">numeric</span>(<span class="fu">length</span>(loop.i))</span>
+<span id="cb3-3"><a href="#cb3-3"></a>gcv <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">length</span>(loop.i))</span>
 <span id="cb3-4"><a href="#cb3-4"></a></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(loop.i)){</span>
-<span id="cb3-6"><a href="#cb3-6"></a>    <span class="fu">smooth.Pspline</span>(mcycle<span class="sc">$</span>times, mcycle<span class="sc">$</span>accel, <span class="at">df =</span> <span class="dv">4</span>, </span>
-<span id="cb3-7"><a href="#cb3-7"></a>        <span class="at">spar =</span> loop.i[i], <span class="at">method =</span> <span class="dv">1</span>) <span class="ot">-&gt;</span> mod.loop</span>
-<span id="cb3-8"><a href="#cb3-8"></a>    gcv[i] <span class="ot">&lt;-</span> mod.loop<span class="sc">$</span>gcv</span>
-<span id="cb3-9"><a href="#cb3-9"></a>}</span>
-<span id="cb3-10"><a href="#cb3-10"></a></span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span> loop.i, <span class="at">y =</span> gcv), <span class="at">cex =</span> <span class="fl">1.3</span>) <span class="sc">+</span> </span>
-<span id="cb3-12"><a href="#cb3-12"></a>    <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> loop.i[gcv <span class="sc">%&gt;%</span> <span class="fu">which.min</span>()], <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">cex =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb3-13"><a href="#cb3-13"></a>    <span class="fu">theme_bw</span>() <span class="ot">-&gt;</span> p1</span>
-<span id="cb3-14"><a href="#cb3-14"></a></span>
-<span id="cb3-15"><a href="#cb3-15"></a><span class="fu">smooth.Pspline</span>(mcycle<span class="sc">$</span>times, mcycle<span class="sc">$</span>accel, <span class="at">df =</span> <span class="dv">4</span>, <span class="at">spar =</span> loop.i[gcv <span class="sc">%&gt;%</span> <span class="fu">which.min</span>()],</span>
-<span id="cb3-16"><a href="#cb3-16"></a>        <span class="at">method =</span> <span class="dv">1</span>) <span class="ot">-&gt;</span> mod.loop</span>
-<span id="cb3-17"><a href="#cb3-17"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb3-18"><a href="#cb3-18"></a>    <span class="fu">geom_point</span>(<span class="at">data =</span> mcycle, <span class="fu">aes</span>(<span class="at">x =</span> times, <span class="at">y =</span> accel), <span class="at">cex =</span> <span class="fl">1.3</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb3-19"><a href="#cb3-19"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>mcycle<span class="sc">$</span>times, <span class="at">y=</span>mod.loop<span class="sc">$</span>ysmth), <span class="at">cex =</span> <span class="dv">1</span>) <span class="ot">-&gt;</span> p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(loop.i)) {</span>
+<span id="cb3-6"><a href="#cb3-6"></a>  <span class="fu">smooth.Pspline</span>(mcycle<span class="sc">$</span>times, mcycle<span class="sc">$</span>accel,</span>
+<span id="cb3-7"><a href="#cb3-7"></a>    <span class="at">df =</span> <span class="dv">4</span>,</span>
+<span id="cb3-8"><a href="#cb3-8"></a>    <span class="at">spar =</span> loop.i[i], <span class="at">method =</span> <span class="dv">1</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>  ) <span class="ot">-&gt;</span> mod.loop</span>
+<span id="cb3-10"><a href="#cb3-10"></a>  gcv[i] <span class="ot">&lt;-</span> mod.loop<span class="sc">$</span>gcv</span>
+<span id="cb3-11"><a href="#cb3-11"></a>}</span>
+<span id="cb3-12"><a href="#cb3-12"></a></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> loop.i, <span class="at">y =</span> gcv), <span class="at">cex =</span> <span class="fl">1.3</span>) <span class="sc">+</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> loop.i[gcv <span class="sc">%&gt;%</span> <span class="fu">which.min</span>()], <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">cex =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a>  <span class="fu">theme_bw</span>() <span class="ot">-&gt;</span> p1</span>
+<span id="cb3-17"><a href="#cb3-17"></a></span>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="fu">smooth.Pspline</span>(mcycle<span class="sc">$</span>times, mcycle<span class="sc">$</span>accel,</span>
+<span id="cb3-19"><a href="#cb3-19"></a>  <span class="at">df =</span> <span class="dv">4</span>, <span class="at">spar =</span> loop.i[gcv <span class="sc">%&gt;%</span> <span class="fu">which.min</span>()],</span>
+<span id="cb3-20"><a href="#cb3-20"></a>  <span class="at">method =</span> <span class="dv">1</span></span>
+<span id="cb3-21"><a href="#cb3-21"></a>) <span class="ot">-&gt;</span> mod.loop</span>
+<span id="cb3-22"><a href="#cb3-22"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb3-23"><a href="#cb3-23"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> mcycle, <span class="fu">aes</span>(<span class="at">x =</span> times, <span class="at">y =</span> accel), <span class="at">cex =</span> <span class="fl">1.3</span>) <span class="sc">+</span></span>
+<span id="cb3-24"><a href="#cb3-24"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb3-25"><a href="#cb3-25"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> mcycle<span class="sc">$</span>times, <span class="at">y =</span> mod.loop<span class="sc">$</span>ysmth), <span class="at">cex =</span> <span class="dv">1</span>) <span class="ot">-&gt;</span> p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="example-1-3" class="slide level2">
@@ -720,20 +726,21 @@ GCV = 548.58  Scale est. = 508.61    n = 133</code></pre>
 
 </div>
 <img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="example-1-using-gam-2" class="slide level2">
+<section id="example-1-using-gam-2" class="slide level2" style="font-size: 90%;">
 <h2>Example 1 using GAM</h2>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>mgcv<span class="sc">::</span><span class="fu">gam</span>(accel <span class="sc">~</span> <span class="fu">s</span>(times), <span class="at">data =</span> mcycle) <span class="ot">-&gt;</span> mod.gam</span>
 <span id="cb7-2"><a href="#cb7-2"></a><span class="fu">predict</span>(mod.gam, <span class="fu">data.frame</span>(<span class="at">times =</span> mcycle<span class="sc">$</span>times), <span class="at">se.fit =</span> <span class="cn">TRUE</span>) <span class="ot">-&gt;</span> preds</span>
 <span id="cb7-3"><a href="#cb7-3"></a></span>
-<span id="cb7-4"><a href="#cb7-4"></a>UL <span class="ot">&lt;-</span> preds<span class="sc">$</span>fit <span class="sc">+</span> <span class="fl">1.96</span><span class="sc">*</span>preds<span class="sc">$</span>se.fit</span>
-<span id="cb7-5"><a href="#cb7-5"></a>LL <span class="ot">&lt;-</span> preds<span class="sc">$</span>fit <span class="sc">-</span> <span class="fl">1.96</span><span class="sc">*</span>preds<span class="sc">$</span>se.fit</span>
+<span id="cb7-4"><a href="#cb7-4"></a>UL <span class="ot">&lt;-</span> preds<span class="sc">$</span>fit <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> preds<span class="sc">$</span>se.fit</span>
+<span id="cb7-5"><a href="#cb7-5"></a>LL <span class="ot">&lt;-</span> preds<span class="sc">$</span>fit <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> preds<span class="sc">$</span>se.fit</span>
 <span id="cb7-6"><a href="#cb7-6"></a></span>
-<span id="cb7-7"><a href="#cb7-7"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb7-8"><a href="#cb7-8"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> mcycle, <span class="fu">aes</span>(<span class="at">x =</span> times, <span class="at">y =</span> accel), <span class="at">cex =</span> <span class="fl">1.3</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>mcycle<span class="sc">$</span>times, <span class="at">y=</span>preds<span class="sc">$</span>fit), <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb7-10"><a href="#cb7-10"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin=</span>LL,<span class="at">ymax=</span>UL,<span class="at">x=</span>mcycle<span class="sc">$</span>times), <span class="at">fill=</span><span class="st">"blue"</span>, <span class="at">alpha=</span><span class="fl">0.1</span>) <span class="sc">+</span> </span>
-<span id="cb7-11"><a href="#cb7-11"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> mcycle, <span class="fu">aes</span>(<span class="at">x =</span> times, <span class="at">y =</span> accel), <span class="at">cex =</span> <span class="fl">1.3</span>) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> mcycle<span class="sc">$</span>times, <span class="at">y =</span> preds<span class="sc">$</span>fit), <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> LL, <span class="at">ymax =</span> UL, <span class="at">x =</span> mcycle<span class="sc">$</span>times), <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-9-1.png" width="960" class="r-stretch quarto-figure-center"></section>
@@ -774,19 +781,23 @@ GCV = 548.58  Scale est. = 508.61    n = 133</code></pre>
 <section id="case-study-chicago---temperature-and-mortality-2" class="slide level2">
 <h2>Case-study: Chicago - Temperature and mortality</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">data =</span> chicagoNMMAPS, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> death), <span class="at">cex =</span> <span class="fl">1.3</span>) <span class="sc">+</span> </span>
-<span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> chicagoNMMAPS, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> death), <span class="at">cex =</span> <span class="fl">1.3</span>) <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-11-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="case-study-chicago---temperature-and-mortality-3" class="slide level2">
+<section id="case-study-chicago---temperature-and-mortality-3" class="slide level2" style="font-size: 85%;">
 <h2>Case-study: Chicago - Temperature and mortality</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>mgcv<span class="sc">::</span><span class="fu">gam</span>(death <span class="sc">~</span> <span class="fu">s</span>(temp) <span class="sc">+</span> </span>
-<span id="cb11-2"><a href="#cb11-2"></a>            <span class="fu">s</span>(time) <span class="sc">+</span> <span class="fu">s</span>(month) <span class="sc">+</span> dow, </span>
-<span id="cb11-3"><a href="#cb11-3"></a>          <span class="at">data =</span> chicagoNMMAPS, <span class="at">family =</span> <span class="st">"poisson"</span>) <span class="ot">-&gt;</span> res.mod</span>
-<span id="cb11-4"><a href="#cb11-4"></a></span>
-<span id="cb11-5"><a href="#cb11-5"></a><span class="fu">summary</span>(res.mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>mgcv<span class="sc">::</span><span class="fu">gam</span>(</span>
+<span id="cb11-2"><a href="#cb11-2"></a>  death <span class="sc">~</span> <span class="fu">s</span>(temp) <span class="sc">+</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>    <span class="fu">s</span>(time) <span class="sc">+</span> <span class="fu">s</span>(month) <span class="sc">+</span> dow,</span>
+<span id="cb11-4"><a href="#cb11-4"></a>  <span class="at">data =</span> chicagoNMMAPS, <span class="at">family =</span> <span class="st">"poisson"</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a>) <span class="ot">-&gt;</span> res.mod</span>
+<span id="cb11-6"><a href="#cb11-6"></a></span>
+<span id="cb11-7"><a href="#cb11-7"></a><span class="fu">summary</span>(res.mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: poisson
@@ -827,29 +838,39 @@ UBRE = 0.41407  Scale est. = 1         n = 5114</code></pre>
 
 </div>
 <img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch"></section>
-<section id="case-study-chicago---temperature-and-mortality-5" class="slide level2">
+<section id="case-study-chicago---temperature-and-mortality-5" class="slide level2" style="font-size: 70%;">
 <h2>Case-study: Chicago - Temperature and mortality</h2>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>gratia<span class="sc">::</span><span class="fu">smooth_estimates</span>(res.mod) <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a>  gratia<span class="sc">::</span><span class="fu">add_confint</span>() <span class="sc">%&gt;%</span> <span class="fu">filter</span>(smooth <span class="sc">==</span> <span class="st">"s(temp)"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-3"><a href="#cb14-3"></a>  <span class="fu">mutate</span>(<span class="at">est =</span> <span class="fu">exp</span>(est), <span class="at">lower_ci =</span> <span class="fu">exp</span>(lower_ci), <span class="at">upper_ci =</span> <span class="fu">exp</span>(upper_ci), </span>
-<span id="cb14-4"><a href="#cb14-4"></a>         <span class="at">temp =</span> <span class="fu">round</span>(temp, <span class="at">digits =</span> <span class="dv">2</span>), <span class="at">rr =</span> est<span class="sc">/</span>est[temp <span class="sc">==</span> <span class="fl">10.30</span>], </span>
-<span id="cb14-5"><a href="#cb14-5"></a>         <span class="at">rr_upper =</span> upper_ci<span class="sc">/</span>est[temp <span class="sc">==</span> <span class="fl">10.30</span>], <span class="at">rr_lower =</span> lower_ci<span class="sc">/</span>est[temp <span class="sc">==</span> <span class="fl">10.30</span>]) <span class="sc">%&gt;%</span> </span>
-<span id="cb14-6"><a href="#cb14-6"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(temp, rr)) <span class="sc">+</span> </span>
-<span id="cb14-7"><a href="#cb14-7"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x=</span>temp, <span class="at">ymin=</span>rr_lower, <span class="at">ymax=</span>rr_upper), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">col =</span> <span class="cn">NA</span>) <span class="sc">+</span> <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span> </span>
-<span id="cb14-8"><a href="#cb14-8"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Mortality risk"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Temperature"</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-2"><a href="#cb14-2"></a>  gratia<span class="sc">::</span><span class="fu">add_confint</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3"></a>  <span class="fu">filter</span>(smooth <span class="sc">==</span> <span class="st">"s(temp)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-5"><a href="#cb14-5"></a>    <span class="at">est =</span> <span class="fu">exp</span>(est), <span class="at">lower_ci =</span> <span class="fu">exp</span>(lower_ci), <span class="at">upper_ci =</span> <span class="fu">exp</span>(upper_ci),</span>
+<span id="cb14-6"><a href="#cb14-6"></a>    <span class="at">temp =</span> <span class="fu">round</span>(temp, <span class="at">digits =</span> <span class="dv">2</span>), <span class="at">rr =</span> est <span class="sc">/</span> est[temp <span class="sc">==</span> <span class="fl">10.30</span>],</span>
+<span id="cb14-7"><a href="#cb14-7"></a>    <span class="at">rr_upper =</span> upper_ci <span class="sc">/</span> est[temp <span class="sc">==</span> <span class="fl">10.30</span>], <span class="at">rr_lower =</span> lower_ci <span class="sc">/</span> est[temp <span class="sc">==</span> <span class="fl">10.30</span>]</span>
+<span id="cb14-8"><a href="#cb14-8"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb14-9"><a href="#cb14-9"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb14-10"><a href="#cb14-10"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(temp, rr)) <span class="sc">+</span></span>
+<span id="cb14-11"><a href="#cb14-11"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> temp, <span class="at">ymin =</span> rr_lower, <span class="at">ymax =</span> rr_upper), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">col =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb14-12"><a href="#cb14-12"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb14-13"><a href="#cb14-13"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb14-14"><a href="#cb14-14"></a>  <span class="fu">ylab</span>(<span class="st">"Mortality risk"</span>) <span class="sc">+</span></span>
+<span id="cb14-15"><a href="#cb14-15"></a>  <span class="fu">xlab</span>(<span class="st">"Temperature"</span>) <span class="sc">+</span></span>
+<span id="cb14-16"><a href="#cb14-16"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-14-1.png" width="960" class="r-stretch quarto-figure-center"></section>
-<section id="case-study-chicago---temperature-and-mortality-6" class="slide level2">
+<section id="case-study-chicago---temperature-and-mortality-6" class="slide level2" style="font-size: 70%;">
 <h2>Case-study: Chicago - Temperature and mortality</h2>
 <p>How is the intercept interpreted? How the daily effect?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>mgcv<span class="sc">::</span><span class="fu">gam</span>(death <span class="sc">~</span> <span class="fu">s</span>(temp) <span class="sc">+</span> </span>
-<span id="cb15-2"><a href="#cb15-2"></a>            <span class="fu">s</span>(time) <span class="sc">+</span> <span class="fu">s</span>(month) <span class="sc">+</span> dow <span class="sc">+</span> <span class="fu">s</span>(pm10), </span>
-<span id="cb15-3"><a href="#cb15-3"></a>          <span class="at">data =</span> chicagoNMMAPS, <span class="at">family =</span> <span class="st">"poisson"</span>) <span class="ot">-&gt;</span> res.mod1</span>
-<span id="cb15-4"><a href="#cb15-4"></a></span>
-<span id="cb15-5"><a href="#cb15-5"></a>res.mod1 <span class="sc">%&gt;%</span> summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>mgcv<span class="sc">::</span><span class="fu">gam</span>(</span>
+<span id="cb15-2"><a href="#cb15-2"></a>  death <span class="sc">~</span> <span class="fu">s</span>(temp) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a>    <span class="fu">s</span>(time) <span class="sc">+</span> <span class="fu">s</span>(month) <span class="sc">+</span> dow <span class="sc">+</span> <span class="fu">s</span>(pm10),</span>
+<span id="cb15-4"><a href="#cb15-4"></a>  <span class="at">data =</span> chicagoNMMAPS, <span class="at">family =</span> <span class="st">"poisson"</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a>) <span class="ot">-&gt;</span> res.mod1</span>
+<span id="cb15-6"><a href="#cb15-6"></a></span>
+<span id="cb15-7"><a href="#cb15-7"></a>res.mod1 <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Family: poisson
@@ -884,14 +905,20 @@ UBRE = 0.4123  Scale est. = 1         n = 4863</code></pre>
 </div>
 </div>
 </section>
-<section id="case-study-chicago---temperature-and-mortality-7" class="slide level2">
+<section id="case-study-chicago---temperature-and-mortality-7" class="slide level2" style="font-size: 70%;">
 <h2>Case-study: Chicago - Temperature and mortality</h2>
 <p>Let’s add the effect of air-pollution (PM10):</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>gratia<span class="sc">::</span><span class="fu">smooth_estimates</span>(res.mod1) <span class="sc">%&gt;%</span></span>
-<span id="cb17-2"><a href="#cb17-2"></a>  gratia<span class="sc">::</span><span class="fu">add_confint</span>() <span class="sc">%&gt;%</span> <span class="fu">filter</span>(smooth <span class="sc">==</span> <span class="st">"s(pm10)"</span>)  <span class="sc">%&gt;%</span> </span>
-<span id="cb17-3"><a href="#cb17-3"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(pm10, est), <span class="at">lwd=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb17-4"><a href="#cb17-4"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x=</span>pm10, <span class="at">ymin=</span>lower_ci, <span class="at">ymax=</span>upper_ci), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">col =</span> <span class="cn">NA</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Mortality risk"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"PM10"</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-2"><a href="#cb17-2"></a>  gratia<span class="sc">::</span><span class="fu">add_confint</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a>  <span class="fu">filter</span>(smooth <span class="sc">==</span> <span class="st">"s(pm10)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a href="#cb17-4"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb17-5"><a href="#cb17-5"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(pm10, est), <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> pm10, <span class="at">ymin =</span> lower_ci, <span class="at">ymax =</span> upper_ci), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">col =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb17-7"><a href="#cb17-7"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb17-8"><a href="#cb17-8"></a>  <span class="fu">ylab</span>(<span class="st">"Mortality risk"</span>) <span class="sc">+</span></span>
+<span id="cb17-9"><a href="#cb17-9"></a>  <span class="fu">xlab</span>(<span class="st">"PM10"</span>) <span class="sc">+</span></span>
+<span id="cb17-10"><a href="#cb17-10"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="Lecture2b_files/figure-revealjs/unnamed-chunk-16-1.png" width="960" class="r-stretch quarto-figure-center"></section>
@@ -937,7 +964,7 @@ UBRE = 0.4123  Scale est. = 1         n = 4863</code></pre>
 <h2>Case-study: Chicago - Temperature and mortality</h2>
 <p><strong>Lag effect</strong></p>
 <p>The effect of an exposure might not only affect the same day’s health outcome, but also the health outcome in the subsequent days.</p>
-<p>Lets explore the temperature lags <span style="color:red;"> independently </span> in Chicago.</p>
+<p>Lets explore the temperature lags <span style="color:red;">independently</span> in Chicago.</p>
 </section>
 <section id="case-study-chicago---temperature-and-mortality-10" class="slide level2">
 <h2>Case-study: Chicago - Temperature and mortality</h2>
@@ -945,36 +972,45 @@ UBRE = 0.4123  Scale est. = 1         n = 4863</code></pre>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>k <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>)</span>
 <span id="cb20-2"><a href="#cb20-2"></a>res_store <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb20-3"><a href="#cb20-3"></a></span>
-<span id="cb20-4"><a href="#cb20-4"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(k)){</span>
+<span id="cb20-4"><a href="#cb20-4"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(k)) {</span>
 <span id="cb20-5"><a href="#cb20-5"></a>  chicagoNMMAPS<span class="sc">$</span>temperature_laggeg <span class="ot">&lt;-</span> <span class="fu">lag</span>(chicagoNMMAPS<span class="sc">$</span>temp, <span class="at">n =</span> k[i])</span>
-<span id="cb20-6"><a href="#cb20-6"></a>  </span>
-<span id="cb20-7"><a href="#cb20-7"></a>  mgcv<span class="sc">::</span><span class="fu">gam</span>(death <span class="sc">~</span> <span class="fu">s</span>(temperature_laggeg) <span class="sc">+</span> </span>
-<span id="cb20-8"><a href="#cb20-8"></a>              <span class="fu">s</span>(time) <span class="sc">+</span> <span class="fu">s</span>(month) <span class="sc">+</span> dow <span class="sc">+</span> pm10, </span>
-<span id="cb20-9"><a href="#cb20-9"></a>            <span class="at">data =</span> chicagoNMMAPS, <span class="at">family =</span> <span class="st">"poisson"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-10"><a href="#cb20-10"></a>    gratia<span class="sc">::</span><span class="fu">smooth_estimates</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb20-11"><a href="#cb20-11"></a>    gratia<span class="sc">::</span><span class="fu">add_confint</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb20-12"><a href="#cb20-12"></a>    <span class="fu">filter</span>(smooth <span class="sc">==</span> <span class="st">"s(temperature_laggeg)"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-13"><a href="#cb20-13"></a>    <span class="fu">mutate</span>(<span class="at">est =</span> <span class="fu">exp</span>(est), </span>
-<span id="cb20-14"><a href="#cb20-14"></a>           <span class="at">lower_ci =</span> <span class="fu">exp</span>(lower_ci), </span>
-<span id="cb20-15"><a href="#cb20-15"></a>           <span class="at">upper_ci =</span> <span class="fu">exp</span>(upper_ci), </span>
-<span id="cb20-16"><a href="#cb20-16"></a>           <span class="at">temperature_laggeg =</span> <span class="fu">round</span>(temperature_laggeg, <span class="at">digits =</span> <span class="dv">2</span>),</span>
-<span id="cb20-17"><a href="#cb20-17"></a>           <span class="at">rr =</span> est<span class="sc">/</span>est[temperature_laggeg <span class="sc">==</span> <span class="fl">10.30</span>], </span>
-<span id="cb20-18"><a href="#cb20-18"></a>           <span class="at">rr_upper =</span> upper_ci<span class="sc">/</span>est[temperature_laggeg <span class="sc">==</span> <span class="fl">10.30</span>], </span>
-<span id="cb20-19"><a href="#cb20-19"></a>           <span class="at">rr_lower =</span> lower_ci<span class="sc">/</span>est[temperature_laggeg <span class="sc">==</span> <span class="fl">10.30</span>], </span>
-<span id="cb20-20"><a href="#cb20-20"></a>           <span class="at">lag =</span> <span class="fu">paste0</span>(<span class="st">"lag"</span>, k[i])) <span class="ot">-&gt;</span> res_store[[i]]</span>
-<span id="cb20-21"><a href="#cb20-21"></a>}</span>
-<span id="cb20-22"><a href="#cb20-22"></a></span>
-<span id="cb20-23"><a href="#cb20-23"></a></span>
-<span id="cb20-24"><a href="#cb20-24"></a><span class="fu">do.call</span>(rbind, res_store) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-25"><a href="#cb20-25"></a>  <span class="fu">mutate</span>(<span class="at">lag =</span> <span class="fu">factor</span>(lag, <span class="at">levels =</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">"lag"</span>, k)))) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-26"><a href="#cb20-26"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(temperature_laggeg, rr, <span class="at">col =</span> lag), <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb20-27"><a href="#cb20-27"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x=</span>temperature_laggeg, <span class="at">ymin=</span>rr_lower, <span class="at">ymax=</span>rr_upper, <span class="at">fill =</span> lag), <span class="at">alpha =</span> <span class="fl">0.3</span>,  <span class="at">col =</span> <span class="cn">NA</span>) <span class="sc">+</span> </span>
-<span id="cb20-28"><a href="#cb20-28"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb20-29"><a href="#cb20-29"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Mortality risk"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Temperature"</span>) <span class="sc">+</span> <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="fl">0.7</span>, <span class="fl">1.7</span>)) <span class="sc">+</span> </span>
-<span id="cb20-30"><a href="#cb20-30"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"C"</span>) <span class="sc">+</span> <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"C"</span>) <span class="ot">-&gt;</span> p28</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb20-6"><a href="#cb20-6"></a></span>
+<span id="cb20-7"><a href="#cb20-7"></a>  mgcv<span class="sc">::</span><span class="fu">gam</span>(</span>
+<span id="cb20-8"><a href="#cb20-8"></a>    death <span class="sc">~</span> <span class="fu">s</span>(temperature_laggeg) <span class="sc">+</span></span>
+<span id="cb20-9"><a href="#cb20-9"></a>      <span class="fu">s</span>(time) <span class="sc">+</span> <span class="fu">s</span>(month) <span class="sc">+</span> dow <span class="sc">+</span> pm10,</span>
+<span id="cb20-10"><a href="#cb20-10"></a>    <span class="at">data =</span> chicagoNMMAPS, <span class="at">family =</span> <span class="st">"poisson"</span></span>
+<span id="cb20-11"><a href="#cb20-11"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-12"><a href="#cb20-12"></a>    gratia<span class="sc">::</span><span class="fu">smooth_estimates</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-13"><a href="#cb20-13"></a>    gratia<span class="sc">::</span><span class="fu">add_confint</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-14"><a href="#cb20-14"></a>    <span class="fu">filter</span>(smooth <span class="sc">==</span> <span class="st">"s(temperature_laggeg)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-15"><a href="#cb20-15"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb20-16"><a href="#cb20-16"></a>      <span class="at">est =</span> <span class="fu">exp</span>(est),</span>
+<span id="cb20-17"><a href="#cb20-17"></a>      <span class="at">lower_ci =</span> <span class="fu">exp</span>(lower_ci),</span>
+<span id="cb20-18"><a href="#cb20-18"></a>      <span class="at">upper_ci =</span> <span class="fu">exp</span>(upper_ci),</span>
+<span id="cb20-19"><a href="#cb20-19"></a>      <span class="at">temperature_laggeg =</span> <span class="fu">round</span>(temperature_laggeg, <span class="at">digits =</span> <span class="dv">2</span>),</span>
+<span id="cb20-20"><a href="#cb20-20"></a>      <span class="at">rr =</span> est <span class="sc">/</span> est[temperature_laggeg <span class="sc">==</span> <span class="fl">10.30</span>],</span>
+<span id="cb20-21"><a href="#cb20-21"></a>      <span class="at">rr_upper =</span> upper_ci <span class="sc">/</span> est[temperature_laggeg <span class="sc">==</span> <span class="fl">10.30</span>],</span>
+<span id="cb20-22"><a href="#cb20-22"></a>      <span class="at">rr_lower =</span> lower_ci <span class="sc">/</span> est[temperature_laggeg <span class="sc">==</span> <span class="fl">10.30</span>],</span>
+<span id="cb20-23"><a href="#cb20-23"></a>      <span class="at">lag =</span> <span class="fu">paste0</span>(<span class="st">"lag"</span>, k[i])</span>
+<span id="cb20-24"><a href="#cb20-24"></a>    ) <span class="ot">-&gt;</span> res_store[[i]]</span>
+<span id="cb20-25"><a href="#cb20-25"></a>}</span>
+<span id="cb20-26"><a href="#cb20-26"></a></span>
+<span id="cb20-27"><a href="#cb20-27"></a></span>
+<span id="cb20-28"><a href="#cb20-28"></a><span class="fu">do.call</span>(rbind, res_store) <span class="sc">%&gt;%</span></span>
+<span id="cb20-29"><a href="#cb20-29"></a>  <span class="fu">mutate</span>(<span class="at">lag =</span> <span class="fu">factor</span>(lag, <span class="at">levels =</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">"lag"</span>, k)))) <span class="sc">%&gt;%</span></span>
+<span id="cb20-30"><a href="#cb20-30"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb20-31"><a href="#cb20-31"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(temperature_laggeg, rr, <span class="at">col =</span> lag), <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb20-32"><a href="#cb20-32"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> temperature_laggeg, <span class="at">ymin =</span> rr_lower, <span class="at">ymax =</span> rr_upper, <span class="at">fill =</span> lag), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">col =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb20-33"><a href="#cb20-33"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb20-34"><a href="#cb20-34"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb20-35"><a href="#cb20-35"></a>  <span class="fu">ylab</span>(<span class="st">"Mortality risk"</span>) <span class="sc">+</span></span>
+<span id="cb20-36"><a href="#cb20-36"></a>  <span class="fu">xlab</span>(<span class="st">"Temperature"</span>) <span class="sc">+</span></span>
+<span id="cb20-37"><a href="#cb20-37"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="fl">0.7</span>, <span class="fl">1.7</span>)) <span class="sc">+</span></span>
+<span id="cb20-38"><a href="#cb20-38"></a>  <span class="fu">scale_fill_viridis_d</span>(<span class="at">option =</span> <span class="st">"C"</span>) <span class="sc">+</span></span>
+<span id="cb20-39"><a href="#cb20-39"></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"C"</span>) <span class="ot">-&gt;</span> p28</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="case-study-chicago---temperature-and-mortality-11" class="slide level2">
+<section id="case-study-chicago---temperature-and-mortality-11" class="slide level2" style="font-size: 90%;">
 <h2>Case-study: Chicago - Temperature and mortality</h2>
 <ul>
 <li><p>What do you observe?</p></li>
@@ -991,7 +1027,8 @@ UBRE = 0.4123  Scale est. = 1         n = 4863</code></pre>
 <li><p>How can we model lags properly?</p></li>
 </ul>
 <p>Questions?</p>
-<div class="footer footer-default">
+
+<img src="../../assets/logo_trans.png" class="slide-logo r-stretch"><div class="footer footer-default">
 
 </div>
 </section>

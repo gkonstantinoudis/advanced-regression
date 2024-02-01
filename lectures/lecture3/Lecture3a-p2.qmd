@@ -8,17 +8,20 @@ editor: visual
 date-format: medium
 title-slide-attributes:
   data-background-color: "#f3f4f4"
-  data-background-size: 80%
-  data-background-position: 60% 120%
+  data-background-image: "../../assets/logo_trans.png"
+  data-background-size: 50%
+  data-background-position: 90% 120%
 format:
     revealjs:
-      slide-number: true
       theme: [default, ../../assets/style.scss]
+      logo: "../../assets/logo_trans.png"
+      slide-number: true
       incremental: false
       chalkboard:
         buttons: false
 ---
 
+::: {style="font-size: 80%;"}
 ## Introduction
 
 We consider again the diabetes outcome looking at the outcome disease progression $y$ and we try to fit the following linear model:
@@ -43,7 +46,9 @@ x$female <- ifelse(x$sex > 0, 1, 0)
 
 corrplot(corr = x %>% dplyr::select(age, male, female, map, ltg) %>% as.matrix() %>% cor())
 ```
+:::
 
+::: {style="font-size: 80%;"}
 ## Fitting an lm when high correlation
 
 ```{r}
@@ -62,7 +67,10 @@ lm(y ~ age + male + female + map + ltg, data = x) %>% summary()
 
 lm(y ~ age + male + female + map + ltg, data = x, singular.ok = FALSE)
 ```
+:::
 
+
+::: {style="font-size: 80%;"}
 ## Fitting an lm when high correlation
 
 -   The `lm()` function checks for singularities in the design matrix $x$, but not all methods have this safety check.
@@ -79,7 +87,9 @@ library(glmnet)
 lm.lasso <- glmnet(y = y, x = x, alpha = 1, lambda = 0.5, family = "gaussian")
 lm.lasso$beta
 ```
+:::
 
+::: {style="font-size: 80%;"}
 ## What are singularity and multicollinearity?
 
 **Singularity**
@@ -95,7 +105,9 @@ What can cause singularity?
 -   Dummy-coding of categorical variable. Make sure not to add redundant information
 
 -   Do not include multiple measurement that are measured on different scales (e.g., $m$ and $cm$)
+:::
 
+::: {style="font-size: 80%;"}
 ## What is the impact of multicollinearity?
 
 True biological processes do not cause singularity (because they are random, not deterministic), but can cause multicollinearity.
@@ -107,6 +119,7 @@ True biological processes do not cause singularity (because they are random, not
 -   When there is multicollinearity, $x^tx$ can be inverted, but the estimate will show a high variance and will be highly unstable.
 
 -   Multicollinearity can distort a linear model and impact the interpretation.
+:::
 
 ## How to inspect correlation?
 
@@ -122,6 +135,8 @@ How to detect multicollinearity
 
 -   Variance inflation factor
 
+
+::: {style="font-size: 80%;"}
 ## Covariance matrix
 
 Computing the sample covariance matrix using matrix multiplication
@@ -141,7 +156,9 @@ $$\hat{cov}(x) = \frac{1}{n-1} \underbrace{x^t_c}_{p \times n} \underbrace{x_c}_
 -   $x$ predictor matrix of $n$ rows and $p$ columns
 
 -   $x^t$ transposed predictor matrix of $p$ rows and $n$ columns
+:::
 
+::: {style="font-size: 80%;"}
 ## Matrix multiplication
 
 Matrix multiplication: $\underbrace{c}_{n \times p} = \underbrace{a}_{n \times m} \underbrace{b}_{m \times p}$
@@ -155,7 +172,9 @@ $$c_{ij} =  \sum_{k=1}^m a_{ik}b_{kj}$$
 -   Make sure your matrices have the correct dimensions, number of columns of the left matrix must be equal to the number of rows on the right.
 
 -   Can be computed in R using the `\%*\%` command.
+:::
 
+::: {style="font-size: 80%;"}
 ## Correlation matrix
 
 Computing the sample correlation matrix using matrix multiplication
@@ -171,9 +190,9 @@ where $x_s$ is a centred and scaled matrix $x_s=cxd^{-1}$
 This is equivalent to writing
 
 $$\hat{cor}(x_j, x_k) = \frac{\sum_{i=1}^n (x_{ij}-\bar{x}_j)(x_{ik} - \bar{x}_k) }{ \sqrt{\sum_{i=1}^n (x_{ij}-\bar{x}_j)^2 } \sqrt{\sum_{i=1}^n (x_{ik} - \bar{x}_k)^2 }} $$
+:::
 
-
-
+::: {style="font-size: 80%;"}
 ## Correlation matrix
 
 -   Correlation matrices are symmetric and have a vector of $1$'s on the diagonal.
@@ -187,7 +206,9 @@ cor(x %>% dplyr::select(age, male, female, map, ltg))
 -   Note the following correlation matrix captures the correlation between the samples and is of dimension $n \times n$
 
 $$\hat{cor}(x^t) = \frac{1}{p-1} \underbrace{x_s}_{n \times p} \underbrace{x_s^t}_{p \times n}$$
+:::
 
+::: {style="font-size: 80%;"}
 ## Correlation matrix
 
 R commands
@@ -204,6 +225,7 @@ R commands
 #| fig-align: "center"
 corrplot(corr = x %>% dplyr::select(age, male, female, map, ltg) %>% as.matrix() %>% cor())
 ```
+:::
 
 ## The rank of a matrix
 
@@ -217,6 +239,7 @@ corrplot(corr = x %>% dplyr::select(age, male, female, map, ltg) %>% as.matrix()
 
 If we have less samples than variables ($n<p$) the rank is $n$.
 
+::: {style="font-size: 80%;"}
 ## The rank of the correlation matrix
 
 -   Let us consider again the correlation matrix
@@ -228,7 +251,9 @@ $$\hat{cor}(x) = \frac{1}{n-1} \underbrace{x^t_s}_{p \times n} \underbrace{x_s}_
 -   To test the rank of a matrix in R: `rankMatrix()` in the `Matrix` package
 
 If the rank of a correlation matrix is smaller than $min(n,p)$ the correlation matrix is singular and thus cannot be inverted.
+:::
 
+::: {style="font-size: 80%;"}
 ## The rank of the correlation matrix in R
 
 ```{r}
@@ -246,9 +271,9 @@ x %>%
 ```
 
 Interpretation: The correlation matrix of the design matrix with 5 predictors is of dimension $5\times5$, yet the rank is 4 which indicates singularity.
+:::
 
-## Variance in
-ation factor (VIF)
+## Variance ination factor (VIF)
 
 -   The VIF is the ratio of the variance of $\beta_j$ when fitting the full model divided by the variance of $\beta_{UNI}(j)$ in a unvariable linear model.
 
@@ -258,6 +283,7 @@ ation factor (VIF)
 
 -   It provides an indication how much the variance of an estimated regression coefficient is increased because of multicollinearity.
 
+::: {style="font-size: 70%;"}
 ## Variance inflation factor (VIF)
 
 Consider the following linear model including $p$ predictors with inde $j \in 1,…,p$
@@ -275,6 +301,7 @@ $$x_1 = \alpha +  \beta_2 x_2 + … + \beta_j x_j + … + \beta_p x_p + \epsilon
     $$VIF_1 =   \frac{1}{1-R_2(1)}$$
 
 -   Repeat for the other $j \in 2,…,p$.
+:::
 
 ## Variance inflation factor
 
@@ -304,7 +331,6 @@ vif(lm2)
 
     -   The rank of a matrix
 
-    -   Variance in
-ation factor
+    -   Variance in ation factor
 
 Questions?

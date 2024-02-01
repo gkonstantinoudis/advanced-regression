@@ -1,7 +1,7 @@
 ## Logo AR
 
 
-# Rdge regression
+# Ridge regression
 library(ggplot2)
 library(dplyr)
 library(mvtnorm)
