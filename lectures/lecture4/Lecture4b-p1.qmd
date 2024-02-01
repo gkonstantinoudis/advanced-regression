@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression 4b: Machine learning, decision trees"
-date: "20-03-2024"
+date: "03-12-2024"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -21,7 +21,7 @@ format:
         buttons: false
 ---
 
-##
+## 
 
 -   Motivation for decision trees
 -   Technical definition
@@ -561,7 +561,6 @@ text(tree.out)
 # tree.control(nobs, mincut = 5, minsize = 10, mindev = 0.01)
 ```
 
-
 ## Decision trees in `R`: `tree`
 
 ```{r decision-trees-r-6}
@@ -572,7 +571,6 @@ cv.tree(tree.out)
 # prune.tree(tree.out, best)
 # prune.tree(tree.out, k)
 ```
-
 
 ::: {style="font-size: 80%;"}
 ## Overview: decision trees

@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression 4b: Machine learning, ensemble methods"
-date: "20-03-2024"
+date: "03-12-2024"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -197,7 +197,7 @@ How to select $m$?
 :::
 :::
 
-##
+## 
 
 ::: {layout-ncol="2"}
 ![Bagging](assets/forest1.png){width="50%," fig-align="center"}
