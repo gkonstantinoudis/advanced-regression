@@ -4,7 +4,7 @@ author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
 editor: visual
-date: "20/02/2024"
+date: "02-20-2024"
 date-format: medium
 title-slide-attributes:
   data-background-color: "#f3f4f4"

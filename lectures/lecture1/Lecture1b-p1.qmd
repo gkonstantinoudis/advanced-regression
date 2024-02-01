@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression: Linear and generalised linear models I"
-date: "20-02-2024"
+date: "02-20-2024"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -22,7 +22,6 @@ format:
 ---
 
 ::: {style="font-size: 70%;"}
-
 ## Main goal of (linear) regression
 
 Regression models are used to investigate association between
@@ -93,7 +92,6 @@ Observed data:
     -   $i = 1, ..., n$ samples.
 
     -   $j = , ..., p$ variables.
-
 :::
 
 ::: {style="font-size: 80%;"}
@@ -121,7 +119,7 @@ Alternative representation:
 
 -   $x$: predictor matrix
 
-```
+```         
 -   clinical parameters: age, sex, bmi
 
 -   map: blood pressure
@@ -235,6 +233,7 @@ $\hat{y} = x \hat{\beta} = \underbrace{x (x^t x)^{-1} x^t}_{h} y$
 Residuals are an important quantity for model diagnostics.
 :::
 :::
+
 ## Fitted values and residuals
 
 ```{r}

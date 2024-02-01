@@ -26,7 +26,7 @@
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
       width: 0.8em;
-      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
@@ -106,11 +106,11 @@
 
   .callout {
     margin-top: 1em;
-    margin-bottom: 1em;
+    margin-bottom: 1em;  
     border-radius: .25rem;
   }
 
-  .callout.callout-style-simple {
+  .callout.callout-style-simple { 
     padding: 0em 0.5em;
     border-left: solid #acacac .3rem;
     border-right: solid 1px silver;
@@ -161,7 +161,7 @@
     margin-top: 0.5em;
     margin-bottom: 0.5em;
   }
-
+    
   .callout.callout-titled.callout-style-simple .callout-content  p {
     margin-top: 0;
   }
@@ -212,7 +212,7 @@
   .callout-title {
     display: flex
   }
-
+    
   .callout-icon::before {
     margin-top: 1rem;
     padding-right: .5rem;
@@ -324,12 +324,12 @@
     }
     .reveal .footnotes ol {
       counter-reset: ol;
-      list-style-type: none;
+      list-style-type: none; 
       margin-left: 0;
     }
     .reveal .footnotes ol li:before {
       counter-increment: ol;
-      content: counter(ol) ". ";
+      content: counter(ol) ". "; 
     }
     .reveal .footnotes ol li > p:first-child {
       display: inline-block;
@@ -371,19 +371,19 @@
     .reveal .slide > img.r-stretch.quarto-figure-center {
       display: block;
       margin-left: auto;
-      margin-right: auto;
+      margin-right: auto; 
     }
     .reveal .slide > img.stretch.quarto-figure-left,
     .reveal .slide > img.r-stretch.quarto-figure-left  {
       display: block;
       margin-left: 0;
-      margin-right: auto;
+      margin-right: auto; 
     }
     .reveal .slide > img.stretch.quarto-figure-right,
     .reveal .slide > img.r-stretch.quarto-figure-right  {
       display: block;
       margin-left: auto;
-      margin-right: 0;
+      margin-right: 0; 
     }
   </style>
 </head>
@@ -397,7 +397,7 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Garyfallos Konstantinoudis
+Garyfallos Konstantinoudis 
 </div>
         <p class="quarto-title-affiliation">
             Imperial College London
@@ -405,7 +405,7 @@ Garyfallos Konstantinoudis
     </div>
 </div>
 
-  <p class="date">Aug 2, 2025</p>
+  <p class="date">Feb 20, 2024</p>
 </section>
 <section id="main-goal-of-linear-regression" class="slide level2" style="font-size: 70%;">
 <h2>Main goal of (linear) regression</h2>
@@ -538,22 +538,22 @@ Call:
 lm(formula = y ~ age + sex + glu + map + ltg, data = x)
 
 Residuals:
-     Min       1Q   Median       3Q      Max
--165.128  -43.025   -5.232   42.446  182.050
+     Min       1Q   Median       3Q      Max 
+-165.128  -43.025   -5.232   42.446  182.050 
 
 Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)
+            Estimate Std. Error t value Pr(&gt;|t|)    
 (Intercept)  152.133      2.871  52.990  &lt; 2e-16 ***
-age          -54.227     65.854  -0.823  0.41071
-sex         -166.066     62.903  -2.640  0.00859 **
-glu          175.377     71.671   2.447  0.01480 *
+age          -54.227     65.854  -0.823  0.41071    
+sex         -166.066     62.903  -2.640  0.00859 ** 
+glu          175.377     71.671   2.447  0.01480 *  
 map          426.532     70.342   6.064 2.89e-09 ***
 ltg          706.395     70.929   9.959  &lt; 2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 60.36 on 436 degrees of freedom
-Multiple R-squared:  0.3939,    Adjusted R-squared:  0.387
+Multiple R-squared:  0.3939,    Adjusted R-squared:  0.387 
 F-statistic: 56.68 on 5 and 436 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
@@ -568,18 +568,18 @@ Call:
 lm(formula = y ~ glu, data = x)
 
 Residuals:
-     Min       1Q   Median       3Q      Max
--153.069  -57.716   -5.466   54.656  186.839
+     Min       1Q   Median       3Q      Max 
+-153.069  -57.716   -5.466   54.656  186.839 
 
 Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)
+            Estimate Std. Error t value Pr(&gt;|t|)    
 (Intercept)  152.133      3.392  44.851   &lt;2e-16 ***
 glu          619.223     71.312   8.683   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 71.31 on 440 degrees of freedom
-Multiple R-squared:  0.1463,    Adjusted R-squared:  0.1444
+Multiple R-squared:  0.1463,    Adjusted R-squared:  0.1444 
 F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
@@ -640,7 +640,7 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>lm0<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(Intercept)         glu
+<pre><code>(Intercept)         glu 
    152.1335    619.2228 </code></pre>
 </div>
 </div>
@@ -798,7 +798,7 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
   <script src="Lecture1b-p1_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
   <script src="Lecture1b-p1_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
   <script src="Lecture1b-p1_files/libs/revealjs/plugin/quarto-support/support.js"></script>
-
+  
 
   <script src="Lecture1b-p1_files/libs/revealjs/plugin/notes/notes.js"></script>
   <script src="Lecture1b-p1_files/libs/revealjs/plugin/search/search.js"></script>
@@ -821,7 +821,7 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":false},
 'smaller': false,
-
+ 
         // Display controls in the bottom right corner
         controls: false,
 
@@ -999,7 +999,7 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
         ]
       });
     </script>
-
+    
     <script>
       // htmlwidgets need to know to resize themselves when slides are shown/hidden.
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
@@ -1056,14 +1056,14 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
           toggleBodyColorMode(bsSheetEl);
         }
       }
-      toggleBodyColorPrimary();
+      toggleBodyColorPrimary();  
       const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
       tabsets.forEach(function(tabset) {
         const tabby = new Tabby('#' + tabset.id);
       });
       const isCodeAnnotation = (el) => {
         for (const clz of el.classList) {
-          if (clz.startsWith('code-annotation-')) {
+          if (clz.startsWith('code-annotation-')) {                     
             return true;
           }
         }
@@ -1094,11 +1094,11 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
           button.setAttribute("data-bs-toggle", "tooltip");
           button.setAttribute("data-bs-placement", "left");
           button.setAttribute("data-bs-title", "Copied!");
-          tooltip = new bootstrap.Tooltip(button,
-            { trigger: "manual",
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
               customClass: "code-copy-button-tooltip",
               offset: [0, -8]});
-          tooltip.show();
+          tooltip.show();    
         }
         setTimeout(function() {
           if (tooltip) {
@@ -1130,7 +1130,7 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
         };
           config['offset'] = [0,0];
           config['maxWidth'] = 700;
-        window.tippy(el, config);
+        window.tippy(el, config); 
       }
       const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
       for (var i=0; i<noterefs.length; i++) {
@@ -1183,6 +1183,6 @@ F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
       }
     });
     </script>
-
+    
 
 </body></html>

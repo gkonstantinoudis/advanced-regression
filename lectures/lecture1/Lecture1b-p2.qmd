@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression: Linear and generalised linear models II"
-date: "20-02-2024"
+date: "02-20-2024"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -32,7 +32,6 @@ format:
 -   Generalised linear models in R
 
 ::: {style="font-size:90%;"}
-
 ## Generalised linear model (GLM)
 
 -   Linear models can only model a quantitative outcome.
@@ -313,7 +312,6 @@ glm(y ~ age + sex + bmi + map + ltg, data = x, family = binomial) %>% summary()
 
     -   linear.predictors: the linear fit on the link scale
 :::
-
 
 ::: {style="font-size: 80%;"}
 ## Making predictions

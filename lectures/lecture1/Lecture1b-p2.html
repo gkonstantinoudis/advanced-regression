@@ -26,7 +26,7 @@
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
       width: 0.8em;
-      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
@@ -106,11 +106,11 @@
 
   .callout {
     margin-top: 1em;
-    margin-bottom: 1em;
+    margin-bottom: 1em;  
     border-radius: .25rem;
   }
 
-  .callout.callout-style-simple {
+  .callout.callout-style-simple { 
     padding: 0em 0.5em;
     border-left: solid #acacac .3rem;
     border-right: solid 1px silver;
@@ -161,7 +161,7 @@
     margin-top: 0.5em;
     margin-bottom: 0.5em;
   }
-
+    
   .callout.callout-titled.callout-style-simple .callout-content  p {
     margin-top: 0;
   }
@@ -212,7 +212,7 @@
   .callout-title {
     display: flex
   }
-
+    
   .callout-icon::before {
     margin-top: 1rem;
     padding-right: .5rem;
@@ -324,12 +324,12 @@
     }
     .reveal .footnotes ol {
       counter-reset: ol;
-      list-style-type: none;
+      list-style-type: none; 
       margin-left: 0;
     }
     .reveal .footnotes ol li:before {
       counter-increment: ol;
-      content: counter(ol) ". ";
+      content: counter(ol) ". "; 
     }
     .reveal .footnotes ol li > p:first-child {
       display: inline-block;
@@ -371,19 +371,19 @@
     .reveal .slide > img.r-stretch.quarto-figure-center {
       display: block;
       margin-left: auto;
-      margin-right: auto;
+      margin-right: auto; 
     }
     .reveal .slide > img.stretch.quarto-figure-left,
     .reveal .slide > img.r-stretch.quarto-figure-left  {
       display: block;
       margin-left: 0;
-      margin-right: auto;
+      margin-right: auto; 
     }
     .reveal .slide > img.stretch.quarto-figure-right,
     .reveal .slide > img.r-stretch.quarto-figure-right  {
       display: block;
       margin-left: auto;
-      margin-right: 0;
+      margin-right: 0; 
     }
   </style>
 </head>
@@ -397,7 +397,7 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Garyfallos Konstantinoudis
+Garyfallos Konstantinoudis 
 </div>
         <p class="quarto-title-affiliation">
             Imperial College London
@@ -405,7 +405,7 @@ Garyfallos Konstantinoudis
     </div>
 </div>
 
-  <p class="date">Aug 2, 2025</p>
+  <p class="date">Feb 20, 2024</p>
 </section>
 <section id="generalised-linear-model" class="slide level2">
 <h2>Generalised linear model</h2>
@@ -606,14 +606,14 @@ f_{\sigma}(x \mid \mu) =  \frac{1}{\sqrt{2 \pi \sigma^2}} \exp\{ -\frac{(x-\mu)^
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-glm(formula = y ~ age + sex + bmi + map + ltg, family = binomial,
+glm(formula = y ~ age + sex + bmi + map + ltg, family = binomial, 
     data = x)
 
 Coefficients:
-            Estimate Std. Error z value Pr(&gt;|z|)
-(Intercept)  -0.3164     0.1190  -2.659  0.00783 **
-age          -1.0206     2.7309  -0.374  0.70860
-sex          -5.4254     2.6315  -2.062  0.03923 *
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  -0.3164     0.1190  -2.659  0.00783 ** 
+age          -1.0206     2.7309  -0.374  0.70860    
+sex          -5.4254     2.6315  -2.062  0.03923 *  
 bmi          14.5079     3.0223   4.800 1.58e-06 ***
 map          11.8803     2.9652   4.007 6.16e-05 ***
 ltg          18.6940     3.1954   5.850 4.91e-09 ***
@@ -732,7 +732,7 @@ Number of Fisher Scoring iterations: 4</code></pre>
   <script src="Lecture1b-p2_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
   <script src="Lecture1b-p2_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
   <script src="Lecture1b-p2_files/libs/revealjs/plugin/quarto-support/support.js"></script>
-
+  
 
   <script src="Lecture1b-p2_files/libs/revealjs/plugin/notes/notes.js"></script>
   <script src="Lecture1b-p2_files/libs/revealjs/plugin/search/search.js"></script>
@@ -755,7 +755,7 @@ Number of Fisher Scoring iterations: 4</code></pre>
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":false},
 'smaller': false,
-
+ 
         // Display controls in the bottom right corner
         controls: false,
 
@@ -933,7 +933,7 @@ Number of Fisher Scoring iterations: 4</code></pre>
         ]
       });
     </script>
-
+    
     <script>
       // htmlwidgets need to know to resize themselves when slides are shown/hidden.
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
@@ -990,14 +990,14 @@ Number of Fisher Scoring iterations: 4</code></pre>
           toggleBodyColorMode(bsSheetEl);
         }
       }
-      toggleBodyColorPrimary();
+      toggleBodyColorPrimary();  
       const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
       tabsets.forEach(function(tabset) {
         const tabby = new Tabby('#' + tabset.id);
       });
       const isCodeAnnotation = (el) => {
         for (const clz of el.classList) {
-          if (clz.startsWith('code-annotation-')) {
+          if (clz.startsWith('code-annotation-')) {                     
             return true;
           }
         }
@@ -1028,11 +1028,11 @@ Number of Fisher Scoring iterations: 4</code></pre>
           button.setAttribute("data-bs-toggle", "tooltip");
           button.setAttribute("data-bs-placement", "left");
           button.setAttribute("data-bs-title", "Copied!");
-          tooltip = new bootstrap.Tooltip(button,
-            { trigger: "manual",
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
               customClass: "code-copy-button-tooltip",
               offset: [0, -8]});
-          tooltip.show();
+          tooltip.show();    
         }
         setTimeout(function() {
           if (tooltip) {
@@ -1064,7 +1064,7 @@ Number of Fisher Scoring iterations: 4</code></pre>
         };
           config['offset'] = [0,0];
           config['maxWidth'] = 700;
-        window.tippy(el, config);
+        window.tippy(el, config); 
       }
       const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
       for (var i=0; i<noterefs.length; i++) {
@@ -1117,6 +1117,6 @@ Number of Fisher Scoring iterations: 4</code></pre>
       }
     });
     </script>
-
+    
 
 </body></html>
