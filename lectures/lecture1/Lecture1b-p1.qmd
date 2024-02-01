@@ -119,7 +119,7 @@ Alternative representation:
 
 -   $x$: predictor matrix
 
-```         
+```
 -   clinical parameters: age, sex, bmi
 
 -   map: blood pressure

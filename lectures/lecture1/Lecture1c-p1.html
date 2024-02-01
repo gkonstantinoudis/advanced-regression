@@ -26,7 +26,7 @@
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
       width: 0.8em;
-      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
@@ -106,11 +106,11 @@
 
   .callout {
     margin-top: 1em;
-    margin-bottom: 1em;  
+    margin-bottom: 1em;
     border-radius: .25rem;
   }
 
-  .callout.callout-style-simple { 
+  .callout.callout-style-simple {
     padding: 0em 0.5em;
     border-left: solid #acacac .3rem;
     border-right: solid 1px silver;
@@ -161,7 +161,7 @@
     margin-top: 0.5em;
     margin-bottom: 0.5em;
   }
-    
+
   .callout.callout-titled.callout-style-simple .callout-content  p {
     margin-top: 0;
   }
@@ -212,7 +212,7 @@
   .callout-title {
     display: flex
   }
-    
+
   .callout-icon::before {
     margin-top: 1rem;
     padding-right: .5rem;
@@ -324,12 +324,12 @@
     }
     .reveal .footnotes ol {
       counter-reset: ol;
-      list-style-type: none; 
+      list-style-type: none;
       margin-left: 0;
     }
     .reveal .footnotes ol li:before {
       counter-increment: ol;
-      content: counter(ol) ". "; 
+      content: counter(ol) ". ";
     }
     .reveal .footnotes ol li > p:first-child {
       display: inline-block;
@@ -371,19 +371,19 @@
     .reveal .slide > img.r-stretch.quarto-figure-center {
       display: block;
       margin-left: auto;
-      margin-right: auto; 
+      margin-right: auto;
     }
     .reveal .slide > img.stretch.quarto-figure-left,
     .reveal .slide > img.r-stretch.quarto-figure-left  {
       display: block;
       margin-left: 0;
-      margin-right: auto; 
+      margin-right: auto;
     }
     .reveal .slide > img.stretch.quarto-figure-right,
     .reveal .slide > img.r-stretch.quarto-figure-right  {
       display: block;
       margin-left: auto;
-      margin-right: 0; 
+      margin-right: 0;
     }
   </style>
 </head>
@@ -397,7 +397,7 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Garyfallos Konstantinoudis 
+Garyfallos Konstantinoudis
 </div>
         <p class="quarto-title-affiliation">
             Imperial College London
@@ -443,7 +443,7 @@ cor(x_i, x_{i'}) = 0  \text{ for all }  i, i' \in 1,….,n
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">table</span>(data_chol<span class="sc">$</span>doctor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
- 1  2  3  4  5  6  7  8  9 10 11 12 
+ 1  2  3  4  5  6  7  8  9 10 11 12
 36 36 36 39 36 36 39 36 36 39 36 36 </code></pre>
 </div>
 </div>
@@ -491,18 +491,18 @@ Call:
 lm(formula = chol ~ age, data = data_chol)
 
 Residuals:
-    Min      1Q  Median      3Q     Max 
--1.8971 -0.6206 -0.1105  0.5693  2.9456 
+    Min      1Q  Median      3Q     Max
+-1.8971 -0.6206 -0.1105  0.5693  2.9456
 
 Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)    
+            Estimate Std. Error t value Pr(&gt;|t|)
 (Intercept) 2.798691   0.268571   10.42   &lt;2e-16 ***
 age         0.051262   0.004301   11.92   &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 0.8362 on 439 degrees of freedom
-Multiple R-squared:  0.2445,    Adjusted R-squared:  0.2428 
+Multiple R-squared:  0.2445,    Adjusted R-squared:  0.2428
 F-statistic: 142.1 on 1 and 439 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
@@ -623,8 +623,8 @@ Call:
 lm(formula = chol_grouped ~ age_grouped, data = data_grouped)
 
 Residuals:
-    Min      1Q  Median      3Q     Max 
--0.7216 -0.4513 -0.1844  0.3020  1.3576 
+    Min      1Q  Median      3Q     Max
+-0.7216 -0.4513 -0.1844  0.3020  1.3576
 
 Coefficients:
             Estimate Std. Error t value Pr(&gt;|t|)
@@ -632,7 +632,7 @@ Coefficients:
 age_grouped  0.07548    0.08176   0.923    0.378
 
 Residual standard error: 0.67 on 10 degrees of freedom
-Multiple R-squared:  0.07854,   Adjusted R-squared:  -0.0136 
+Multiple R-squared:  0.07854,   Adjusted R-squared:  -0.0136
 F-statistic: 0.8524 on 1 and 10 DF,  p-value: 0.3776</code></pre>
 </div>
 </div>
@@ -723,13 +723,13 @@ Call:
 lm(formula = chol ~ as.factor(doctor) + age, data = data_chol)
 
 Residuals:
-     Min       1Q   Median       3Q      Max 
--1.59881 -0.40321 -0.08463  0.37929  1.77313 
+     Min       1Q   Median       3Q      Max
+-1.59881 -0.40321 -0.08463  0.37929  1.77313
 
 Coefficients:
-                     Estimate Std. Error t value Pr(&gt;|t|)    
+                     Estimate Std. Error t value Pr(&gt;|t|)
 (Intercept)          3.826236   0.213854  17.892  &lt; 2e-16 ***
-as.factor(doctor)2   0.400993   0.136014   2.948  0.00337 ** 
+as.factor(doctor)2   0.400993   0.136014   2.948  0.00337 **
 as.factor(doctor)3  -0.752146   0.135865  -5.536 5.41e-08 ***
 as.factor(doctor)4  -0.555317   0.133254  -4.167 3.73e-05 ***
 as.factor(doctor)5  -0.884528   0.136039  -6.502 2.21e-10 ***
@@ -745,7 +745,7 @@ age                  0.049543   0.003065  16.164  &lt; 2e-16 ***
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 0.5764 on 428 degrees of freedom
-Multiple R-squared:   0.65, Adjusted R-squared:  0.6402 
+Multiple R-squared:   0.65, Adjusted R-squared:  0.6402
 F-statistic: 66.24 on 12 and 428 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
@@ -775,11 +775,11 @@ Call:
 lm(formula = chol ~ age:as.factor(doctor), data = data_chol)
 
 Residuals:
-     Min       1Q   Median       3Q      Max 
--1.56821 -0.41837 -0.07627  0.38652  1.67691 
+     Min       1Q   Median       3Q      Max
+-1.56821 -0.41837 -0.07627  0.38652  1.67691
 
 Coefficients:
-                        Estimate Std. Error t value Pr(&gt;|t|)    
+                        Estimate Std. Error t value Pr(&gt;|t|)
 (Intercept)             2.845418   0.193641  14.694   &lt;2e-16 ***
 age:as.factor(doctor)1  0.064655   0.003392  19.059   &lt;2e-16 ***
 age:as.factor(doctor)2  0.072176   0.003571  20.210   &lt;2e-16 ***
@@ -797,7 +797,7 @@ age:as.factor(doctor)12 0.037020   0.003750   9.873   &lt;2e-16 ***
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Residual standard error: 0.5817 on 428 degrees of freedom
-Multiple R-squared:  0.6435,    Adjusted R-squared:  0.6336 
+Multiple R-squared:  0.6435,    Adjusted R-squared:  0.6336
 F-statistic: 64.39 on 12 and 428 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
@@ -862,7 +862,7 @@ F-statistic: 64.39 on 12 and 428 DF,  p-value: &lt; 2.2e-16</code></pre>
   <script src="Lecture1c-p1_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
   <script src="Lecture1c-p1_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
   <script src="Lecture1c-p1_files/libs/revealjs/plugin/quarto-support/support.js"></script>
-  
+
 
   <script src="Lecture1c-p1_files/libs/revealjs/plugin/notes/notes.js"></script>
   <script src="Lecture1c-p1_files/libs/revealjs/plugin/search/search.js"></script>
@@ -885,7 +885,7 @@ F-statistic: 64.39 on 12 and 428 DF,  p-value: &lt; 2.2e-16</code></pre>
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":false},
 'smaller': false,
- 
+
         // Display controls in the bottom right corner
         controls: false,
 
@@ -1063,7 +1063,7 @@ F-statistic: 64.39 on 12 and 428 DF,  p-value: &lt; 2.2e-16</code></pre>
         ]
       });
     </script>
-    
+
     <script>
       // htmlwidgets need to know to resize themselves when slides are shown/hidden.
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
@@ -1120,14 +1120,14 @@ F-statistic: 64.39 on 12 and 428 DF,  p-value: &lt; 2.2e-16</code></pre>
           toggleBodyColorMode(bsSheetEl);
         }
       }
-      toggleBodyColorPrimary();  
+      toggleBodyColorPrimary();
       const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
       tabsets.forEach(function(tabset) {
         const tabby = new Tabby('#' + tabset.id);
       });
       const isCodeAnnotation = (el) => {
         for (const clz of el.classList) {
-          if (clz.startsWith('code-annotation-')) {                     
+          if (clz.startsWith('code-annotation-')) {
             return true;
           }
         }
@@ -1158,11 +1158,11 @@ F-statistic: 64.39 on 12 and 428 DF,  p-value: &lt; 2.2e-16</code></pre>
           button.setAttribute("data-bs-toggle", "tooltip");
           button.setAttribute("data-bs-placement", "left");
           button.setAttribute("data-bs-title", "Copied!");
-          tooltip = new bootstrap.Tooltip(button, 
-            { trigger: "manual", 
+          tooltip = new bootstrap.Tooltip(button,
+            { trigger: "manual",
               customClass: "code-copy-button-tooltip",
               offset: [0, -8]});
-          tooltip.show();    
+          tooltip.show();
         }
         setTimeout(function() {
           if (tooltip) {
@@ -1194,7 +1194,7 @@ F-statistic: 64.39 on 12 and 428 DF,  p-value: &lt; 2.2e-16</code></pre>
         };
           config['offset'] = [0,0];
           config['maxWidth'] = 700;
-        window.tippy(el, config); 
+        window.tippy(el, config);
       }
       const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
       for (var i=0; i<noterefs.length; i++) {
@@ -1247,6 +1247,6 @@ F-statistic: 64.39 on 12 and 428 DF,  p-value: &lt; 2.2e-16</code></pre>
       }
     });
     </script>
-    
+
 
 </body></html>

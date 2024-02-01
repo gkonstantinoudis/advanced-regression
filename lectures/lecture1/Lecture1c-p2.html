@@ -26,7 +26,7 @@
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
       width: 0.8em;
-      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
       vertical-align: middle;
     }
     /* CSS for syntax highlighting */
@@ -106,11 +106,11 @@
 
   .callout {
     margin-top: 1em;
-    margin-bottom: 1em;  
+    margin-bottom: 1em;
     border-radius: .25rem;
   }
 
-  .callout.callout-style-simple { 
+  .callout.callout-style-simple {
     padding: 0em 0.5em;
     border-left: solid #acacac .3rem;
     border-right: solid 1px silver;
@@ -161,7 +161,7 @@
     margin-top: 0.5em;
     margin-bottom: 0.5em;
   }
-    
+
   .callout.callout-titled.callout-style-simple .callout-content  p {
     margin-top: 0;
   }
@@ -212,7 +212,7 @@
   .callout-title {
     display: flex
   }
-    
+
   .callout-icon::before {
     margin-top: 1rem;
     padding-right: .5rem;
@@ -324,12 +324,12 @@
     }
     .reveal .footnotes ol {
       counter-reset: ol;
-      list-style-type: none; 
+      list-style-type: none;
       margin-left: 0;
     }
     .reveal .footnotes ol li:before {
       counter-increment: ol;
-      content: counter(ol) ". "; 
+      content: counter(ol) ". ";
     }
     .reveal .footnotes ol li > p:first-child {
       display: inline-block;
@@ -371,19 +371,19 @@
     .reveal .slide > img.r-stretch.quarto-figure-center {
       display: block;
       margin-left: auto;
-      margin-right: auto; 
+      margin-right: auto;
     }
     .reveal .slide > img.stretch.quarto-figure-left,
     .reveal .slide > img.r-stretch.quarto-figure-left  {
       display: block;
       margin-left: 0;
-      margin-right: auto; 
+      margin-right: auto;
     }
     .reveal .slide > img.stretch.quarto-figure-right,
     .reveal .slide > img.r-stretch.quarto-figure-right  {
       display: block;
       margin-left: auto;
-      margin-right: 0; 
+      margin-right: 0;
     }
   </style>
 </head>
@@ -397,7 +397,7 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Garyfallos Konstantinoudis 
+Garyfallos Konstantinoudis
 </div>
         <p class="quarto-title-affiliation">
             Imperial College London
@@ -525,7 +525,7 @@ y_i =  \alpha_0 + \beta x_i  + u_k + \epsilon_i
 <span id="cb1-2"><a href="#cb1-2"></a><span class="fu">summary</span>(model_random_intercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed-effects model fit by REML
-  Data: data_chol 
+  Data: data_chol
       AIC     BIC    logLik
   828.697 845.035 -410.3485
 
@@ -534,17 +534,17 @@ Random effects:
         (Intercept)  Residual
 StdDev:   0.6347908 0.5764246
 
-Fixed effects:  chol ~ age 
+Fixed effects:  chol ~ age
                 Value  Std.Error  DF  t-value p-value
 (Intercept) 2.9060357 0.26477408 428 10.97553       0
 age         0.0495831 0.00306279 428 16.18888       0
- Correlation: 
+ Correlation:
     (Intr)
 age -0.714
 
 Standardized Within-Group Residuals:
-       Min         Q1        Med         Q3        Max 
--2.7850636 -0.7012544 -0.1419474  0.6536599  3.0850909 
+       Min         Q1        Med         Q3        Max
+-2.7850636 -0.7012544 -0.1419474  0.6536599  3.0850909
 
 Number of Observations: 441
 Number of Groups: 12 </code></pre>
@@ -609,8 +609,8 @@ Number of Groups: 12 </code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">VarCorr</span>(model_random_intercept)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>doctor = pdLogChol(1) 
-            Variance  StdDev   
+<pre><code>doctor = pdLogChol(1)
+            Variance  StdDev
 (Intercept) 0.4029594 0.6347908
 Residual    0.3322653 0.5764246</code></pre>
 </div>
@@ -673,29 +673,29 @@ w_k \sim N(0,\sigma_w^2)
 <span id="cb6-2"><a href="#cb6-2"></a><span class="fu">summary</span>(model_random_slope)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed-effects model fit by REML
-  Data: data_chol 
+  Data: data_chol
        AIC      BIC    logLik
   821.9886 846.4956 -404.9943
 
 Random effects:
  Formula: ~1 + age | doctor
  Structure: General positive-definite, Log-Cholesky parametrization
-            StdDev     Corr  
+            StdDev     Corr
 (Intercept) 1.28163949 (Intr)
 age         0.01771589 -0.872
-Residual    0.55997507       
+Residual    0.55997507
 
-Fixed effects:  chol ~ age 
+Fixed effects:  chol ~ age
                 Value Std.Error  DF  t-value p-value
 (Intercept) 2.8791744 0.4215204 428 6.830451       0
 age         0.0500704 0.0060597 428 8.262823       0
- Correlation: 
+ Correlation:
     (Intr)
 age -0.901
 
 Standardized Within-Group Residuals:
-       Min         Q1        Med         Q3        Max 
--2.8523390 -0.6664557 -0.1141924  0.6206844  3.0809629 
+       Min         Q1        Med         Q3        Max
+-2.8523390 -0.6664557 -0.1141924  0.6206844  3.0809629
 
 Number of Observations: 441
 Number of Groups: 12 </code></pre>
@@ -756,31 +756,31 @@ y_i = (\alpha_0 + u_k) + (\beta + w_k) x_i  + {\color{red}{\gamma x_g}} +\epsilo
 <span id="cb10-2"><a href="#cb10-2"></a><span class="fu">summary</span>(model_random_cov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed-effects model fit by REML
-  Data: data_chol 
+  Data: data_chol
        AIC      BIC    logLik
   815.6956 844.2712 -400.8478
 
 Random effects:
  Formula: ~1 + age | doctor
  Structure: General positive-definite, Log-Cholesky parametrization
-            StdDev     Corr  
+            StdDev     Corr
 (Intercept) 1.10559524 (Intr)
 age         0.01775586 -0.951
-Residual    0.55992053       
+Residual    0.55992053
 
-Fixed effects:  chol ~ age + agedoc 
+Fixed effects:  chol ~ age + agedoc
                  Value Std.Error  DF   t-value p-value
 (Intercept) -2.7897788 1.1824050 428 -2.359410  0.0188
 age          0.0501492 0.0060673 428  8.265423  0.0000
 agedoc       0.1280030 0.0253576  10  5.047908  0.0005
- Correlation: 
-       (Intr) age   
-age    -0.303       
+ Correlation:
+       (Intr) age
+age    -0.303
 agedoc -0.948 -0.004
 
 Standardized Within-Group Residuals:
-       Min         Q1        Med         Q3        Max 
--2.8426263 -0.6665146 -0.1046213  0.6206861  3.0950474 
+       Min         Q1        Med         Q3        Max
+-2.8426263 -0.6665146 -0.1046213  0.6206861  3.0950474
 
 Number of Observations: 441
 Number of Groups: 12 </code></pre>
@@ -817,10 +817,10 @@ Number of Groups: 12 </code></pre>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">anova</span>(model_random_intercept, model_random_slope)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                       Model df      AIC      BIC    logLik   Test L.Ratio
-model_random_intercept     1  4 828.6970 845.0350 -410.3485               
+model_random_intercept     1  4 828.6970 845.0350 -410.3485
 model_random_slope         2  6 821.9886 846.4956 -404.9943 1 vs 2 10.7084
                        p-value
-model_random_intercept        
+model_random_intercept
 model_random_slope      0.0047</code></pre>
 </div>
 </div>
@@ -829,7 +829,7 @@ model_random_slope      0.0047</code></pre>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">anova</span>(model_random_slope, model_random_cov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   Model df      AIC      BIC    logLik   Test  L.Ratio p-value
-model_random_slope     1  6 821.9886 846.4956 -404.9943                        
+model_random_slope     1  6 821.9886 846.4956 -404.9943
 model_random_cov       2  7 815.6956 844.2712 -400.8478 1 vs 2 8.292926   0.004</code></pre>
 </div>
 </div>
@@ -874,7 +874,7 @@ model_random_cov       2  7 815.6956 844.2712 -400.8478 1 vs 2 8.292926   0.004<
   <script src="Lecture1c-p2_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
   <script src="Lecture1c-p2_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
   <script src="Lecture1c-p2_files/libs/revealjs/plugin/quarto-support/support.js"></script>
-  
+
 
   <script src="Lecture1c-p2_files/libs/revealjs/plugin/notes/notes.js"></script>
   <script src="Lecture1c-p2_files/libs/revealjs/plugin/search/search.js"></script>
@@ -897,7 +897,7 @@ model_random_cov       2  7 815.6956 844.2712 -400.8478 1 vs 2 8.292926   0.004<
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":false},
 'smaller': false,
- 
+
         // Display controls in the bottom right corner
         controls: false,
 
@@ -1075,7 +1075,7 @@ model_random_cov       2  7 815.6956 844.2712 -400.8478 1 vs 2 8.292926   0.004<
         ]
       });
     </script>
-    
+
     <script>
       // htmlwidgets need to know to resize themselves when slides are shown/hidden.
       // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
@@ -1132,14 +1132,14 @@ model_random_cov       2  7 815.6956 844.2712 -400.8478 1 vs 2 8.292926   0.004<
           toggleBodyColorMode(bsSheetEl);
         }
       }
-      toggleBodyColorPrimary();  
+      toggleBodyColorPrimary();
       const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
       tabsets.forEach(function(tabset) {
         const tabby = new Tabby('#' + tabset.id);
       });
       const isCodeAnnotation = (el) => {
         for (const clz of el.classList) {
-          if (clz.startsWith('code-annotation-')) {                     
+          if (clz.startsWith('code-annotation-')) {
             return true;
           }
         }
@@ -1170,11 +1170,11 @@ model_random_cov       2  7 815.6956 844.2712 -400.8478 1 vs 2 8.292926   0.004<
           button.setAttribute("data-bs-toggle", "tooltip");
           button.setAttribute("data-bs-placement", "left");
           button.setAttribute("data-bs-title", "Copied!");
-          tooltip = new bootstrap.Tooltip(button, 
-            { trigger: "manual", 
+          tooltip = new bootstrap.Tooltip(button,
+            { trigger: "manual",
               customClass: "code-copy-button-tooltip",
               offset: [0, -8]});
-          tooltip.show();    
+          tooltip.show();
         }
         setTimeout(function() {
           if (tooltip) {
@@ -1206,7 +1206,7 @@ model_random_cov       2  7 815.6956 844.2712 -400.8478 1 vs 2 8.292926   0.004<
         };
           config['offset'] = [0,0];
           config['maxWidth'] = 700;
-        window.tippy(el, config); 
+        window.tippy(el, config);
       }
       const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
       for (var i=0; i<noterefs.length; i++) {
@@ -1259,6 +1259,6 @@ model_random_cov       2  7 815.6956 844.2712 -400.8478 1 vs 2 8.292926   0.004<
       }
     });
     </script>
-    
+
 
 </body></html>
