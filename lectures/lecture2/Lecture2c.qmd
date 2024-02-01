@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression: Distributed non-linear lag models and other extensions"
-date: "20-02-2023"
+date: "02-27-2024"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -176,7 +176,6 @@ and we can modify as per first lecture to model more localized structures using:
 $$\begin{align*}\beta_{10} &= \tau_0 + \nu_1(0-\kappa_1)^3_+ + \dots + \nu_K(0-\kappa_K)^3_+, \\\beta_{11} &= \tau_0 + \tau_1 + \tau_2 + \tau_3 + \nu_1(1-\kappa_1)^3_+ + \dots + \nu_K(1-\kappa_K)^3_+, \\\beta_{12} &= \tau_0 + \tau_1 2  + \tau_2 2^2 + \tau_3 2^3 + \nu_1(2-\kappa_1)^3_+ + \dots + \nu_K(2-\kappa_K)^3_+\end{align*}$$
 
 and similarly we can penalize it can estimate *the penalised spline distributed lag estimate* of $\beta_{\ell}$
-
 :::
 
 ## Polynomial DLM in R: Chicago

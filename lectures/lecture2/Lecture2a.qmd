@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression: Introduction to non-linear regression"
-date: "20-02-2023"
+date: "02-27-2024"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
