@@ -1,0 +1,416 @@
+---
+title: "Practical 4: Classification analysis"
+author: "Garyfallos Konstantinoudis, Christina Liang"
+date: "Spring Term 2023"
+output: pdf_document
+highlight: tango
+---
+
+
+## Part 1: Predicting treatment outcome for breast cancer based on gene-expression
+
+
+We look back at the dataset which links gene-expression with the response of breast cancer patients to treatment. Our aim is to build a classifier that can discriminate between 2 responder groups (pathologic complete response or minimal residual cancer burden [RCB-I] defining excellent response (coded as 0), vs moderate or extensive residual cancer burden [RCB-II/III] defining lesser response (coded as 1).
+
+For the original publication please see https://jamanetwork.com/journals/jama/fullarticle/899864
+
+Load the dataset including $n=414$ patients and the predictor matrix including expression of $p=22,283$ genes.
+```{r message=FALSE, warning=FALSE}
+load("../../data/JAMA2011_breast_cancer")
+#alternatively try load("../../data/JAMA2011_breast_cancer.dms")
+y = as.factor(data_bc$rcb)
+table(y)
+x = as.matrix(data_bc$x)
+dim(x)
+```
+
+Question 1.1
+
+Use the sda package to perform a diagonal discriminant analysis (dda). First we rank the features using the sda.ranking function. The sda package jointly estimates the local fdr. How many genes pass a threshold of local fdr < 0.2?
+
+```{r message=FALSE, warning=FALSE}
+library(sda)
+```
+
+*Reply: There are 11 genes that pass the local fdr threshold of lower than 0.2.*
+```{r message=FALSE, warning=FALSE}
+ranking.DDA = sda.ranking(x, y, diagonal=TRUE)
+numVarsDDA = sum(ranking.DDA[,"lfdr"]<0.2)
+numVarsDDA
+selVars = ranking.DDA[,"idx"][1:numVarsDDA]
+selVars
+```
+
+
+Question 1.2
+
+Next we use the number of features with local fdr < 0.2 to build a prediction rule for dda and evaluate the prediction rule on the same data (using the same 414 samples as for training the algorithm). How does the confusion matrix (as implemented in the crossval package) look like? What is the sensitivity and specificity of dda?
+
+```{r message=FALSE, warning=FALSE}
+library(crossval)
+```
+
+
+*Reply: The sensitivity of dda is 0.7609428 and specificity is 0.6410256 .*
+```{r message=FALSE, warning=FALSE}
+dda.out = sda(x[, selVars, drop=FALSE], y, diagonal=TRUE)
+dda.pred = predict(dda.out, x[, selVars, drop=FALSE], verbose=FALSE)
+cM=confusionMatrix(as.character(y), as.character(dda.pred$class), negative="0")
+TPR = cM[2]/(cM[2]+cM[4])
+TPR
+TNR = cM[3]/(cM[1]+cM[3])
+TNR
+```
+
+
+Question 1.3
+
+Compute the area under the curve (AUC) of the receiver operating characteristic (ROC) curve and plot a ROC curve. The package pROC offers the function roc(observed,predicted) which plots the ROC curve and computes the AUC and ROC parameters. Alternatively use the function roc.curve in the PRROC package.
+
+```{r message=FALSE, warning=FALSE}
+library(pROC)
+library(PRROC)
+```
+
+*Reply: AUC is 0.7675. *
+```{r message=FALSE, warning=FALSE}
+head(dda.pred$posterior)
+roc.out=roc(y, dda.pred$posterior[,2])
+plot(roc.out)
+roc.out$auc
+fg = dda.pred$posterior[y==1,2]
+bg = dda.pred$posterior[y==0,2]
+roc=roc.curve(scores.class0 = fg, scores.class1 = bg, curve = T)
+plot(roc, color=FALSE)
+```
+
+
+Question 1.4
+
+Next we perform linear discriminant analysis (lda) where we first rank the features and define a threshold using local fdr < 0.2 as cut-off point. How many genes are included into the model at a threshold of local fdr < 0.2?  Then we build our prediction rule and evaluate it on the same data by computing the confusion matrix, sensitivity and specificity, the AUC and plotting the ROC curve. Which approach performs better, lda or dda?
+
+*Reply: The lda model includes 35 genes at a cut-off of local fdr < 0.2. The sensitivity of lda is 0.9326599 and specificity is 0.5555556. AUC is 0.8918, which is a big improvement over dda.*
+```{r message=FALSE, warning=FALSE}
+#ranking
+ranking.LDA = sda.ranking(x, y, diagonal=FALSE)
+numVarsLDA = sum(ranking.LDA[,"lfdr"]<0.2)
+numVarsLDA
+selVars = ranking.LDA[,"idx"][1:numVarsLDA]
+#fitting prediction rule
+lda.out = sda(x[, selVars, drop=FALSE], y, diagonal=FALSE)
+lda.pred = predict(lda.out, x[, selVars, drop=FALSE], verbose=FALSE)
+#evaluation
+cM=confusionMatrix(as.character(y), as.character(lda.pred$class), negative="0")
+TPR = cM[2]/(cM[2]+cM[4])
+TPR
+TNR = cM[3]/(cM[1]+cM[3])
+TNR
+roc.out=roc(y, lda.pred$posterior[,1])
+plot(roc.out)
+roc.out$auc
+```
+
+
+Question 1.5
+
+Use support vector machines (function svm in the e1071 package) to build a prediction rule and evaluate it on the same data by computing the confusion matrix, sensitivity and specificity, the AUC and the ROC curve.
+
+```{r message=FALSE, warning=FALSE}
+library(e1071)
+```
+
+*Reply: The sensitivity of svm is 1 and specificity is 0.7606838. AUC is 1, which is a big improvement over lda but may hint at over-fitting.*
+```{r message=FALSE, warning=FALSE}
+svm.out=svm(x=x,y=y)
+svm.pred=predict(svm.out,newdata=x,decision.values=TRUE)
+svm.pred.dv=attr(svm.pred, "decision.values")
+svm.pred=predict(svm.out,newdata=x)
+cM=confusionMatrix(as.character(y), as.character(svm.pred), negative="0")
+TPR = cM[2]/(cM[2]+cM[4])
+TPR
+TNR = cM[3]/(cM[1]+cM[3])
+TNR
+roc.out=roc(y, as.vector(svm.pred.dv))
+plot(roc.out)
+roc.out$auc
+```
+
+Question 1.5
+
+Use random forests (function randomForest in the randomForest package) to build a prediction rule and evaluate it on the same data by computing the confusion matrix, sensitivity and specificity, the AUC and the ROC curve.
+
+```{r message=FALSE, warning=FALSE}
+library(randomForest)
+```
+
+*Reply: The sensitivity of random forests is 1 and specificity is 1. AUC is 1 as well, which indicates over-fitting.*
+```{r message=FALSE, warning=FALSE}
+rf.out = randomForest(y=y, x=x)
+rf.pred = predict(rf.out, newdata=x, type="response")
+rf.pred.prob = predict(rf.out, newdata=x, type="prob")
+cM=confusionMatrix(as.character(y), as.character(rf.pred), negative="0")
+TPR = cM[2]/(cM[2]+cM[4])
+TPR
+TNR = cM[3]/(cM[1]+cM[3])
+TNR
+roc.out=roc(y, as.vector(rf.pred.prob[,2]))
+plot(roc.out)
+roc.out$auc
+```
+
+
+Question 1.6
+
+Which method has the best prediction performance on the dataset? Is it good practice to evaluate the performance of a prediction rule on the same data that was used to build the prediction rule?
+
+*Reply: Both svm and randomForest have an AUC of 1 and discriminate perfectly between patients with good and bad drug response. Yet it is NOT good practise to evaluate a prediction rule on the same dataset that was used to establish the prediction rule. The results may be misleading due to overfitting. It may be possible that svm and randomForest fit the training data perfectly but are not able to generalise to new observations. In the second part we perform cross-validation to systematically split the data into training and test data and to evaluate the prediction rule on unseen data.  *
+
+
+
+## Part 2: Evaluating systematically the prediction performance using cross-validation
+
+
+Next we systematically evaluate the prediction performance using cross-validation as implemented in the crossval package.
+```{r message=FALSE, warning=FALSE}
+library(crossval)
+```
+
+The first step is to write a function which defines the prediction rule. For example, see below how a prediction rule may be defined for discriminant analysis. This function has the option: diagonal=TRUE which performs dda (assume diagonal covariance matrix and no correlation between predictors) and diagonal=FALSE which fits lda (allow for covariance among predictors). The first step is to rank features and define a cut-off using the local false discovery rate. After feature selection the prediction rule is trained and finally, the prediction performance is evaluated using the confusionMatrix function.
+
+```{r message=FALSE, warning=FALSE}
+predfun.da = function(Xtrain, Ytrain, Xtest, Ytest, diagonal=FALSE)
+{
+  # estimate ranking and determine the best numVars variables
+  ranking.DA = sda.ranking(Xtrain, Ytrain, verbose=FALSE, diagonal=diagonal, fdr=TRUE)
+  numVars = sum(ranking.DA[,"lfdr"]<0.2)
+  selVars = ranking.DA[,"idx"][1:numVars]
+
+  # fit and predict
+  sda.out = sda(Xtrain[, selVars, drop=FALSE], Ytrain, diagonal=diagonal, verbose=FALSE)
+  sda.class = predict(sda.out, Xtest[, selVars, drop=FALSE], verbose=FALSE)$class
+
+  # count false and true positives/negatives
+  negative = levels(Ytrain)[1] # negatives or baseline is the good response class
+  cm = confusionMatrix(Ytest, sda.class, negative=negative)
+
+  return(cm)
+}
+```
+
+For reproducibility of the results please use the following random number seed.
+```{r message=FALSE, warning=FALSE}
+set.seed(2)
+```
+
+
+Question 2.1
+
+Write a similar prediction function for support vector machines.
+
+*Reply: .*
+```{r message=FALSE, warning=FALSE}
+predfun.svm = function(Xtrain, Ytrain, Xtest, Ytest)
+{
+
+  # fit
+  svm.out=svm(x=Xtrain,y=Ytrain)
+
+  #predict
+  svm.pred=predict(svm.out,newdata=Xtest)
+
+  # count false and true positives/negatives
+  negative = levels(Ytest)[1] # negatives are the good response class
+  cm = confusionMatrix(Ytest, svm.pred, negative=negative)
+
+  return(cm)
+}
+```
+
+
+Question 2.2
+
+Write a similar prediction function for random forests.
+
+*Reply: .*
+```{r message=FALSE, warning=FALSE}
+predfun.rf = function(Xtrain, Ytrain, Xtest, Ytest)
+{
+
+  # fit
+  rf.out = randomForest(y=Ytrain, x=Xtrain)
+
+  #predict
+  rf.pred = predict(rf.out, newdata=Xtest, type="response")
+
+  # count false and true positives/negatives
+  negative = levels(Ytest)[1] # negatives are the good response class
+  cm = confusionMatrix(Ytest, rf.pred, negative=negative)
+
+  return(cm)
+}
+```
+
+
+Question 2.3
+
+Now use 5-fold cross-validation (K=5) with 2 repetitions (B=2) to evaluate the prediction performance of dda, lda, svm and randomForest. Note that 2 repetitions is just for the interest of time. Ideally you would like to repeat the cross-validation at least 10 times. Which of the four methods has the best classification performance in terms of true positive rate (sensitivity) and true negative rate (specificity)?
+
+*Reply: svm has the best classification performance in terms of specificity, followed by random forest, lda and dda.
+Note: Change verbose to TRUE if you want to see the progress of the cross-validation. *
+```{r message=FALSE, warning=FALSE}
+TPR = rep(0,4)
+TNR = rep(0.4)
+#dda
+cv.dda = crossval(predfun.da, X=x, Y=y, K=5, B=2, diagonal=TRUE, verbose=FALSE)
+cv.dda$stat
+TPR[1] = cv.dda$stat[2]/(cv.dda$stat[2]+cv.dda$stat[4])
+TNR[1] = cv.dda$stat[3]/(cv.dda$stat[1]+cv.dda$stat[3])
+#lda
+cv.lda = crossval(predfun.da,  X=x, Y=y, K=5, B=2, diagonal=FALSE, verbose=FALSE)
+cv.lda$stat
+TPR[2] = cv.lda$stat[2]/(cv.lda$stat[2]+cv.lda$stat[4])
+TNR[2] = cv.lda$stat[3]/(cv.lda$stat[1]+cv.lda$stat[3])
+#svm
+cv.svm = crossval(predfun.svm, X=x, Y=y, K=5, B=2, verbose=FALSE)
+cv.svm$stat
+TPR[3] = cv.svm$stat[2]/(cv.svm$stat[2]+cv.svm$stat[4])
+TNR[3] = cv.svm$stat[3]/(cv.svm$stat[1]+cv.svm$stat[3])
+#randomForest
+cv.rf = crossval(predfun.rf, X=x, Y=y, K=5, B=2, verbose=FALSE)
+cv.rf$stat
+TPR[4] = cv.rf$stat[2]/(cv.rf$stat[2]+cv.rf$stat[4])
+TNR[4] = cv.rf$stat[3]/(cv.rf$stat[1]+cv.rf$stat[3])
+#final results
+#true positive rate (sensitivity)
+TPR
+#true negative rate (specificity)
+TNR
+```
+
+
+## Part 3 (Optional): Predicting credit card fraud
+
+The datasets contains transactions made by credit cards in September 2013 by European cardholders. It is downloaded from
+https://www.kaggle.com/mlg-ulb/creditcardfraud
+
+The outcome variable is Class, where 1 is a fraudulent transaction and 0 is a valid transaction.
+```{r message=FALSE, warning=FALSE}
+cc.data = read.csv("../../data/creditcard.csv")
+y = as.factor(cc.data$Class)
+table(y)
+```
+Please note that fraudulent transactions are very rare events.
+
+The aim of this exercise is to predict credit card fraud from a set of 28 input features. These are principle components of the original features. The original features and more background information cannot be provided due to confidentiality issues. One advantage of working on principle components is that the input features are perfectly uncorrelated.
+
+```{r message=FALSE, warning=FALSE, fig.height=4}
+x = as.matrix(cc.data[,2:29])
+library(corrplot)
+corrplot(cor(x))
+```
+
+For reproducibility of the results please use the following random number seed.
+```{r message=FALSE, warning=FALSE}
+set.seed(3)
+```
+
+This is a pretty tall dataset with many observations. If you are impatient for support vector machines and random forest to run you may think of down-sampling the dataset to test your algorithm by drawing 10,000 random samples.
+```{r message=FALSE, warning=FALSE}
+#randomNumber = sample(1:length(y), size=10000, replace = FALSE)
+#y=y[randomNumber ]
+#table(y)
+#x=x[randomNumber,]
+```
+
+
+Question 3.1
+
+Construct a classification rule based on dda. Since there is no correlation between features we do not need to explore lda as well. For 28 features it is not possible to fit the local fdr because these are too few variables. Given the large sample size we may include all features into the model.
+
+*Reply: .*
+```{r message=FALSE, warning=FALSE}
+dda.out = sda(x, y, diagonal=TRUE)
+dda.pred = predict(dda.out, x, verbose=FALSE)
+```
+
+
+
+Question 3.2
+
+Which summary-statistic would you use to evaluate the performance of the classification in this particular application?
+
+*Reply: When there is an unbalanced sample design (rare events), it is recommended to use recall, also known as sensitivity or true positive rate (TPR) and precision (PPV). For visualisation the precision-recall curves can be used.  *
+```{r message=FALSE, warning=FALSE}
+cM = confusionMatrix(as.character(y), as.character(dda.pred$class), negative="0")
+TPR = cM[2]/(cM[2]+cM[4])
+TPR
+PPV = cM[2]/(cM[1]+cM[2])
+PPV
+library(PRROC)
+fg = dda.pred$posterior[y==1,2]
+bg = dda.pred$posterior[y==0,2]
+pr=pr.curve(fg,bg,curve=T)
+plot(pr,color=FALSE)
+```
+
+
+Question 3.3
+
+Write the equivalent prediction function for dda without variable selection (modify predfun.da() from question 2) and evaluate it using cross-validation (K=5, B=1). Use an appropriate summary statistic to measure the performance of the classification of rare events.
+
+*Reply: For dda the precision is 0.8634259 and the recall is 0.7581301.*
+```{r message=FALSE, warning=FALSE}
+predfun.da = function(Xtrain, Ytrain, Xtest, Ytest, diagonal=FALSE)
+{
+  # fit and predict
+  sda.out = sda(Xtrain, Ytrain, diagonal=diagonal, verbose=FALSE)
+  sda.class = predict(sda.out, Xtest, verbose=FALSE)$class
+
+  # count false and true positives/negatives
+  negative = levels(Ytrain)[1] # normal transaction
+  cm = confusionMatrix(Ytest, sda.class, negative=negative)
+
+  return(cm)
+}
+cv.dda = crossval(predfun.da, X=x, Y=y, K=5, B=1, diagonal=TRUE, verbose=TRUE)
+cv.dda$stat
+PPV = cv.dda$stat[2]/(cv.dda$stat[1]+cv.dda$stat[2])
+PPV
+TPR = cv.dda$stat[2]/(cv.dda$stat[2]+cv.dda$stat[4])
+TPR
+```
+
+
+Question 3.4
+
+Perform cross-validation using the prediction functions developed for svm and randomForest in Question 2.1 and Question 2.2. Which method has the best prediction performance?
+
+*Reply: For svm the precision is 0.9514286 and the recall is 0.6768293 while for random forest the precision is 0.9417476 and the recall is 0.7886179. Random forest has the overall best prediction performance with a similar precision than svm, but a much better recall. Please remember to use set.seed(3) for reproducibility. *
+```{r message=FALSE, warning=FALSE}
+#svm
+cv.svm = crossval(predfun.svm, X=x, Y=y, K=5, B=1, verbose=TRUE)
+cv.svm$stat
+PPV = cv.svm$stat[2]/(cv.svm$stat[1]+cv.svm$stat[2])
+PPV
+TPR = cv.svm$stat[2]/(cv.svm$stat[2]+cv.svm$stat[4])
+TPR
+#randomForest
+cv.rf = crossval(predfun.rf, X=x, Y=y, K=5, B=1, verbose=TRUE)
+cv.rf$stat
+PPV = cv.rf$stat[2]/(cv.rf$stat[1]+cv.rf$stat[2])
+PPV
+TPR = cv.rf$stat[2]/(cv.rf$stat[2]+cv.rf$stat[4])
+TPR
+```
+
+
+
+
+
+<!--
+require(knitr)
+require(markdown)
+require(rmarkdown)
+render("practical4-classification-solutions.Rmd")
+-->
+

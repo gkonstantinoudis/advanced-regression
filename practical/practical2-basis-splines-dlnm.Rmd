@@ -1,0 +1,241 @@
+---
+title: "Practical 2: Non-linear Regression"
+author: "Garyfallos Konstantinoudis, Christina Liang"
+date: "Spring Term 2023"
+output: pdf_document
+highlight: tango
+---
+
+
+```{r include=FALSE}
+knitr::opts_chunk$set(message=FALSE, warning=FALSE, fig.align = 'center')
+```
+
+You might need the following packages. If you have already downloaded them, skip the following line:
+
+```{r eval=FALSE}
+install.packages(c("dplyr", "ggplot2", "patchwork", "splines", "blmeco", "mgcv", "dlnm",
+          "plotly"))
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(splines)
+library(blmeco)
+library(mgcv)
+library(dlnm)
+library(plotly)
+```
+
+## Part 1: Triceps and subscapular skinfold thicknesses using basis functions
+
+Triceps and subscapular skinfold thicknesses provide an index of body fat and midarm muscle circumference provides a measure of muscle mass. The dataset \texttt{triceps.csv} contains the age in years, the intriceps and triceps skinfold thickness in cm. In the first part of this practical we would like to examine the association between age and triceps skinfold thickness.
+
+As a first step we load the data.
+```{r echo=FALSE}
+triceps <- read.csv("E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/data/triceps.csv")
+```
+
+```{r eval=FALSE}
+triceps <- read.csv(".../triceps.csv")
+```
+
+Question 1.1
+Perform the \texttt{head()} function to the dataset to understand the data structure. Fit a regression model (Normal, Poisson or logistic depending on the nature of the main outcome) to examine the linear association between triceps skinfold thickness and age. Provide an interpretation of the result.
+
+Question 1.2
+What is the main assumption regarding the shape of the relationship between triceps skinfold thickness and age in question 1.1? Can you check if this assumption is valid?
+
+
+Question 1.3
+Fit 3 models with polynomial basis function of order 2, 3 and 4. Plot the results together and discuss. Perform a series of likelihood ratio test to examine which model fits the data best.
+
+
+Question 1.4
+Select the best performing model of the question 1.3 and plot the flexible fit together with the 95% confidence intervals. Hint: Use the function \texttt{predict()} to get the standard error and compute the upper and lower limit of the confidence intervals.
+
+
+Question 1.5
+Now use a Fourier basis function and fit three models with one sin/cos pair and period $P=25,50,100$ years. Plot the results together and discuss.
+
+
+## Part 2: Triceps and subscapular skinfold thicknesses with linear splines
+
+Question 2.1
+Use the same dataset as before and now fit 2 linear threshold models (not linear splines!), the first with one threshold at 10 years, and the second with two thresholds one at 10 and one at 40 years. Plot the results together and discuss. How do you interpret the results for the different thresholds? Discuss potential limitations of this approach.
+
+
+Question 2.2
+Now without using the \texttt{bs()} function or any kind of splines related packages in R, fit linear splines with one threshold at 10 years. Plot, calculate the 95% confidence intervals, interpret the results and compare with the results of the question 2.1.
+
+
+Question 2.3
+Using the \texttt{bs()} function, fit a 4 linear basis spline models in the data with one knot each time at 5, 10, 15 and plot all three fits. Which model is the most appropriate for our data?
+
+
+Question 2.4
+Take the \texttt{summary()} of the model from question 2.3 with a knot at 10 years and compare the results with the \texttt{lm()} fit of questions 2.2. What do you observe?
+
+
+Question 2.5
+In this question we will plot the basis function to understand the meaning of the coefficients of the \texttt{bs()} fit.
+```{r message=FALSE, warning=FALSE, fig.width=9, fig.height=3}
+b <- bs(triceps$age, degree = 1, knots = 10)
+str(b)
+b1 <- b[, 1] ## basis 1
+b2 <- b[, 2] ## basis 2
+
+data.frame(x=rep(triceps$age, times=2),
+      b=c(b1, b2),
+      basis=rep(c("basis 1", "basis 2"), each = triceps$age %>% length())) %>%
+ ggplot() + geom_line(aes(x=x, y=b), cex=.8) + facet_grid(cols=vars(basis)) + theme_bw()
+```
+
+and now run the following and compare again:
+```{r message=FALSE, warning=FALSE}
+lm(triceps$triceps~b1+b2) %>% summary()
+```
+
+What do the \texttt{ bs()} coefficients mean?
+
+to get the estimates of the two separate lines:
+```{r message=FALSE, warning=FALSE, eval=FALSE}
+devtools::install_github("ZheyuanLi/SplinesUtils")
+library(SplinesUtils)
+RegSplineAsPiecePoly(list_res[[2]], "bs(age, degree = 1, knots = kn[i])", shift = FALSE)
+```
+
+How can we interpret the results here? Compare the estimates with the ones retrieved in question 2.2.
+
+
+## Part 3: Triceps and subscapular skinfold thicknesses with splines
+
+Question 3.1
+Use the same dataset as before and similar with the question 2.5, use the function \texttt{bs()} one knot at 10 and cubic splines
+
+
+Question 3.2
+Use the \texttt{lm()} function ad \texttt{bs()} to fit cubic splines with one know at 10. What is the interpretation of the \texttt{summary()} output?
+
+
+Question 3.3
+Use the function \texttt{predict()} and plot the fit of the above model together with 95% confidence intervals.
+
+
+Question 3.4
+Use natural splines instead and plot the fit of the above model together with 95% confidence intervals. Do you observed any differences? Tip: Include boundary knots in the \texttt{bs()} function.
+
+
+Question 3.5
+Type \texttt{?ns} and check what the \texttt{df()} argument does. Now use only the argument \texttt{df()} in the \texttt{ns()} function and use the values 1, 10, 50, 100. What do you observe?
+
+
+Question 3.6
+Use the function \texttt{gam()} from the \texttt{mgcv} package and fit a penalized spline. What do you think about the fit?
+
+
+## Part 4: Analysing the HANES dataset
+
+In the fourth part of this practical you will be analyzing the HANES lb dataset. This dataset included information about the age, sex (men=0, women=1) race, location (locode), height, BMI (body mass index), Booze (categorical alcohol consumption), serum calcium (Ser.calc), setum cholesterol (Ser.chol), current smoking, smoking history, number of cigarettes per dat, lifetime pack year and follow up variables including age at death (d.age), year of death (d.year), death from any cause (d.total), death from cancer (d.cancer) and deaths from heart disease (d.heart)
+
+As a first step we load the data and assign \texttt{hanes} to a data.frame.
+```{r echo=FALSE}
+hanes <- read.csv("E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/data/hanes.csv")
+```
+
+```{r eval=FALSE}
+hanes <- read.csv(".../hanes.csv")
+```
+
+Question 4.1
+Fit a logistic regression model for mortality (d.total) with main effects for age, sex, race, booze, smokever, and bp1sys. Interpret the output of the model (focus on the coefficient of the systolic blood pressure).
+
+
+Question 4.2
+Now let's examine the interaction between systolic blood pressure and sex? Is it significant? Interpret the results.
+
+
+Question 4.3
+Repeat that analysis of question 3.1 using the \texttt{gam()} function and a smooth function for age. Is age nonlinear?
+
+
+Question 4.4
+Add a smooth function for \texttt{ser.chol}. Is it linear?
+
+
+Question 4.5
+Now model d.heart instead of d.total. Is the dependence on \texttt{ser.chol} linear?
+
+
+## Part 5: Distribued lag linear models.
+
+In the fifth part of this tutorial, we will use the \texttt{chicago} dataset of the \texttt{dlnm} package used throughout the lecture and examine the effect of heatwaves.
+
+Question 5.1
+What do you think a heatwave is? How should we define it?
+
+
+Question 5.2
+Let a heatwave be the period that we have observed temperatures higher that the 95th percentile of the overall temperature
+in chicago for at least 2 consecutive days. Create a new variable called heatwave that takes values 0 if it falls within the
+definition and 1 otherwise.
+
+```{r message=FALSE, warning=FALSE}
+library(dlnm)
+chicagoNMMAPS %>% head()
+```
+
+You can use the following code to define the heatwave variable:
+
+```{r message=FALSE, warning=FALSE}
+threshold <- quantile(chicagoNMMAPS$temp, probs = 0.95)
+chicagoNMMAPS %>%
+ dplyr::mutate(
+  heatwave = dplyr::case_when(temp >= threshold &
+                dplyr::lag(temp, 1) >= threshold &
+                dplyr::lag(temp, 2) >= threshold ~ 1,
+                TRUE ~ 0)
+ ) -> chicagoNMMAPS
+
+chicagoNMMAPS %>%
+ dplyr::mutate(
+  heatwave = dplyr::case_when(heatwave == 1 |
+                 dplyr::lead(heatwave, 1) == 1 |
+                 dplyr::lead(heatwave, 2) == 1 ~ 1,
+                TRUE ~ 0)
+  ) -> chicagoNMMAPS
+```
+
+Quantify the effect of heatwave on resp deaths. Interpret the result. Hint: Include heatwave as linear, time as spline, month as spline and adjust for day of week and PM10
+
+
+Question 5.3
+Examine a potential lag effect of the heatwaves on respiratory mortality. Consider lags 1:10 and plot the effect. What do you observe?
+
+
+Question 5.4
+Fit a distributed non-linear model. Consider a linear threshold model with the threshold being the 95th percentile of the temperature and lags 1:10.
+
+```{r message=FALSE, warning=FALSE}
+cb.heatwave <- crossbasis(chicagoNMMAPS$temp, lag=10,
+                          argvar=list(fun="thr", thr = threshold),
+                          arglag=list(fun="lin"))
+```
+
+Use the function \texttt{gam()} accounting for time as spline, month as spline and adjust for day of week and PM10. Take the \texttt{summary()} of the model and interpret the slopes corresponding to the cross basis function. What is the difference of this estimate with the heatwave estimate?
+
+Question 5.5
+Use the function \texttt{crosspred()}. Specify \texttt{at=-20:30} and \texttt{bylag=1}. Recall that \texttt{at} gives the temperature values and \texttt{bylag} the lags to predict. Retrieve the cumulative relative risk at 30$^o$C over the lags. What is the interpretation
+
+Question 5.6
+Plot a 3D plot to show the lag, temperature and relative risk dimension. Also, plot 2 slices of the 3D plot, one for lag=1 and the second for temperatures=30. If interested, you can use the \texttt{plotly} package to produce an interactive 3D plot.
+
+<!--
+require(knitr)
+require(markdown)
+require(rmarkdown)
+render("practical1-lm-glm-re.Rmd")
+-->
+

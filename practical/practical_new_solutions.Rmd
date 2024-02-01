@@ -1,0 +1,604 @@
+---
+title: "New Practical Material: Finding a prediction rule for heart disease"
+author: "Verena Zuber, Devleena Ray, Paula Christen, Rima Mustafa"
+date: "Spring Term 2021"
+output: pdf_document
+highlight: tango
+---
+
+
+
+## The heart.csv datasets: Clinical measurements and heart disease
+
+The following computational task is attempting to distinguish between cases with heart disease and controls. The dataset has been downloaded from the ML repository
+https://archive.ics.uci.edu/ml/datasets/heart+Disease
+
+Please load the data as follows and take a look at the binary case-control outcome $y$ and the predictor matrix $x$.
+```{r message=FALSE, warning=FALSE}
+load("../../data/heart.Rdata")
+x = heart.data$x
+y = as.factor(heart.data$y)
+table(y)
+head(x)
+summary(x)
+```
+
+The predictor matrix includes
+
+- age
+- sex
+- chest pain type  (1: typical angina, 2: atypical angina, 3: non-anginal pain, 4: asymptomatic)
+- resting blood pressure
+- serum cholesterol in mg/dl
+- fasting blood sugar > 120 mg/dl
+- resting electrocardiographic results (0: normal, 1: having ST-T wave abnormality (T wave inversions and/or ST elevation or depression of > 0.05 mV), 2: showing probable or definite left ventricular hypertrophy)
+- maximum heart rate achieved
+- exercise induced angina
+- oldpeak = ST depression induced by exercise relative to rest
+
+Please see more details on the variables here
+https://www.kaggle.com/carlosdg/a-detail-description-of-the-heart-disease-dataset
+
+
+There are several categorical variables in the predictor matrix; the following code transforms them into dummy variables.
+```{r message=FALSE, warning=FALSE}
+x.mat = model.matrix( ~ ., x)[,-1]
+x.mat = as.matrix(x.mat)
+head(x.mat)
+dim(x.mat)
+```
+
+
+
+## Part 1: The heart.csv datasets: GLMNET and parameter tuning (Practical 3)
+
+
+Please load the following R-packages.
+```{r message=FALSE, warning=FALSE}
+library(glmnet)
+library(coefplot)
+```
+
+
+Question 1.1
+
+Fit a lasso model using glmnet with a fixed regularisation parameter lambda = 0.1. How many variables are included in the model?
+
+*Reply: 5 variables are included into the model. *
+
+```{r message=FALSE, warning=FALSE}
+q11 = glmnet(x.mat,y,family="binomial",alpha=1,lambda=0.1)
+sum(abs(q11$beta)>0)
+q11$beta
+```
+
+
+Question 1.2
+
+Perform cross-validation to tune the regularisation parameter of the lasso, which measure would you use to evaluate the cross-validation?
+
+*Reply: For categorical or binary variables the mean squared error is not a good measure for model fit. Instead it is recommended to use the deviance. Alternatively, class or auc can be used for logistic regression.  *
+
+```{r message=FALSE, warning=FALSE}
+lasso.cv = cv.glmnet(x.mat,y,family="binomial",alpha=1, type.measure="deviance")
+lasso.cv$lambda.min
+lasso.cv$lambda.1se
+```
+
+
+Question 1.3
+
+How many variables are included in the lasso model when using the regularisation parameter that minimises the cross-validation error and the largest regularisation parameter (strongest regularisation) which is within 1 standard error of the minimum?
+
+*Reply: 10 variables are included when using the regularisation parameter lambda which minimises the deviance and 8 are included when using the regularisation parameter lambda which provides the sparsest model (i.e. the model with the fewest variables) with comparable prediction performance measured by deviance. *
+
+```{r message=FALSE, warning=FALSE}
+lasso.out.min = glmnet(x.mat,y,family="binomial",alpha=1,lambda=lasso.cv$lambda.min)
+lasso.out.1se = glmnet(x.mat,y,family="binomial",alpha=1,lambda=lasso.cv$lambda.1se)
+sum(abs(lasso.out.min$beta)>0)
+sum(abs(lasso.out.1se$beta)>0)
+```
+
+
+Question 1.4
+
+Use the $coefplot$ function in the coefplot package to visualize the lasso regression coefficients for the two lasso models with lambda selected as $lambda.min$ and $lambda.1.se$. Please interpret the findings.
+
+*Reply: The coefplot plots the beta coefficients of the variables which are included into the model. *
+
+```{r message=FALSE, warning=FALSE}
+par(mfrow=c(1,2))
+coefplot(lasso.out.min,sort='magnitude')
+coefplot(lasso.out.1se,sort='magnitude')
+```
+
+
+
+Question 1.5
+
+Fit one lasso model which does not specify the regularisation parameter and plot the object
+```{r message=FALSE, warning=FALSE}
+lasso.all = glmnet(x.mat,y,family="binomial",alpha=1)
+plot(lasso.all, xvar='lambda', label=TRUE)
+```
+How do you interpret the plot? Alternatively, use the $coefpath$ function in the $coefplot$ package to visualize how the lasso regression coefficients depend on the regularisation parameter. Please interpret this plot.
+
+*Reply: In regularised regression the magnitude of the regression coefficients depends on the the strength of the regularisation which is parametrised by lambda. The coefpath plot details the regression coefficients of all variables on the y-axis as a function of lambda, with stronger regularisation on the right. Please note that for the lasso the regression coefficients of several variables are forced to zero and excluded from the model. With stronger regularisation more variables are excluded. *
+
+```{r message=FALSE, warning=FALSE}
+#coefpath(lasso.all)
+```
+
+
+
+
+
+## Part 2: The heart.csv datasets: Prediction performance of regularised regression (Practical 4)
+
+
+Please load the following R-packages.
+```{r message=FALSE, warning=FALSE}
+library(glmnet)
+library(crossval)
+```
+
+
+Question 2.1
+
+To get started, fit first a glm to train a prediction rule on the data using $y$ as outcome and $x.mat$ as predictor. Derive the predicted probabilities for all 303 individuals. Repeat the exactly the same prediction using the lasso with lambda = 0.1.
+
+*Reply: The predicted values from both glm and glmnet are on the linear predictor and need to be transformed to probabilities using the inverse logit transformation.  *
+
+* GLM (not regularised) *
+```{r message=FALSE, warning=FALSE}
+glm.out = glm(y~x.mat, family = "binomial")
+eta = predict.glm(glm.out,as.data.frame(x.mat))
+p.glm = (exp(eta)/(exp(eta)+1))
+par(mfrow=c(1,2))
+hist(eta)
+hist(p.glm)
+```
+* GLMNET (regularised regression) *
+```{r message=FALSE, warning=FALSE}
+lasso.out = glmnet(x.mat,y,family="binomial",alpha=1, lambda=0.1)
+eta = predict(lasso.out,x.mat)
+p.lasso = (exp(eta)/(exp(eta)+1))
+par(mfrow=c(1,2))
+hist(eta)
+hist(p.lasso)
+```
+
+
+Question 2.2
+
+Perform cross-valisation to tune the regularisation parameter for L1 regularised regression (lasso) and L2 regularised regression (ridge). Set the seed to 22.
+
+*Reply: We perform cross-validation for both lasso and ridge regression by minimising the deviance.  *
+
+```{r message=FALSE, warning=FALSE}
+set.seed(22)
+lasso.cv = cv.glmnet(x.mat,y,family="binomial",alpha=1, type.measure="deviance")
+ridge.cv = cv.glmnet(x.mat,y,family="binomial",alpha=0, type.measure="deviance")
+```
+
+
+
+Question 2.3
+
+Write a prediction function for the glmnet function to use for cross-validation to evaluate the predictive performance using the $crossval$ package. Make sure to leave lambda and alpha as open parameters. Please return the $confusionMatrix$ as final output of the function.
+
+*Reply: The following prediction function takes you through the three steps 1) fitting the prediction rule on the training data, 2) predicting the outcome for the test data (please note that here we predict probabilities and classify every observation which has a probability larger than 0.5 (threshold) to a case) and 3) contrast the prediction with the true value in the test data (test.y). *
+
+```{r message=FALSE, warning=FALSE}
+predfun.glmnet = function(train.x, train.y, test.x, test.y, lambda = lambda, alpha=alpha, threshold = 0.5){
+
+	#fit glmnet prediction rule
+	glmnet.fit = glmnet(x=train.x, y=train.y,family="binomial", lambda = lambda, alpha=alpha)
+	#predict the new observation based on the test data and the prediction rule
+	eta = predict(glmnet.fit , newx=test.x)
+	p.glmnet = (exp(eta)/(exp(eta)+1))
+	y.new = as.factor(ifelse(p.glmnet < threshold, 0,1))
+    # count false and true positives/negatives
+    negative = levels(test.y)[1]
+    cm = crossval::confusionMatrix(test.y, y.new, negative=negative)
+    #return confusion matrix
+    return(cm)
+
+}
+```
+
+
+Question 2.4
+
+Compare the standard glm model (using lambda = 0), with ridge and lasso regression using cross-validation. Set the seed to 24. Which model performs best and is there a big difference between the models?
+
+*Reply: We are going to evaluate the methods based on the true positive rate and the true negative rate. Additinoally we print out the diagnostic errors by using the function $diagnosticErrors$. *
+
+```{r message=FALSE, warning=FALSE}
+set.seed(24)
+TPR = rep(0,3)
+TNR = rep(0.3)
+
+#glm
+cv.glm = crossval(predfun.glmnet, X=x.mat, Y=y, K=10, B=20, lambda=0, alpha=0, verbose=FALSE)
+cv.glm$stat
+TPR[1] = cv.glm$stat[2]/(cv.glm$stat[2]+cv.glm$stat[4])
+TNR[1] = cv.glm$stat[3]/(cv.glm$stat[1]+cv.glm$stat[3])
+diagnosticErrors(cv.glm$stat)
+
+#ridge
+cv.ridge = crossval(predfun.glmnet, X=x.mat, Y=y, K=10, B=20, lambda=ridge.cv$lambda.1se, alpha= 0, verbose=FALSE)
+cv.ridge$stat
+TPR[2] = cv.ridge$stat[2]/(cv.ridge$stat[2]+cv.ridge$stat[4])
+TNR[2] = cv.ridge$stat[3]/(cv.ridge$stat[1]+cv.ridge$stat[3])
+diagnosticErrors(cv.ridge$stat)
+
+#lasso
+cv.lasso = crossval(predfun.glmnet, X=x.mat, Y=y, K=10, B=20, lambda=lasso.cv$lambda.1se, alpha= 1, verbose=FALSE)
+cv.lasso$stat
+TPR[3] = cv.lasso$stat[2]/(cv.lasso$stat[2]+cv.lasso$stat[4])
+TNR[3] = cv.lasso$stat[3]/(cv.lasso$stat[1]+cv.lasso$stat[3])
+
+diagnosticErrors(cv.lasso$stat)
+
+# final comparison
+TPR
+TNR
+```
+
+*Reply: All three algorithms provide very similar prediction performance with the standard GLM having the best true positive rate. This is not unexpected given that the numbers of observations in this data set is much larger than the variables. *
+
+
+
+
+
+
+
+## Part 3: The heart.csv datasets: Decision trees and random forests (Practical 5)
+
+
+Please load the following R-packages.
+```{r message=FALSE, warning=FALSE}
+library(crossval)
+library(randomForest)
+library(tree)
+```
+
+
+Question 3.1
+
+Fit a decision tree to model the outcome $y$ (heart disease 1 vs control 0) by the predictor matrix $x.mat$ and plot the decision tree. What is a key issue with decision trees?
+
+*Reply: Decision trees are prone to overfitting. As seen from the decision tree below, there are many splits fitted and each leaf may only contain very few observations. Such a precise prediction rule may fit well on the training data but not on unseen new data. *
+
+```{r message=FALSE, warning=FALSE}
+tree.out = tree(y ~ x.mat)
+plot(tree.out)
+text(tree.out)
+```
+
+
+Question 3.2
+
+One way to counteract over-fitting is to perform cross-validation (set seed to 32) and prune the decision tree using the deviance. Please plot the pruned tree and compare it with the unpruned tree. How many splits does the pruned tree include?
+
+*Reply: The pruned tree would only include 7 splits. *
+
+```{r message=FALSE, warning=FALSE}
+set.seed(32)
+cv.out = cv.tree(tree.out, FUN=prune.tree)
+cv.out
+cv.out$size[which.min(cv.out$dev)]
+pruned.tree = prune.tree(tree.out, k = cv.out$k[which.min(cv.out$dev)])
+plot(pruned.tree)
+text(pruned.tree)
+```
+
+
+Question 3.3
+
+An alternative strategy is to perform a meta-algorithm that averages over many decision trees fitted on small variations of the input data (bagging). Perform a random forest and the original bagging algorithm.
+
+*Reply: The main difference between bagging and random forest is the number of variables which are considered at each split. While bagging always considers all variables (set mtry=ncol(x)), random forest only considers a subset of variables at each split. For classification these are floor(sqrt(ncol(x))) which would be 3.  *
+
+```{r message=FALSE, warning=FALSE}
+rf.out = randomForest(y=y, x=x.mat, ntree=100,)
+bagging.out = randomForest(y=y, x=x.mat,  ntree=100, importance =TRUE, mtry=ncol(x))
+```
+
+
+Question 3.4
+
+Use the variable importance measures of the random forest algorithm to rank the features by their importance.
+
+*Reply: The most important features are oldpeak (ST depression induced by exercise), having chest pain and maximum heart rate. *
+
+```{r message=FALSE, warning=FALSE}
+varImpPlot(rf.out, main="")
+```
+
+
+Question 3.5
+
+Write a prediction function for the random forest algorithm to be evaluated using the $crossval$ function. Please leave the number of trees and mtry as an open parameter and return the confusion matrix as implemented in the $confusionMatrix$ function.
+
+*Reply: The following function is based on the three key steps, 1) fit the prediction rule on the training data, 2) evaluate on the test data and 3) compare the predicted class (y.new) with the actual observed class (test.y)  *
+
+
+```{r message=FALSE, warning=FALSE}
+predfun.rf = function(train.x, train.y, test.x, test.y, ntree, mtry){
+
+	#fit the model and build a prediction rule
+	rf.fit = randomForest(x=train.x, y=train.y, ntree=ntree, mtry = mtry)
+	#predict the new observation based on the test data and the prediction rule
+	y.new = predict(rf.fit , newdata=test.x)
+    # count false and true positives/negatives
+    negative = levels(test.y)[1]
+    cm = crossval::confusionMatrix(test.y, y.new, negative=negative)
+    #return confusion matrix
+    return(cm)
+
+}
+```
+
+Question 3.5
+
+Which algorithm has the better prediction performance, a decision tree, bagging or random forest? You can fit a decision tree by just fitting a single tree with the ntree option set to 1 and mtry to ncol(x.mat). Please perform crossvalidation with the crossval function with $K=10$ and $B=20$ and set the seed to 35.
+
+*Reply: Random forest has a better prediction performance than bagging. The decision tree has the worst prediction performance.  *
+
+```{r message=FALSE, warning=FALSE}
+TPR = rep(0,3)
+TNR = rep(0,3)
+
+set.seed(35)
+# number of variables to be randomly split for random forest
+floor(sqrt(ncol(x)))
+# in contrast all variables are considered when performing bagging
+ncol(x.mat)
+
+cv.out.rf =  crossval(predfun.rf, X=x.mat, Y=y, ntree=100, mtry = 3,  K=10, B=20, verbose=FALSE)
+cv.out.rf$stat
+TPR[1] = cv.out.rf$stat[2]/(cv.out.rf$stat[2]+cv.out.rf$stat[4])
+TNR[1] = cv.out.rf$stat[3]/(cv.out.rf$stat[1]+cv.out.rf$stat[3])
+
+diagnosticErrors(cv.out.rf$stat)
+
+cv.out.bagging  =  crossval(predfun.rf, X=x.mat, Y=y, ntree=100, mtry = ncol(x.mat), K=10, B=20, verbose=FALSE)
+cv.out.bagging$stat
+TPR[2] = cv.out.bagging$stat[2]/(cv.out.bagging$stat[2]+cv.out.bagging$stat[4])
+TNR[2] = cv.out.bagging$stat[3]/(cv.out.bagging$stat[1]+cv.out.bagging$stat[3])
+
+diagnosticErrors(cv.out.bagging$stat)
+
+cv.out.tree  =  crossval(predfun.rf, X=x.mat, Y=y, ntree=1, mtry = ncol(x.mat), K=10, B=20, verbose=FALSE)
+cv.out.tree$stat
+TPR[3] = cv.out.tree$stat[2]/(cv.out.tree$stat[2]+cv.out.tree$stat[4])
+TNR[3] = cv.out.tree$stat[3]/(cv.out.tree$stat[1]+cv.out.tree$stat[3])
+
+diagnosticErrors(cv.out.tree$stat)
+
+#
+TPR
+TNR
+```
+
+
+
+
+## Part 4: The heart.csv datasets: Using the caret framework (Practical 5)
+
+
+In order to evaluate a prediction rule we have so far defined out own prediction rules and used the crossval package for comparison. This is a useful approach when learning to understand how prediction algorithms and cross-validation work. Yet, this is not a principled approach to compare many algorithms.
+
+
+This is why the caret package (short for Classification And REgression Training) has become very popular. It provides "a set of functions that attempt to streamline the process for creating predictive models". Please see the webpage for a detailed description
+
+https://topepo.github.io/caret/
+
+Here, we are going to use the caret package to compare prediction performance of various algorithms. In particular, see the following table here for an overview of available algorithms
+
+https://topepo.github.io/caret/available-models.html
+
+Please before loading caret, unload the crossval package in order to avoid masking (overwriting of functions with the same name).
+```{r message=FALSE, warning=FALSE}
+detach("package:crossval", unload=TRUE)
+library(caret)
+```
+Split your data into training and test data to evaluate the final performance. Set your seed to 4 to replicate your findings.
+```{r message=FALSE, warning=FALSE}
+set.seed(4)
+data = as.data.frame(cbind(y,x.mat))
+index = createDataPartition(y, p = 0.8, list = FALSE)
+data.train = data[index, ]
+data.test = data[-index, ]
+```
+
+We are going to perform repeated cross-validation with K=10 folds and 2 repetitions (Please increase to at least 10 or more in reality). Other options would be bootstrapping and leave-one-out cross-validation.
+```{r message=FALSE, warning=FALSE}
+train.control = trainControl(method="repeatedcv", number=10, repeats=2)
+```
+
+Question 4.1 Fit a GLM
+
+Use the train function in caret to fit a GLM by using method="glm" and family "binomial". Please use the training data stored in data.train only.
+```{r message=FALSE, warning=FALSE}
+# fit
+glm.model = train(as.factor(y)~., data=data.train, trControl=train.control, method="glm", family = "binomial")
+# summary
+glm.model$results
+glm.model$finalModel
+```
+
+
+
+Question 4.2 Fit glmnet
+
+Now, change the method from "glm" to "glmnet" to perform regularised regression.
+```{r message=FALSE, warning=FALSE}
+# fit
+glmnet.model = train(as.factor(y)~., data=data.train, trControl=train.control, method="glmnet", family = "binomial")
+# summary
+glmnet.model$results
+```
+
+
+Question 4.3 Parameter tuning
+
+Glmnet has two tuning parameters:
+
+- alpha (Mixing Percentage)
+- lambda (Regularization Parameter)
+
+The training function in caret performs internal cross-validation to tune these two hyperparameters. Please check which hyperparameter combination obtained the best performance in the $bestTune value of the object. What are the variables included? Check using the coef() function.
+
+```{r message=FALSE, warning=FALSE}
+names(glmnet.model)
+glmnet.model$bestTune
+# best coefficient
+coef(glmnet.model$finalModel, glmnet.model$bestTune$lambda)
+```
+
+
+
+Question 4.4 Fit a support vector machine
+
+Perform support vector machine by changing method to 'svmLinearWeights'.
+```{r message=FALSE, warning=FALSE}
+# fit
+svm.model = train(as.factor(y)~., data=data.train, trControl=train.control, method='svmLinearWeights')
+# summary
+svm.model$results
+svm.model$bestTune
+```
+
+
+
+Question 4.5 Fit a random forest
+
+Perform random forest by changing the method to 'rf'. The hyperparameter is mtry. Which one has the best performance?
+
+```{r message=FALSE, warning=FALSE}
+# fit
+rf.model = train(as.factor(y)~., data=data.train, method='rf')
+# summary
+rf.model$results
+rf.model$bestTune
+```
+
+
+
+Question 4.6 Evaluate all methods on the test data
+
+
+caret has also streamlined the prediction performance. Please evaluate all four algorithms (glm, glmnet, svm and random forest) to check which algorithm has the best prediction performance on the test data $data.test$.
+
+```{r message=FALSE, warning=FALSE}
+#glm
+predict.glm = predict(glm.model, newdata = data.test)
+confusionMatrix(predict.glm, as.factor(data.test$y))
+#glmnet
+predict.glmnet = predict(glmnet.model, newdata = data.test)
+confusionMatrix(predict.glmnet, as.factor(data.test$y))
+#svm
+predict.svm = predict(svm.model, newdata = data.test)
+confusionMatrix(predict.svm, as.factor(data.test$y))
+#rf
+predict.rf = predict(rf.model, newdata = data.test)
+confusionMatrix(predict.rf, as.factor(data.test$y))
+```
+
+
+
+## Part 5: Defining a prediction rule for transcriptomics: Using the caret framework (Practical 5)
+
+
+We look back at the dataset which links gene-expression with the response of breast cancer patients to treatment (Practical 3, Q3 and Practical 4, Q1). Our aim is to build a classifier that can discriminate between 2 responder groups (pathologic complete response or minimal residual cancer burden [RCB-I] defining excellent response (coded as 0), vs moderate or extensive residual cancer burden [RCB-II/III] defining lesser response (coded as 1).
+
+For the original publication please see https://jamanetwork.com/journals/jama/fullarticle/899864
+
+Load the dataset including $n=414$ patients and the predictor matrix including expression of $p=22,283$ genes.
+```{r message=FALSE, warning=FALSE}
+load("../../data/JAMA2011_breast_cancer")
+#alternatively try load("../../data/JAMA2011_breast_cancer.dms")
+y = as.factor(data_bc$rcb)
+table(y)
+x = as.matrix(data_bc$x)
+dim(x)
+```
+
+This practical exercise is using the caret package to contrast different prediction algorithms in a streamlined fashion. Please see the previous question for more details on the caret package.
+```{r message=FALSE, warning=FALSE}
+library(caret)
+```
+
+We are going to perform repeated cross-validation. Other options would be bootstrapping and leave-one-out cross-validation.
+```{r message=FALSE, warning=FALSE}
+train.control = trainControl(method="repeatedcv", number=10, repeats=2)
+```
+
+
+Question 5.1 Pre-filter the transcripts
+
+Unfortunately the dataset is too large to be analysed using caret. This is why we perform variable ranking as outlined in Practical 3, question 3 based on shrinkage t-score and select only variables which have a local false discovery rate < 0.5.
+Please use the shrinkt.stat in the st package to fit the shrinkage t-score and the fdrtool function in the fdrtool package to compute the shrinkage t-scores and the local false discovery rate.
+
+How many genes remain after filtering?
+```{r message=FALSE, warning=FALSE}
+library(st)
+library(fdrtool)
+shrinkt = shrinkt.stat(X=as.matrix(x), L=as.factor(y))
+fdr.out.st = fdrtool(shrinkt, statistic = "normal", verbose =FALSE)
+sum(fdr.out.st$lfdr<0.5)
+
+x.filter = x[,which(fdr.out.st$lfdr<0.5)]
+dim(x.filter)
+
+data = as.data.frame(cbind(y,x.filter))
+```
+
+Question 5.2 GLMNET
+
+Fit the glmnet using caret by specifying as method "glmnet". What is the accuracy?
+```{r message=FALSE, warning=FALSE}
+# fit
+glmnet.model = train(as.factor(y)~., data=data, trControl=train.control, method="glmnet", family = "binomial")
+# summary
+glmnet.model$results
+```
+
+
+Question 5.3 SVM
+
+Fit a support vector machine using caret "svmLinearWeights". What is the accuracy?
+```{r message=FALSE, warning=FALSE}
+# svm
+svm.model = train(as.factor(y)~., data=data, trControl=train.control, method='svmLinearWeights')
+# summary
+svm.model$results
+svm.model$bestTune
+```
+
+Question 5.4 Random forest
+
+Fit a random forest using caret "rf". What is the accuracy? Which of the three algorithms has the best accuracy?
+```{r message=FALSE, warning=FALSE}
+# fit
+rf.model = train(as.factor(y)~., data=data, method='rf')
+# summary
+rf.model$results
+rf.model$bestTune
+```
+
+
+
+
+
+
+<!--
+require(knitr)
+require(markdown)
+require(rmarkdown)
+render("practical_new_solutions.Rmd")
+-->
+

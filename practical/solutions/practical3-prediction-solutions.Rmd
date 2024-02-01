@@ -1,0 +1,477 @@
+---
+title: "Practical 3: Variable selection"
+author: "Garyfallos Konstantinoudis, Christina Liang"
+date: "Spring Term 2023"
+output: pdf_document
+highlight: tango
+---
+
+
+## Part 1: The epigenetic clock: Epigenetic marks associated with ageing
+
+
+Our epigenome is highly impacted by environmental changes. One particular interesting aspect is ageing and how epigenetic marks such as methylation are affected by ageing. Scientists have shown that there exist specific methylation sites that correlate with age, an observation that has been made in humans, chimpanzees, mice, or rats. Based on our knowledge of which methylation sites correlate with healthy ageing we can use these epigenetic marks as biomarkers to predict the  "actual biological age" of an individual. For example, if an individual has been exposed to pollutants or suffered from stress, its "actual biological age" of its body might be much older than its true age.
+
+If you want to read more on the topic, there is a Nature Feature on the scientist  Steve Horvath who first proposed to use methylation to measure the biological age
+
+https://www.nature.com/news/biomarkers-and-ageing-the-clock-watcher-1.15014
+
+In this practical we consider data on $n=409$ healthy mice and methylation of $p=3,663$ conserved methylation sites. Load the dataset, that contains the methylation matrix as predictor matrix and the age of the mice (in months) stored in the vector y. Familiarise yourself with the dataset using the following commands
+
+```{r message=FALSE, warning=FALSE, fig.height=2.8}
+load("../../data/data_epigenetic_clock_control")
+#alternatively try load("data_epigenetic_clock_control.dms")
+y = control_mice$y_control
+hist(y,breaks=50, main="")
+x = control_mice$x_control
+dim(x)
+```
+The first part is concerned with performing a ranking of methylation sites that have the strongest association with ageing.
+
+
+Question 1.1
+
+Compute a linear regression of the first methylation site against the age of the mice. Note in order to access the first column of a matrix, use square bracket like this [,1] and for the $j$th variable use [,j]. Figure out which element in the $\$$coefficients matrix contains the $p$-value of the regression coefficient. Use again the squared brackets to index only the $p-$value.
+
+*Reply: We fit the regression using the lm() function and look at the value  $\$$coefficients.*
+```{r message=FALSE, warning=FALSE}
+summary(lm(y~x[,1]))$coefficients
+```
+*The element in the 2nd row and the 4th columns of the $\$$coefficient value contains the $p-$value.*
+
+```{r message=FALSE, warning=FALSE}
+summary(lm(y~x[,1]))$coefficients[2,4]
+```
+
+Question 1.2
+
+In order to compute the massively univariate linear regression estimate, we need to automate this computation for all $p=3,663$ methylation sites. First initiate a vector where to save your $p-$values.
+```{r message=FALSE, warning=FALSE}
+pvec = rep(NaN, 3663)
+```
+
+Write a 'for loop' to iterate through all variables. In case you are not familiar with the 'for loop', use this practical here for help https://www.r-bloggers.com/how-to-write-the-first-for-loop-in-r/ . In each iteration $j$ save the $p-$value of the respective regression into the pvec vector at position pvec[j].
+
+
+*Reply: This is how such a for loop could look like. *
+
+```{r message=FALSE, warning=FALSE}
+for(j in 1:ncol(x)){
+	pvec[j]=summary(lm(y~x[,j]))$coefficients[2,4]
+}
+```
+
+Question 1.3
+
+Rank the methylation sites according to their $p-$values and show the top 10 methylation sites that are associated with ageing.
+
+*Reply: First we combine the column names of the methylation sites with the $p-$values and then we sort the output using the order function. *
+
+```{r message=FALSE, warning=FALSE}
+output=cbind(colnames(x),pvec)
+output_sorted=output[order(pvec),]
+head(output_sorted,n=10)
+```
+
+
+## Part 2: The epigenetic clock: A predictive signature for ageing using penalised regression
+
+
+In this practical we consider again the same data on $n=409$ healthy mice and methylation of $p=3,663$ conserved methylation sites as last week. Our goal is to train our own epigenetic clock and use the methylation data to predict the biological age of mice.
+
+Load the dataset, that contains the methylation matrix as predictor matrix and the age of the mice (in months) stored in the vector y. Familiarise yourself with the dataset using the following commands
+
+```{r message=FALSE, warning=FALSE, fig.height=3.2}
+load("../../data/data_epigenetic_clock_control")
+#alternatively try load("../../data/data_epigenetic_clock_control.dms")
+y = control_mice$y_control
+hist(y,breaks=50)
+x = control_mice$x_control
+dim(x)
+```
+
+
+Question 2.1
+
+First load the glmnet package and fit a lasso regression, where you use $y$ as the outcome and $x$ as predictor matrix (always make sure $x$ is a matrix and not a dataframe). For the first question to get the glmnet function to run use a fixed regularisation parameter and set lambda to 0.9. Run the lasso and see how many beta-coefficient are unequal to zero and thus included in the model.
+
+```{r message=FALSE, warning=FALSE}
+library(glmnet)
+```
+
+*Reply: There are 6 methylation sites that are included in the model.*
+
+```{r message=FALSE, warning=FALSE}
+is.matrix(x)
+lasso.out11 = glmnet(x,y,family="gaussian",alpha=1,lambda=0.9)
+sum(abs(lasso.out11$beta)>0)
+```
+*Note that $beta gives out the beta-coefficients only, coef(lasso.out11), returns both the intercept and the beta-coefficients.*
+
+
+Question 2.2
+
+When performing penalised regression it is not advised to set the regularisation parameter before seeing the data. It is good practice to perform cross-validation (cv) to set the regularisation parameter. Use the cv.glmnet function and the option  type.measure = "mse" to optimise the mean squared error (mse). Find the lambda parameter that minimises the cv mse using the value $\$$lambda.min. What is the lambda parameter that is largest, but has a mse that is within one standard error of the minimum mse using the value $\$$lambda.1se?
+
+
+
+```{r message=FALSE, warning=FALSE}
+set.seed(12)
+lasso.cv = cv.glmnet(x,y,family="gaussian",alpha=1, type.measure="mse")
+lasso.cv$lambda.min
+lasso.cv$lambda.1se
+```
+
+*Reply: lambda `r lasso.cv$lambda.min` minimises the mse, but lambda = `r lasso.cv$lambda.1se` is the largest lambda (smallest model) that has a mse that is within 1 standard error of the minimum mse.*
+
+
+Question 2.3
+
+Fit the two lasso models, one with the lambda that optimises the mse, the second with the largest lambda that is within one standard error of the minimum mse. How many variables are included in each model and discuss the impact of the regularisation.
+
+
+*Reply: The first model with minimum mse includes 301 variables.*
+
+```{r message=FALSE, warning=FALSE}
+lasso.out.min = glmnet(x,y,family="gaussian",alpha=1,lambda=lasso.cv$lambda.min)
+sum(abs(lasso.out.min$beta)>0)
+```
+
+*Reply: The second model with lambda.1se includes 158 variables, and has almost half of the variables as the first model trained on the minimum mse. The second model is the sparsest model that has nearly the same mse (within 1 standard error) as the first model with the minimum mse.*
+
+```{r message=FALSE, warning=FALSE}
+lasso.out.1se = glmnet(x,y,family="gaussian",alpha=1,lambda=lasso.cv$lambda.1se)
+sum(abs(lasso.out.1se$beta)>0)
+```
+
+
+
+Question 2.4
+
+The function cv.glmnet fits regularised regression models for a grid (default length is 100) of different regularisation parameters (lambdas). The actual values of regularisation parameters are stored as $\$$lambda. Additionally cv.glmnet provides the mean cross-validated error ($\$$cvm) and the number of non-zero coefficients ($\$$nzero). Do three plots:
+
+- Plot the sequence 1:100 on the x-axis against the regularisation parameter on the y-axis.
+- Plot the sequence 1:100 on the x-axis against the mean cross-validated error on the y-axis.
+- Plot the sequence 1:100 on the x-axis against the number of non-zero coefficients on the y-axis.
+
+How do you interpret these plots?
+
+
+```{r message=FALSE, warning=FALSE}
+par(mfrow=c(1,3))
+plot(1:100, lasso.cv$lambda, main="1. Regularization parameter", xlab="Regularisation model", ylab="Lambda")
+abline(v=which(lasso.cv$lambda == lasso.cv$lambda.min),col="red",lwd=2)
+abline(v=which(lasso.cv$lambda == lasso.cv$lambda.1se),col="red",lty=2,lwd=2)
+plot(1:100, lasso.cv$cvm, main="2. Cross-validation error", xlab="Regularisation model", ylab="Cross-validation error")
+abline(v=which(lasso.cv$lambda == lasso.cv$lambda.min),col="red",lwd=2)
+abline(v=which(lasso.cv$lambda == lasso.cv$lambda.1se),col="red",lty=2,lwd=2)
+plot(1:100, as.vector(lasso.cv$nzero), main= "3. Model size", xlab="Regularisation model", ylab="Model size")
+abline(v=which(lasso.cv$lambda == lasso.cv$lambda.min),col="red",lwd=2)
+abline(v=which(lasso.cv$lambda == lasso.cv$lambda.1se),col="red",lty=2,lwd=2)
+```
+
+*Reply:
+- Figure 1 shows the regularisation parameter which decreases from around 1.4 to nearly zero. The first models have a strong regularisation while the last models only have very little regularisation. The vertical red line indicated the lambda with the minimum cv-error, and the dashed red line indicates the largest lambda (smallest model) within one standard error of the minimum cv-error.
+- Figure 2 shows the bias-variance trade-off of the test error. At first the cross-validation error reduces when reducing the regularisation parameter, but at some point there is a saturation. After reaching  the minimum error it increases again when further reducing the regularisation parameter. There is a clear minimum of the cross-validation error at the 67th position of the lambda vector which allows us to define the optimal regularisation parameter (lambda.min). The largest lambda (sparsest model) within 1 standard error is at position 41.
+- Figure 3 shows the model complexity. With strong regularisation few variables are included into the model. When reducing the regularisation, the model size increases. The model with the lambda that miminises the MSE includes 301 variables, while the sparsest model within 1 standard error includes 158 variables.*
+
+
+
+
+
+
+Question 2.5
+
+Fit a cv to define the optimal regularisation for the ridge regression. What are the optimal lambda parameter for the minimum cv mse and 1 standard error within the minimum? Fit a ridge regression with the respective parameter.
+
+Use set.seed for reproducability
+```{r message=FALSE, warning=FALSE}
+set.seed(123)
+```
+
+*Reply: This is how to fit cv for ridge. Note alpha=0 as option is ridge regression, alpha=1 is lasso and alpha in between is elastic net.*
+```{r message=FALSE, warning=FALSE}
+ridge.cv = cv.glmnet(x,y,family="gaussian",alpha=0, type.measure="mse")
+ridge.cv$lambda.min
+ridge.cv$lambda.1se
+```
+*This is the final ridge regression fit.*
+```{r message=FALSE, warning=FALSE}
+ridge.out.min = glmnet(x,y,family="gaussian",alpha=0,lambda=ridge.cv$lambda.min)
+ridge.out.1se = glmnet(x,y,family="gaussian",alpha=0,lambda=ridge.cv$lambda.1se)
+sum(abs(ridge.out.1se$beta)>0)
+```
+
+*Ridge regression does not perform variable selection, all regression coefficients are unequal to zero and thus included into the model. In contrast lasso and elastic net set regression coefficient to exactly zero and exclude them from the model.*
+
+
+
+Question 2.6
+
+Fit a cv to define the two optimal regularisation parameter for elastic net regression. Focus on the largest lambda within 1 standard error of the minimum. This will provide the sparsest model (fewest predictors) that is almost as good as the one with the minimum cv mse. What are the optimal lambda and alpha parameter? Use the foreach package and the following code to search the optimal combination of lambda and alpha on a grid.
+
+
+```{r message=FALSE, warning=FALSE}
+set.seed(1234)
+library("foreach")
+a = seq(0.05, 0.95, 0.05)
+search = foreach(i = a, .combine = rbind)%do%{
+  			cv = cv.glmnet(x,y,family = "gaussian", type.measure = "mse", alpha = i)
+  			data.frame(cvm = cv$cvm[cv$lambda == cv$lambda.1se], lambda.1se = cv$lambda.1se, alpha = i)
+}
+elasticnet.cv = search[search$cvm == min(search$cvm), ]
+elasticnet.cv
+```
+*Reply: CV in elastic net defines lambda.1se as `r elasticnet.cv[2]` and alpha as `r elasticnet.cv[3]`. Note for elastic net alpha is between 0 and 1 and needs to be specified as well.*
+
+
+Finally fit an elastic net model using the optimal lambda and alpha regularisation parameter.
+```{r message=FALSE, warning=FALSE}
+enet.out = glmnet(x, y, family = "gaussian", lambda = elasticnet.cv$lambda.1se, alpha = elasticnet.cv$alpha)
+sum(abs(enet.out$beta)>0)
+```
+*There are 359 methylation sites included into the elastic net model.*
+
+
+
+
+## Part 3: Which of the 3 models (ridge, lasso and elastic net) builds the better prediction rule?
+
+
+In the second part we perform a cv to compare how well the three different models can predict new data. To this end we use the
+```{r message=FALSE, warning=FALSE}
+library(crossval)
+```
+
+
+package for which we need to write a prediction function. Please see here how to define a prediction function for a linear regression model.
+
+```{r message=FALSE, warning=FALSE}
+predfun.lm = function(train.x, train.y, test.x, test.y){
+	#fit the model and build a prediction rule
+	lm.fit = lm(train.y ~ ., data=train.x)
+	#predict the new observation based on the test data and the prediction rule
+	ynew = predict(lm.fit, test.x )
+	#compute mse as squared difference between predicted and observed outcome
+	out = mean( (ynew - test.y)^2 )
+	return( out )
+}
+```
+
+
+
+
+Use this code fragment to write a prediction function for the following for the following algorithms:
+
+
+Question 3.1
+
+Lasso (with the regularisation parameter lambda as set in Question 1.2 to be  the largest lambda that has a mse that is within one standard error of the minimum mse using the value $\$$lambda.1se)
+
+```{r message=FALSE, warning=FALSE}
+predfun.lasso = function(train.x, train.y, test.x, test.y){
+
+	glmnet.fit = glmnet(x=train.x, y=train.y, lambda = lasso.out.1se, alpha=1)
+	ynew = predict(glmnet.fit , test.x)
+	# compute squared error risk (MSE)
+	out = mean( (ynew - test.y)^2 )
+	return( out )
+}
+```
+
+
+Question 3.2
+
+Ridge (with lambda as $\$$lambda.1se in Question 1.5)
+
+```{r message=FALSE, warning=FALSE}
+predfun.ridge = function(train.x, train.y, test.x, test.y){
+
+	glmnet.fit = glmnet(x=train.x, y=train.y, lambda = ridge.out.1se, alpha=0)
+	ynew = predict(glmnet.fit , test.x)
+	# compute squared error risk (MSE)
+	out = mean( (ynew - test.y)^2 )
+	return( out )
+}
+```
+
+
+Question 3.3
+
+Elastic net (with lambda and alpha as $\$$lambda.1se in Question 1.6)
+
+*Reply: Since all three methods essentially build on the glmnet function, it is actually possible to build a more general prediction function, that has both, lambda and alpha as free paramters.*
+
+```{r message=FALSE, warning=FALSE}
+predfun.glmnet = function(train.x, train.y, test.x, test.y, lambda = lambda, alpha=alpha){
+
+	glmnet.fit = glmnet(x=train.x, y=train.y, lambda = lambda, alpha=alpha)
+	ynew = predict(glmnet.fit , test.x)
+	# compute squared error risk (MSE)
+	out = mean( (ynew - test.y)^2 )
+	return( out )
+}
+```
+
+
+Question 3.4
+
+Use the crossval package to perform a $k$-fold cross validation with $k=5$ folds. For each of the three methods output the mean and standard error of the cv test error and discuss which method generalises best to new data.
+
+*Reply: We use predfun.glmnet as the most general prediction rule and adjust the parameters according to the regularised regression used. We see that ridge regression has the worst prediction performance. The lasso improves over the ridge, while the elastic net slightly improves over the lasso. *
+
+```{r message=FALSE, warning=FALSE}
+set.seed(24)
+cv.out.ridge =  crossval(predfun.glmnet, x, y, lambda=ridge.cv$lambda.1se, alpha=0,
+ K=5, B=20, verbose=FALSE)
+cv.out.lasso =  crossval(predfun.glmnet, x, y, lambda=lasso.cv$lambda.1se, alpha=1,
+ K=5, B=20, verbose=FALSE)
+cv.out.enet  =  crossval(predfun.glmnet, x, y, lambda=elasticnet.cv$lambda.1se,
+ alpha=elasticnet.cv$alpha, K=5, B=20, verbose=FALSE)
+
+#save to table
+table.out = rbind(c(cv.out.ridge$stat, cv.out.ridge$stat.se),
+ c(cv.out.lasso$stat, cv.out.lasso$stat.se), c(cv.out.enet$stat, cv.out.enet$stat.se))
+rownames(table.out) = c("ridge", "lasso", "elastic net")
+colnames(table.out) = c("mse", "se")
+table.out
+```
+
+
+
+
+## Part 4: Spotify data: Which song features predict if a song is likely to be skipped?
+
+
+Spotify has created a huge database on characteristics of songs available on spotify. The following data is taken from a Spotify data challenge (https://research.spotify.com/datasets). The data-set contains information on songs, where each song is an observation. Our goal is to define features of a song that predict if a song is likely to get skipped. Load the dataset
+```{r message=FALSE, warning=FALSE}
+load("../../data/spotify.Rdata")
+attach(spotify.data)
+```
+and familiarise yourself with the outcome variables
+```{r message=FALSE, warning=FALSE, fig.height = 3}
+hist(y_perc)
+table(y_bin)
+```
+y_perc is the ratio of the number of skips divided by the number of plays.  A value close to one indicates that the song was skipped every time it was played. Please note that y_perc is a quantitative variable, but it is confined in the range of 0 and 1. Consequently, y_perc does not follow a Gaussian distribution. A beta-binomial distribution would be more appropriate. For this practical we are going to focus on y_bin, which is a binary indicator if a song is skipped more than half of the time (y_perc>0.5).
+
+As predictors we consider the variables given in the x_mat matrix. For more information on the features, please see https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-features/.
+
+```{r message=FALSE, warning=FALSE}
+colnames(x_mat)
+```
+
+Question 4.1
+
+Build a univariable glm using the glm function where you test each predictor in x_mat at a time in a univariable model with y_bin as outcome. Which feature has the strongest univariable association with y_bin?
+
+
+```{r message=FALSE, warning=FALSE}
+results.uni.glm = matrix(0,ncol=4, nrow=ncol(x_mat))
+row.names(results.uni.glm) = colnames(x_mat)
+colnames(results.uni.glm) = c("beta","se","z-score","p-val")
+
+for(i in 1:ncol(x_mat)){
+	results.uni.glm[i,] = summary(glm(y_bin~x_mat[,i], family="binomial"))$coefficients[2,]
+}
+
+results.uni.glm
+```
+*Reply:  The strongest univariable  association with the lowest $p$-value is observed for dyn_range_mean. *
+
+
+Question 4.2
+
+Rank your results by $p-$value add perform a multiple testing correction. How many features are significant after multiple testing?
+
+```{r message=FALSE, warning=FALSE}
+results.uni.glm = cbind(results.uni.glm, p.adjust(results.uni.glm[,4], method="bonferroni"), p.adjust(results.uni.glm[,4], method="BH"))
+colnames(results.uni.glm)[5:6] = c("p.adjust", "BH")
+results.uni.glm[order(results.uni.glm[,4]),]
+```
+*Reply:  8 features are significant after multiple testing control. *
+
+
+Question 4.3
+
+Visualise the correlation structure between predictors. Which features are highly correlated?
+```{r message=FALSE, warning=FALSE}
+library(corrplot)
+corrplot(cor(x_mat))
+```
+
+*Reply:  There is one cluster of three variables including beat strength, danceability and dyn_range_mean, which is highly correlated. Also energy and flatness are inversely correlated. *
+
+
+
+Question 4.4
+
+Compute a glm using the following command.
+```{r message=FALSE, warning=FALSE}
+x_mat = as.data.frame(x_mat)
+attach(x_mat)
+glm.out = glm(y_bin~age+duration+us_popularity_estimate+acousticness+beat_strength+danceability+dyn_range_mean+energy+flatness+instrumentalness+liveness+loudness+mechanism+speechiness+tempo+valence, family = "binomial")
+```
+Based on this glm compute the variance inflation factor (car package) and the condition number. Are there signs for multi-collinearity?
+
+```{r message=FALSE, warning=FALSE}
+library(car)
+vif(glm.out)
+kappa(cor(x_mat))
+```
+*Reply: There is a high variance inflation factor for beat strength, danceability and dyn_range_mean and a slightly increased variance inflation factor for energy. The condition number is very high and indicates multi-collinearity. *
+
+
+
+Question 4.5
+
+Now perform lasso using glmnet() to predict the binary outcome y_bin. Perform cross-validation (set.seed(1)) to tune the penalisation parameter and select the largest regularisation parameter within one standard error of the minimum cv-error. Which features are included into the model?
+
+```{r message=FALSE, warning=FALSE}
+set.seed(1)
+x_mat=as.matrix(x_mat)
+lasso.cv = cv.glmnet(x_mat,y_bin,family="binomial",alpha=1, type.measure="deviance")
+lasso.cv$lambda.1se
+lasso.out.1se = glmnet(x_mat,y_bin,family="binomial",alpha=1,lambda=lasso.cv$lambda.1se)
+sum(abs(lasso.out.1se$beta)>0)
+lasso.out.1se$beta
+```
+
+*Reply: We perform cross-validation with the sparsest model within 1se of the minimum. Then lasso retains (note set.seed to 1)  2 predictors, which are duration (longer songs are more likely to be skipped) and dyn_range_mean which also increases the risk to be skipped more often. *
+
+
+Question 4.6
+
+Finally perform elastic net using glmnet() to predict the binary outcome y_bin. Perform cross-validation (set.seed(2)) to tune the penalisation parameters and select the largest regularisation parameter within one standard error of the minimum cv-error. Which features are included into the model?
+
+```{r message=FALSE, warning=FALSE}
+set.seed(2)
+a = seq(0.05, 0.95, 0.05)
+search = foreach(i = a, .combine = rbind)%do%{
+  			cv = cv.glmnet(x_mat,y_bin,family = "binomial", type.measure = "deviance", alpha = i)
+  			data.frame(cvm = cv$cvm[cv$lambda == cv$lambda.1se], lambda.1se = cv$lambda.1se, alpha = i)
+}
+elasticnet.cv = search[search$cvm == min(search$cvm), ]
+elasticnet.cv
+enet.out = glmnet(x_mat, y_bin, family = "binomial", lambda = elasticnet.cv$lambda.1se, alpha = elasticnet.cv$alpha)
+sum(abs(enet.out$beta)>0)
+enet.out$beta
+```
+
+*Reply: Then elastic net retains (note set.seed to 2)  5 predictors, which are additional to the lasso predictors acousticness (which makes songs less likely to be skipped), speechiness, an indicator for spoken words, that makes songs more likely to be skipped and valence, which makes songs less likely to be skipped. Valence is an indicator how "sad" a song is http://www.bbc.com/culture/story/20180821-can-data-reveal-the-saddest-song-ever. Our analysis would suggest that happier songs are skipped less often than sad songs. *
+
+
+```{r message=FALSE, warning=FALSE}
+detach(spotify.data)
+```
+
+
+
+
+<!--
+require(knitr)
+require(markdown)
+require(rmarkdown)
+render("practical3-prediction-solutions.Rmd")
+-->
+
