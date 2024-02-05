@@ -1,11 +1,8 @@
 ---
 title: "Practical 2: Non-linear Regression"
-author: "Garyfallos Konstantinoudis, Christina Liang"
-date: "Spring Term 2023"
-output:
-  html_document:
-    df_print: paged
-  pdf_document: default
+author: "Garyfallos Konstantinoudis"
+date: "Spring Term 2024"
+output: pdf_document
 highlight: tango
 ---
 
@@ -36,12 +33,9 @@ library(plotly)
 Triceps and subscapular skinfold thicknesses provide an index of body fat and midarm muscle circumference provides a measure of muscle mass. The dataset \texttt{triceps.csv} contains the age in years, the intriceps and triceps skinfold thickness in cm. In the first part of this practical we would like to examine the association between age and triceps skinfold thickness.
 
 As a first step we load the data.
-```{r echo=FALSE}
-triceps <- read.csv("E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/data/triceps.csv")
-```
 
-```{r eval=FALSE}
-triceps <- read.csv(".../triceps.csv")
+```{r eval=TRUE}
+triceps <- read.csv("../../data/triceps.csv")
 ```
 
 Question 1.1
@@ -435,12 +429,9 @@ ggplot( ) +
 In the fourth part of this practical you will be analyzing the HANES lb dataset. This dataset included information about the age, sex (men=0, women=1) race, location (locode), height, BMI (body mass index), Booze (categorical alcohol consumption), serum calcium (Ser.calc), setum cholesterol (Ser.chol), current smoking, smoking history, number of cigarettes per dat, lifetime pack year and follow up variables including age at death (d.age), year of death (d.year), death from any cause (d.total), death from cancer (d.cancer) and deaths from heart disease (d.heart)
 
 As a first step we load the data and assign \texttt{hanes} to a data.frame.
-```{r echo=FALSE}
-hanes <- read.csv("E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/data/hanes.csv")
-```
 
-```{r eval=FALSE}
-hanes <- read.csv(".../hanes.csv")
+```{r eval=TRUE}
+hanes <- read.csv("../../data/hanes.csv")
 ```
 
 Question 4.1

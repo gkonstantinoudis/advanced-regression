@@ -1,7 +1,7 @@
 ---
 title: "Practical 1: Linear and logistic regression, random and fixed effect"
-author: "Garyfallos Konstantinoudis, Christina Liang"
-date: "Spring Term 2023"
+author: "Garyfallos Konstantinoudis"
+date: "Spring Term 2024"
 output: pdf_document
 highlight: tango
 ---
@@ -43,7 +43,7 @@ Question 1.2
 Does the outcome disease progression follow a Normal-distribution? Look at general summary statistics of y, plot a histogram and a q-q plot against the Normal-distribution.
 
 *Reply: The outcome is certainly not perfectly Normal-distributed, but for now this assumption is fine.*
-```{r message=FALSE, warning=FALSE, fig.height=4}
+```{r message=FALSE, warning=FALSE, fig.height=3}
 par(mfrow=c(1,2))
 hist(y,breaks=50)
 qqnorm(y)
@@ -491,6 +491,7 @@ library(ggplot2)
 p = ggplot(titanic, aes(factor(pclass), age))
 p + geom_violin(na.rm = TRUE)
 ```
+
 *An alternative for the boxplot is the violin plot, a mixture of a boxplot and a kernel density function. Here it is even more obvious that there were much more young children travelling in class 2 and 3. Especially young children had a good chance for survival. In order to estimate the true effect of age we need to adjust for passenger class (either in a fixed or random effects model). Otherwise the estimate would be confounded since there where few children travelling first class.*
 
 

@@ -1,8 +1,11 @@
 ---
 title: "Practical 2: Non-linear Regression"
-author: "Garyfallos Konstantinoudis, Christina Liang"
-date: "Spring Term 2023"
-output: pdf_document
+author: "Garyfallos Konstantinoudis"
+date: "Spring Term 2024"
+output:
+  html_document:
+  df_print: paged
+  pdf_document: default
 highlight: tango
 ---
 
@@ -35,11 +38,7 @@ Triceps and subscapular skinfold thicknesses provide an index of body fat and mi
 
 As a first step we load the data.
 ```{r echo=FALSE}
-triceps <- read.csv("E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/data/triceps.csv")
-```
-
-```{r eval=FALSE}
-triceps <- read.csv(".../triceps.csv")
+triceps <- read.csv("../data/triceps.csv")
 ```
 
 Question 1.1
@@ -142,12 +141,9 @@ In the fourth part of this practical you will be analyzing the HANES lb dataset.
 
 As a first step we load the data and assign \texttt{hanes} to a data.frame.
 ```{r echo=FALSE}
-hanes <- read.csv("E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/data/hanes.csv")
+hanes <- read.csv("../data/hanes.csv")
 ```
 
-```{r eval=FALSE}
-hanes <- read.csv(".../hanes.csv")
-```
 
 Question 4.1
 Fit a logistic regression model for mortality (d.total) with main effects for age, sex, race, booze, smokever, and bp1sys. Interpret the output of the model (focus on the coefficient of the systolic blood pressure).

@@ -1,8 +1,11 @@
 ---
 title: "Practical 4: Classification analysis"
-author: "Garyfallos Konstantinoudis, Christina Liang"
-date: "Spring Term 2023"
-output: pdf_document
+author: "Garyfallos Konstantinoudis"
+date: "Spring Term 2024"
+output:
+  html_document:
+  df_print: paged
+  pdf_document: default
 highlight: tango
 ---
 

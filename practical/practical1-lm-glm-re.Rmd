@@ -1,8 +1,11 @@
 ---
 title: "Practical 1: Linear and logistic regression, random and fixed effect"
-author: "Garyfallos Konstantinoudis, Christina Liang"
-date: "Spring Term 2023"
-output: pdf_document
+author: "Garyfallos Konstantinoudis"
+date: "Spring Term 2024"
+output:
+  html_document:
+  df_print: paged
+  pdf_document: default
 highlight: tango
 ---
 
@@ -141,7 +144,7 @@ This section considers exam scores of 3,935 students from 65 schools in Inner Lo
 
 
 ```{r message=FALSE, warning=FALSE, fig.height =3.5}
-load("E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/data/exam.London")
+load("../data/exam.London")
 dim(exam)
 par(mfrow=c(1,2))
 hist(exam$normexam, breaks =50, main="Final exam score (normalised)", cex.main=0.9, xlab="")
@@ -212,7 +215,7 @@ Compare the random intercept (Q5.4) and the one with the additional covariate (Q
 The sinking of the titanic was one of the greatest disaster in navel history. After colliding with an iceberg, the titanic sank and 1,502 out of 2,224 passengers and crew were killed. The following data set has collected information on n=1,309 of the passengers and their survival.
 
 ```{r message=FALSE, warning=FALSE}
-titanic = read.csv("E:/Postdoc Imperial/Lectures/2023_AdvancedRegression/AdvancedRegression2022-2023/data/titanic.csv")
+titanic = read.csv("../data/titanic.csv")
 dim(titanic)
 table(titanic$survived)
 ```

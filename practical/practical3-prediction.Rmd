@@ -1,8 +1,11 @@
 ---
 title: "Practical 3: Variable selection"
-author: "Garyfallos Konstantinoudis, Christina Liang"
-date: "Spring Term 2023"
-output: pdf_document
+author: "Garyfallos Konstantinoudis"
+date: "Spring Term 2024"
+output:
+  html_document:
+  df_print: paged
+  pdf_document: default
 highlight: tango
 ---
 
@@ -209,7 +212,7 @@ Build a univariable glm using the glm function where you test each predictor in 
 
 Question 4.2
 
-Rank your results by $p-$value.
+Rank your results by $p-$value add perform a multiple testing correction. To correct for multiple testing, check the function `p.adjust()` and select the `bonferroni` method. How many features are significant after multiple testing?
 
 
 Question 4.3
@@ -223,7 +226,10 @@ Compute a glm using the following command.
 ```{r message=FALSE, warning=FALSE}
 x_mat = as.data.frame(x_mat)
 attach(x_mat)
-glm.out = glm(y_bin~age+duration+us_popularity_estimate+acousticness+beat_strength+danceability+dyn_range_mean+energy+flatness+instrumentalness+liveness+loudness+mechanism+speechiness+tempo+valence, family = "binomial")
+glm.out = glm(y_bin~age+duration+us_popularity_estimate+acousticness+
+                beat_strength+danceability+dyn_range_mean+energy+flatness+
+                instrumentalness+liveness+loudness+mechanism+speechiness+
+                tempo+valence, family = "binomial")
 ```
 Based on this glm compute the variance inflation factor (car package) and the condition number. Are there signs for multi-collinearity?
 
