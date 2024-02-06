@@ -8,7 +8,11 @@ Materials for the Advanced Regression course running spring 2024.
 
 | Week | Lecture                  |
 | ---- | ------------------------ |
-| 1    | [Overview of the course](/lectures/welcome_and_introduction/welcome_and_introduction.qmd)    |
+| 1    | Regression models |
+| 2    | Non-linear regression |
+| 3    | Variable selection |
+| 4    | Classification \& trees |
+| 5    | Neural Networks  |
 
 FILL OUT
 
