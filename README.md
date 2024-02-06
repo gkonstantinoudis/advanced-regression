@@ -8,7 +8,11 @@ Materials for the Advanced Regression course running spring 2024.
 
 | Week | Lecture                  |
 | ---- | ------------------------ |
-| 1    | [Overview of the course](/lectures/welcome_and_introduction/welcome_and_introduction.qmd)    |
+| 1    | Regression models |
+| 2    | Non-linear regression |
+| 3    | Variable selection |
+| 4    | Classification \& trees |
+| 5    | Neural Networks  |
 
 FILL OUT
 
@@ -24,4 +28,4 @@ Run `pre-commit install` to install the hooks. You now won't be able to commit u
 
 ### Using `Quarto` for presentations
 
-Quarto is pretty cool. I won't bore you, but have a look at the [docs](https://quarto.org/docs/guide/). Here, we're using it for [presentations](https://quarto.org/docs/presentations/revealjs/). It's designed by the folks at `RStudio`, so you `R` folk will be happy. Make a `.qmd` file and run `quarto render *.qmd` to generate the `html`, which you can open in browser. We can get fancy and import our own `css` to have a consistent theme for out presentations.
+Quarto is pretty cool. I won't bore you, but have a look at the [docs](https://quarto.org/docs/guide/). Here, we're using it for [presentations](https://quarto.org/docs/presentations/revealjs/). It's designed by the folks at `RStudio`, so you `R` folk will be happy. Make a `.qmd` file and run `quarto render *.qmd` to generate the `html`, which you can open in browser.
