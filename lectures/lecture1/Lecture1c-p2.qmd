@@ -334,9 +334,12 @@ Akaike information criterion (AIC):
 GP example:
 
 ::: {style="font-size: 60%;"}
--   Model A (Random intercept) `model_random_intercept = lme(chol ~ age, random = ~ 1 | doctor, data = data_chol)`
--   Model B (Random intercept and slope) `model_random_slope = lme(chol ~ age, random = ~ 1 + age | doctor, data = data_chol)`
--   Model C (Random intercept and slope and group covariate) \\ `model_random_cov = lme(chol ~ age + agedoc, random = ~ 1 + age | doctor, data = data_chol)`
+-   Model A (Random intercept) 
+`model_random_intercept = lme(chol ~ age, random = ~ 1 | doctor, data = data_chol)`
+-   Model B (Random intercept and slope) 
+`model_random_slope = lme(chol ~ age, random = ~ 1 + age | doctor, data = data_chol)`
+-   Model C (Random intercept and slope and group covariate) 
+`model_random_cov = lme(chol ~ age + agedoc, random = ~ 1 + age | doctor, data = data_chol)`
 :::
 
 ## Model comparison
