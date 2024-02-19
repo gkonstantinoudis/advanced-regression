@@ -178,14 +178,29 @@ Make your code accessible and reproducible.
 
 The total mark and pass will be calculated after **combining** these two marks.
 
+## Slides format
+
+-   All the material are available on Blackboard and Github
+
+-   https://github.com/gkonstantinoudis/advanced-regression
+
+-   Check Introduction to Git course at data camp (not mandatory!)
+
+-   Material is available as pdf and html. To get the html format as the lectures, download the .qmd files and render the document. Make sure you have
+
+    -   All required packages
+
+    -   Rtools
+
+    -   LaTeX
+
 ## AR: The team
 
 -   Module lead: Garyfallos Konstantinoudis
 
 -   Practical facilitators:
 
-    -   Theo Rashid
-    -   Manyue Hu
+    -   TBC
 
 Looking forward to welcoming you to the AR module!
 

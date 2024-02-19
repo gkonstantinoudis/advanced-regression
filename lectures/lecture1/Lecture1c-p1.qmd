@@ -23,6 +23,8 @@ format:
 
 ```{r load-packages-and-data}
 #| echo: false
+#| message: false
+#| warning: false
 
 library(tidyverse)
 data_chol <- read_csv("assets/cholesterol.csv")

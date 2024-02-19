@@ -35,6 +35,8 @@ The statistical idea is to see if the $x = (x_1, x_2, ..., x_p)$ can give an ade
 ```{r}
 #| echo: false
 #| fig.align: 'center'
+#| warning: false
+#| message: false
 
 library(ggplot2)
 library(dplyr)
@@ -119,7 +121,7 @@ Alternative representation:
 
 -   $x$: predictor matrix
 
-```
+```         
 -   clinical parameters: age, sex, bmi
 
 -   map: blood pressure
