@@ -157,7 +157,7 @@ E(MSE) &= E\big(\frac{1}{m}\sum_{k=1}^m \bigg(y_k^{Test} - \hat{f}(x_k^{Test})\b
     -   Positive predictive value (PPV)
 
         \begin{align}
-        \text{PPV} &+ \frac{\text{Number of true positives}}{\text{Number of true positives + Number of false positives}} \\ 
+        \text{PPV} &+ \frac{\text{Number of true positives}}{\text{Number of true positives + Number of false positives}} \\
         &= \frac{\text{Number of true positives}}{\text{Number of positive calls}}
         \end{align}
 :::
@@ -555,12 +555,12 @@ gratia::smooth_estimates(res.mod) %>%
   mutate(
     est = exp(est), lower_ci = exp(lower_ci), upper_ci = exp(upper_ci),
     temp = round(temp, digits = 2), rr = est / est[temp == 10.30],
-    rr_upper = upper_ci / est[temp == 10.30], 
+    rr_upper = upper_ci / est[temp == 10.30],
     rr_lower = lower_ci / est[temp == 10.30]
   ) %>%
   ggplot() +
   geom_line(aes(temp, rr)) +
-  geom_ribbon(aes(x = temp, ymin = rr_lower, ymax = rr_upper), 
+  geom_ribbon(aes(x = temp, ymin = rr_lower, ymax = rr_upper),
               alpha = 0.3, fill = "blue", col = NA) +
   geom_hline(yintercept = 1, col = "red", linetype = "dashed") +
   theme_bw() +
@@ -602,7 +602,7 @@ gratia::smooth_estimates(res.mod1) %>%
   filter(smooth == "s(pm10)") %>%
   ggplot() +
   geom_line(aes(pm10, est), lwd = 1) +
-  geom_ribbon(aes(x = pm10, ymin = lower_ci, ymax = upper_ci), 
+  geom_ribbon(aes(x = pm10, ymin = lower_ci, ymax = upper_ci),
               alpha = 0.3, fill = "blue", col = NA) +
   theme_bw() +
   ylab("Mortality risk") +
@@ -663,7 +663,7 @@ do.call(rbind, res_store) %>%
   mutate(lag = factor(lag, levels = c(paste0("lag", k)))) %>%
   ggplot() +
   geom_line(aes(temperature_laggeg, rr, col = lag), lwd = 1) +
-  geom_ribbon(aes(x = temperature_laggeg, ymin = rr_lower, 
+  geom_ribbon(aes(x = temperature_laggeg, ymin = rr_lower,
                   ymax = rr_upper, fill = lag), alpha = 0.3, col = NA) +
   geom_hline(yintercept = 1, col = "red", linetype = "dashed", lwd = 1) +
   theme_bw() +

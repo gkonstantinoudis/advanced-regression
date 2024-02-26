@@ -90,7 +90,7 @@ lapply(res_store, unlist) %>%
 ggplot(data = plotres) +
   geom_point(aes(x = type, y = est.pm10_laggeg)) +
   # geom_line(aes(x=type, y=est.pm10_laggeg, group=1), linetype = "dashed") +
-  geom_errorbar(aes(x = type, ymin = LL.pm10_laggeg, 
+  geom_errorbar(aes(x = type, ymin = LL.pm10_laggeg,
                     ymax = UL.pm10_laggeg, width = 0.1)) +
   geom_hline(yintercept = 0, col = "red", linetype = "dotted") +
   theme_bw() +
@@ -101,8 +101,8 @@ ggplot(data = plotres) +
 ggplot(data = plotres) +
   geom_point(aes(x = type, y = est.pm10_laggeg)) +
   geom_line(aes(x = type, y = est.pm10_laggeg, group = 1)) +
-  geom_ribbon(aes(x = type, ymin = LL.pm10_laggeg, 
-                  ymax = UL.pm10_laggeg, group = 1), 
+  geom_ribbon(aes(x = type, ymin = LL.pm10_laggeg,
+                  ymax = UL.pm10_laggeg, group = 1),
               fill = "blue", alpha = 0.2) +
   geom_hline(yintercept = 0, col = "red", linetype = "dotted") +
   theme_bw() +
@@ -122,7 +122,7 @@ What are the main assumptions here?
 #| message: false
 
 library(patchwork)
-(p1 + theme(text = element_text(size = 15))) / 
+(p1 + theme(text = element_text(size = 15))) /
   (p2 + theme(text = element_text(size = 15)))
 ```
 
