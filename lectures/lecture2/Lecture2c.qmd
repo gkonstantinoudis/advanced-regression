@@ -39,7 +39,7 @@ Concepts we cover in this lecture:
 
 -   Examples include, drugs, carcinogens, etc.
 
-Challenge: The risk should be modelled in terms of contributions depending oni ntensity and timing of the exposure events: bi-dimensional association (interaction).
+Challenge: The risk should be modelled in terms of contributions depending on intensity and timing of the exposure events: bi-dimensional association (interaction).
 
 ## Example 1: Lung cancer and radon exposure
 
@@ -50,6 +50,8 @@ Challenge: The risk should be modelled in terms of contributions depending oni n
 ```{r}
 #| echo: true
 #| eval: true
+#| warning: false
+#| message: false
 
 library(dlnm)
 library(ggplot2)
@@ -88,7 +90,8 @@ lapply(res_store, unlist) %>%
 ggplot(data = plotres) +
   geom_point(aes(x = type, y = est.pm10_laggeg)) +
   # geom_line(aes(x=type, y=est.pm10_laggeg, group=1), linetype = "dashed") +
-  geom_errorbar(aes(x = type, ymin = LL.pm10_laggeg, ymax = UL.pm10_laggeg, width = 0.1)) +
+  geom_errorbar(aes(x = type, ymin = LL.pm10_laggeg, 
+                    ymax = UL.pm10_laggeg, width = 0.1)) +
   geom_hline(yintercept = 0, col = "red", linetype = "dotted") +
   theme_bw() +
   ylab("log risk PM10") +
@@ -98,7 +101,9 @@ ggplot(data = plotres) +
 ggplot(data = plotres) +
   geom_point(aes(x = type, y = est.pm10_laggeg)) +
   geom_line(aes(x = type, y = est.pm10_laggeg, group = 1)) +
-  geom_ribbon(aes(x = type, ymin = LL.pm10_laggeg, ymax = UL.pm10_laggeg, group = 1), fill = "blue", alpha = 0.2) +
+  geom_ribbon(aes(x = type, ymin = LL.pm10_laggeg, 
+                  ymax = UL.pm10_laggeg, group = 1), 
+              fill = "blue", alpha = 0.2) +
   geom_hline(yintercept = 0, col = "red", linetype = "dotted") +
   theme_bw() +
   ylab("log risk PM10") +
@@ -113,9 +118,12 @@ What are the main assumptions here?
 #| echo: false
 #| eval: true
 #| fig-align: "center"
+#| warning: false
+#| message: false
 
 library(patchwork)
-(p1 + theme(text = element_text(size = 15))) / (p2 + theme(text = element_text(size = 15)))
+(p1 + theme(text = element_text(size = 15))) / 
+  (p2 + theme(text = element_text(size = 15)))
 ```
 
 ## Distributed linear lag models
@@ -169,12 +177,14 @@ The idea: $\beta_{\ell}$ can be modelled using a basis function.
 
 Let $\beta_\ell = \sum_j^p\tau_j\ell^j, \;\;\; \ell = 0, \dots, q$ , lets write it for 2 lags using a 3rd degree polynomial to see it explicitly:
 
-$$\begin{align}Y_t &= \beta_0 + \beta_{10}X_t + \beta_{11}X_{t-1} + \beta_{12}X_{t-2} + \epsilon_t\\\beta_{10} &= \tau_0, \; \beta_{11} = \tau_0 + \tau_1 + \tau_2 + \tau_3, \; \beta_{12} = \tau_0 + \tau_1 2 + \tau_2 2^2 + \tau_3 2^3\end{align}$$
-
+```{=tex}
+\begin{align}Y_t &= \beta_0 + \beta_{10}X_t + \beta_{11}X_{t-1} + \beta_{12}X_{t-2} + \epsilon_t\\\beta_{10} &= \tau_0, \; \beta_{11} = \tau_0 + \tau_1 + \tau_2 + \tau_3, \; \beta_{12} = \tau_0 + \tau_1 2 + \tau_2 2^2 + \tau_3 2^3\end{align}
+```
 and we can modify as per first lecture to model more localized structures using: $\beta_\ell = \sum_j^p\tau_j\ell^j + \sum_k^K\nu_k(\ell-\kappa_k)^p_+$, thus:
 
-$$\begin{align*}\beta_{10} &= \tau_0 + \nu_1(0-\kappa_1)^3_+ + \dots + \nu_K(0-\kappa_K)^3_+, \\\beta_{11} &= \tau_0 + \tau_1 + \tau_2 + \tau_3 + \nu_1(1-\kappa_1)^3_+ + \dots + \nu_K(1-\kappa_K)^3_+, \\\beta_{12} &= \tau_0 + \tau_1 2  + \tau_2 2^2 + \tau_3 2^3 + \nu_1(2-\kappa_1)^3_+ + \dots + \nu_K(2-\kappa_K)^3_+\end{align*}$$
-
+```{=tex}
+\begin{align*}\beta_{10} &= \tau_0 + \nu_1(0-\kappa_1)^3_+ + \dots + \nu_K(0-\kappa_K)^3_+, \\\beta_{11} &= \tau_0 + \tau_1 + \tau_2 + \tau_3 + \nu_1(1-\kappa_1)^3_+ + \dots + \nu_K(1-\kappa_K)^3_+, \\\beta_{12} &= \tau_0 + \tau_1 2  + \tau_2 2^2 + \tau_3 2^3 + \nu_1(2-\kappa_1)^3_+ + \dots + \nu_K(2-\kappa_K)^3_+\end{align*}
+```
 and similarly we can penalize it can estimate *the penalised spline distributed lag estimate* of $\beta_{\ell}$
 :::
 
@@ -330,7 +340,7 @@ layout(p, scene = list(
 #| echo: true
 #| eval: true
 #| fig-align: "center"
-#| fig-width: 2.5
+#| fig-width: 7
 plot(pred2.temp, "contour",
   xlab = "Temperature", key.title = title("RR"),
   plot.title = title("Contour plot", xlab = "Temperature", ylab = "Lag")

@@ -121,6 +121,8 @@ What is a nested model?
 #| eval: true
 #| fig-align: "center"
 #| fig-width: 8
+#| warning: false
+#| message: false
 
 library(eulerr)
 set.seed(11)
@@ -204,6 +206,8 @@ $$F = \frac{(SS_{Error}(M_1)- SS_{Error}(M_2))/(p_2-p_1)}{SS_{Error}(M_2) / (n-p
 ```{r}
 #| echo: true
 #| eval: true
+#| warning: false
+#| message: false
 library(lars)
 data(diabetes)
 

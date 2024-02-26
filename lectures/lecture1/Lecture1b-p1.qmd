@@ -83,7 +83,7 @@ $$
 
 -   $\beta = (\beta_1, ..., \beta_p)$: vector of regression coefficients.
 
--   $\beta_j$: : regression coeffcients of variable $x_j$. The expected change in y for a one-unit change in $x_j$ when the other covariates are held constant.
+-   $\beta_j$: regression coeffcients of variable $x_j$. The expected change in y for a one-unit change in $x_j$ when the other covariates are held constant.
 
 Observed data:
 

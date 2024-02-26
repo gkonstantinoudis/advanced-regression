@@ -95,7 +95,11 @@ $$MSE =\frac{1}{m} \sum_{k=1}^{m} \left( \underbrace{y_k^{Test}}_{\text{Observed
 
 ## Decomposition into bias and variance
 
-$\begin{align}E(MSE) & = E (\frac{1}{m} \sum_{k=1}^{m} \left( y_k^{Test}- \hat{f}(x_k^{Test}) \right)^2 )\\ & = \underbrace{\sigma^2}_{\text{Noise}} + \underbrace{E[\hat{f}(x_k^{\text{Test}}) - E(\hat{f}(x_k^{\text{Test}}))]^2}_{\text{Variance}} + \\& + [E(\hat{f}(x_k^{\text{Test}})) - \hat{f}(x_k^{\text{Test}})]^2 \end{align}$
+\begin{align}
+E(MSE) &= E\big(\frac{1}{m}\sum_{k=1}^m \bigg(y_k^{Test} - \hat{f}(x_k^{Test})\bigg)^2\big) \\
+&= \underbrace{\sigma^2}_{\text{Noise}} + \underbrace{E[\hat{f}(x_k^{Test})- E(\hat{f}(x_k^{Test}))]^2}_{\text{Variance}} + \\
+&+[E(\hat{f}(x_k^{Test}))- \hat{f}(x_k^{Test})^2]
+\end{align}
 
 -   Noise or irreducible error $\sigma^2$
 
@@ -152,7 +156,10 @@ $\begin{align}E(MSE) & = E (\frac{1}{m} \sum_{k=1}^{m} \left( y_k^{Test}- \hat{f
 
     -   Positive predictive value (PPV)
 
-$\begin{align} \text{PPV} & = \frac{\text{Number of true positives}}{\text{Number of true positives + Number of false positives}} \\ & = \frac{\text{Number of true positives}}{\text{Number of positive calls}}\end{align}$
+        \begin{align}
+        \text{PPV} &+ \frac{\text{Number of true positives}}{\text{Number of true positives + Number of false positives}} \\ 
+        &= \frac{\text{Number of true positives}}{\text{Number of positive calls}}
+        \end{align}
 :::
 
 ## Bias-variance trade-off in estimation
@@ -176,7 +183,13 @@ Mean squared error (MSE) of an estimate $\hat{\theta}$:
 
 MSE is the squared average difference between an estimate $\hat{\theta}$ and the true parameter $\theta$.
 
-$\begin{align}MSE (\hat{\theta}) & = E \left( \hat{\theta} - \theta \right)^2 \\& = ( E(\hat{\theta}^2) - 2 E(\hat{\theta})\theta + \theta^2 ) \\& = ( E(\hat{\theta}^2) - \underbrace{E(\hat{\theta})^2 + E(\hat{\theta})^2}_0 - 2 E(\hat{\theta})\theta + \theta^2 ) \\& = ( E(\hat{\theta}^2) - E(\hat{\theta})^2) + (E(\hat{\theta})^2 - 2 E(\hat{\theta})\theta + \theta^2 ) \\& = Var (\hat{\theta}) + \left(Bias (\hat{\theta}) \right)^2 \end{align}$
+\begin{align}
+MSE (\hat{\theta}) & = E(\hat{\theta} - \theta)^2\\
+&= (E(\hat{\theta^2})-2E(\hat{\theta})\theta + \theta^2)\\
+&= (E(\hat{\theta^2})-\underbrace{E(\hat{\theta})^2 +E(\hat{\theta})^2}_0-2E(\hat{\theta})\theta + \theta^2) \\
+&=(E(\hat{\theta^2})-E(\hat{\theta})^2 + (E(\hat{\theta})^2 - 2E(\hat{\theta})\theta + \theta^2 \\
+&= Var(\hat{\theta}) + (Bias(\hat{\theta}))^2
+\end{align}
 :::
 
 ## Bias-variance trade-off in estimation
@@ -204,6 +217,10 @@ Many classical techniques are designed to be unbiased (BLUE) or consistent (Maxi
 #| eval: true
 #| fig-align: "center"
 #| fig-width: 10
+#| warning: false
+#| message: false
+
+
 library(splines)
 library(ggplot2)
 library(patchwork)
@@ -479,6 +496,8 @@ ggplot() +
 #| echo: true
 #| eval: true
 #| fig-align: "center"
+#| warning: false
+#| message: false
 
 library(dlnm)
 
@@ -536,11 +555,13 @@ gratia::smooth_estimates(res.mod) %>%
   mutate(
     est = exp(est), lower_ci = exp(lower_ci), upper_ci = exp(upper_ci),
     temp = round(temp, digits = 2), rr = est / est[temp == 10.30],
-    rr_upper = upper_ci / est[temp == 10.30], rr_lower = lower_ci / est[temp == 10.30]
+    rr_upper = upper_ci / est[temp == 10.30], 
+    rr_lower = lower_ci / est[temp == 10.30]
   ) %>%
   ggplot() +
   geom_line(aes(temp, rr)) +
-  geom_ribbon(aes(x = temp, ymin = rr_lower, ymax = rr_upper), alpha = 0.3, fill = "blue", col = NA) +
+  geom_ribbon(aes(x = temp, ymin = rr_lower, ymax = rr_upper), 
+              alpha = 0.3, fill = "blue", col = NA) +
   geom_hline(yintercept = 1, col = "red", linetype = "dashed") +
   theme_bw() +
   ylab("Mortality risk") +
@@ -581,7 +602,8 @@ gratia::smooth_estimates(res.mod1) %>%
   filter(smooth == "s(pm10)") %>%
   ggplot() +
   geom_line(aes(pm10, est), lwd = 1) +
-  geom_ribbon(aes(x = pm10, ymin = lower_ci, ymax = upper_ci), alpha = 0.3, fill = "blue", col = NA) +
+  geom_ribbon(aes(x = pm10, ymin = lower_ci, ymax = upper_ci), 
+              alpha = 0.3, fill = "blue", col = NA) +
   theme_bw() +
   ylab("Mortality risk") +
   xlab("PM10") +
@@ -641,7 +663,8 @@ do.call(rbind, res_store) %>%
   mutate(lag = factor(lag, levels = c(paste0("lag", k)))) %>%
   ggplot() +
   geom_line(aes(temperature_laggeg, rr, col = lag), lwd = 1) +
-  geom_ribbon(aes(x = temperature_laggeg, ymin = rr_lower, ymax = rr_upper, fill = lag), alpha = 0.3, col = NA) +
+  geom_ribbon(aes(x = temperature_laggeg, ymin = rr_lower, 
+                  ymax = rr_upper, fill = lag), alpha = 0.3, col = NA) +
   geom_hline(yintercept = 1, col = "red", linetype = "dashed", lwd = 1) +
   theme_bw() +
   ylab("Mortality risk") +

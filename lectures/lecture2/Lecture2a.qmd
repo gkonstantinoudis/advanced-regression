@@ -73,6 +73,8 @@ Associations are not solely linear
 #| eval: true
 #| fig-align: "center"
 #| fig-width: 8
+#| message: false
+#| warning: false
 
 library(dplyr)
 library(ggplot2)
@@ -106,6 +108,8 @@ $$\Phi(X) = (1) \text{ ,thus } Y _i = \beta_0 + \epsilon_i$$
 #| eval: true
 #| fig-align: "center"
 #| fig-height: 4
+#| message: false
+#| warning: false
 
 library(dlnm)
 library(patchwork)
@@ -133,13 +137,15 @@ p1 | p2 + theme(text = element_text(size = 15))
 
 ## The polynomial basis function
 
-$$\Phi(X) = (1) \text{ ,thus } Y _i = \beta_0 + \epsilon_i$$
+$$\Phi(X) = (1 X) \text{ ,thus } Y _i = \beta_0 + \beta_1 X_1 + \epsilon_i$$
 
 ```{r}
 #| echo: false
 #| eval: true
 #| fig-align: "center"
 #| fig-height: 4
+#| message: false
+#| warning: false
 
 library(RColorBrewer)
 cols <- RColorBrewer::brewer.pal(n = 8, "Set1")
@@ -241,14 +247,14 @@ p1 | p2
 
 $$\Phi(X) = (1 \; X \; X^2 \; X^3 \; X^4) \text{ ,thus}$$
 
-$$Y _i = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3 + \beta_4 X^4 + \epsilon$$
+$$Y _i = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3 + \beta_4 X^4 + \epsilon_i$$
 
 ```{r}
 #| echo: false
 #| eval: true
 #| fig-align: "center"
 #| fig-height: 4
-#|
+
 x.plot.1 <- seq(from = -1, to = 1, length.out = 1000)
 y.1 <- 0.375 - 3.75 * x.plot.1^2 + 4.375 * x.plot.1^4
 
@@ -567,6 +573,8 @@ dat %>%
 #| eval: true
 #| fig-align: "center"
 #| fig-width: 10
+#| message: false
+#| warning: false
 
 library(splines)
 fit <- lm(y ~ bs(x, degree = 1, knots = c(-1, 0.5, 1.5, 3)), data = dat)
@@ -585,19 +593,18 @@ ggplot() +
 
 Linear threshold model
 
-$$
+```{=tex}
 \begin{align}
-Y_i &= \beta_0^{(1)} + \beta_1^{(1)}x + \epsilon \qquad x\leq-1\\
-Y_i &= \beta_0^{(2)} + \beta_1^{(2)}x + \epsilon \qquad -1<x\leq0.5\\
-Y_i &= \beta_0^{(3)} + \beta_1^{(3)}x + \epsilon \qquad 0.5<x\leq1.5\\
-Y_i &= \beta_0^{(4)} + \beta_1^{(4)}x + \epsilon \qquad 1.5<x\leq3\\
-Y_i &= \beta_0^{(5)} + \beta_1^{(5)}x + \epsilon \qquad x\geq3\\
+Y_i &= \beta_0^{(1)} + \beta_1^{(1)}x + \epsilon_i \qquad x\leq-1\\
+Y_i &= \beta_0^{(2)} + \beta_1^{(2)}x + \epsilon_i \qquad -1<x\leq0.5\\
+Y_i &= \beta_0^{(3)} + \beta_1^{(3)}x + \epsilon_i \qquad 0.5<x\leq1.5\\
+Y_i &= \beta_0^{(4)} + \beta_1^{(4)}x + \epsilon_i \qquad 1.5<x\leq3\\
+Y_i &= \beta_0^{(5)} + \beta_1^{(5)}x + \epsilon_i \qquad x\geq3\\
 \end{align}
-$$
-
+```
 Linear spline model
 
-$Y_i = \beta_0 + \beta_1x + \beta_2(x+1)_+ + \beta_3(x-0.5)_+ + \beta_4 (x-1.5)_+ + \beta_5(x-3)_+ + \epsilon$
+$Y_i = \beta_0 + \beta_1x + \beta_2(x+1)_+ + \beta_3(x-0.5)_+ + \beta_4 (x-1.5)_+ + \beta_5(x-3)_+ + \epsilon_i$
 
 $$(x-k)_+=\begin{cases} 0, \quad x<k \\ x-k, \quad x\geq k\\\end{cases}$$
 :::
@@ -626,11 +633,26 @@ ggplot() +
 
 Similarly we can define higher order polynomial splines, for instance:
 
-$\begin{align} Y_i = \beta_0 &+ \beta_1 x + \beta_2x^2 + \beta_3x^3 + \\&\beta_4 (x+1)_+ +\beta_5 + (x+1)_+^2 +\beta_6 (x+1)_+^3 +\\ &\beta_7 (x-0.5)_+ +\beta_8 (x-0.5)_+^2 +\beta_9 (x-0.5)_+^3 + \\ & \dots + \epsilon \\(x-k)_+& = \begin{cases} 0, \quad x<k\\x-k, \quad x\geq k\end{cases} \end{align}$
-
+```{=tex}
+\begin{align}
+Y_i = \beta_0 &+ \beta_1 x + \beta_2 x^2 + \beta_3 x^3 + \\
+& \beta_4 (X+1)_+ + \beta_5 (X+1)_+^2 + \beta_6(X+1)_+^3 + \\
+& \beta_7 (x-0.5)_+ + \beta_8 (x-0.5)_+^2 + \beta_9 (x-0.5)_+^3 + \\
+&\dots + \epsilon_i \\
+(x-k)_+ & = 
+\begin{cases}
+0, \quad x<k \\ x-k, \quad x\geq k
+\end{cases}
+\end{align}
+```
 which reduces to the following to ensure smooth curvature on the knots (it can be seen after deriving the first and second derivative):
 
-$Y_i = \begin{align}\beta_0 &+ \beta_1 x + \beta_2x^2_+ + \beta_3x^3 + \\&+\beta_6 (x+1)_+^3 + \beta_9 (x-0.5)_+^3 + \dots + \epsilon \\\end{align}$
+```{=tex}
+\begin{align}
+Y_i = \beta_0 & + \beta_1 x +\beta_2 x^2 + \beta_3 x_3 + \\
+&\beta_6 (x+1)_+^3 + \beta_9(x-0.5)_+^3 + \dots + \epsilon_i 
+\end{align}
+```
 :::
 
 ::: {style="font-size: 80%;"}

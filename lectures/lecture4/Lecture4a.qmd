@@ -23,6 +23,8 @@ format:
 
 ```{r load-packages-and-data}
 #| echo: false
+#| warning: false
+#| message: false
 
 library(tidyverse)
 library(patchwork)
@@ -373,12 +375,10 @@ $$
 ::: {style="font-size: 80%;"}
 ## Prediction rule
 
-The prediction rule is given by the difference between the two discriminant scores $d_0$ and $d_1$ $$
-\begin{eqnarray}
+The prediction rule is given by the difference between the two discriminant scores $d_0$ and $d_1$ \begin{eqnarray}
 \delta(x_i) & = &  \log(\mathbb{P}(y=0 \mid x_i)) - \log(\mathbb{P}(y=1 \mid x_i))  \\
              & = &  d_0(x) - d_1(x)
-\end{eqnarray}
-$$ where observation $i$ is classified as
+\end{eqnarray} where observation $i$ is classified as
 
 -   $y_i = 1$ if $\delta(x_i)\leq 0$
 -   $y_i = 0$ if $\delta(x_i) > 0$
@@ -915,8 +915,6 @@ Aim: Support vector or soft margin classifier:
 #| fig-align: "center"
 p_mmc
 ```
-
-:::
 
 ::: {style="font-size: 80%;"}
 ## Optimisation: support vector classifier

@@ -32,6 +32,8 @@ $y = \alpha + age + male + female + map + ltg$
 #| echo: false
 #| eval: true
 #| fig-align: "center"
+#| message: false
+#| warning: false
 
 library(lars)
 library(dplyr)
@@ -82,6 +84,9 @@ lm(y ~ age + male + female + map + ltg, data = x, singular.ok = FALSE)
 #| echo: true
 #| eval: true
 #| error: true
+#| message: false
+#| warning: false
+
 library(glmnet)
 lm.lasso <- glmnet(y = y, x = x, alpha = 1, lambda = 0.5, family = "gaussian")
 lm.lasso$beta
@@ -312,6 +317,9 @@ R commands
 ```{r}
 #| echo: true
 #| eval: true
+#| message: false
+#| warning: false
+
 library(car)
 lm2 <- lm(y ~ age + male + map + ltg, data = x)
 vif(lm2)

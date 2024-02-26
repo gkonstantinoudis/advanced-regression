@@ -23,6 +23,8 @@ format:
 
 ```{r load-packages-and-data}
 #| echo: false
+#| warning: false
+#| message: false
 
 library(tidyverse)
 library(patchwork)
@@ -58,7 +60,38 @@ library(randomForest)
 
 ## Bagging
 
-![](assets/bagging_diagram.png){width="80%," fig-align="center"}
+```{r dag}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+library(DiagrammeR)
+
+DiagrammeR::grViz("digraph {
+
+graph [layout = dot, rankdir = LR]
+
+# define the global styles of the nodes. We can override these in box if we wish
+node [shape = rectangle, style = filled, fillcolor = Linen]
+
+data [label = 'D', fillcolor = White]
+data1 [label = 'D1', fillcolor = White]
+data2 [label = 'D2', fillcolor = White]
+data3 [label = '...', fillcolor = White, shape = none]
+data4 [label = 'DB', fillcolor = White]
+num1 [label = '1', fillcolor = White, shape = none, xlabel = M1]
+num2 [label = '0', fillcolor = White, shape = none, xlabel = M2]
+num3 [label = '1', fillcolor = White, shape = none, xlabel = MB]
+res [label = '1', fillcolor = White, shape = none]
+
+# edge definitions with the node IDs
+data -> {data1 data2 data3 data4} 
+data1 -> num1
+data2 -> num2
+data4 -> num3
+-> res
+}")
+```
 
 ::: {style="font-size: 70%;"}
 ## Example (taken from Prof Filippi lecture)
@@ -114,7 +147,8 @@ BostonHousing <- BostonHousing %>%
 fits <- NULL
 # boostrap sampling with replacement
 for (i in 1:20) {
-  sample_d <- BostonHousing[sample(1:nrow(BostonHousing), nrow(BostonHousing), replace = TRUE), ]
+  sample_d <- BostonHousing[sample(1:nrow(BostonHousing), 
+                                   nrow(BostonHousing), replace = TRUE), ]
   fit <- rpart(medv ~ log(crim), data = sample_d, control = ctrl)
 
   # Saving the coefficients
@@ -128,7 +162,8 @@ fits <- bind_rows(fits)
 p_data_boot <-
   ggplot() +
   geom_point(aes(x = log(crim), y = medv), alpha = 0.2, size = 1, data = BostonHousing) +
-  geom_line(aes(x = log(crim), y = pred, colour = sample), data = fits, linewidth = .75) +
+  geom_line(aes(x = log(crim), y = pred, colour = sample), 
+            data = fits, linewidth = .75) +
   labs(x = "crime score (log)", y = "median house price") +
   theme_minimal() +
   theme(legend.position = "none")
@@ -154,8 +189,10 @@ fits_summary <- fits |>
 
 p_data_boot_summary <-
   ggplot() +
-  geom_point(aes(x = log(crim), y = medv), alpha = 0.2, size = 1, data = BostonHousing) +
-  geom_line(aes(x = log(crim), y = pred), colour = "red", data = fits_summary, linewidth = .75) +
+  geom_point(aes(x = log(crim), y = medv), alpha = 0.2, size = 1, 
+             data = BostonHousing) +
+  geom_line(aes(x = log(crim), y = pred), colour = "red", 
+            data = fits_summary, linewidth = .75) +
   labs(x = "crime score (log)", y = "median house price") +
   theme_minimal() +
   theme(legend.position = "none")

@@ -36,6 +36,8 @@ format:
 
 ```{r load-packages-and-data}
 #| echo: false
+#| message: false
+#| warning: false
 
 library(tidyverse)
 library(rpart)

@@ -57,17 +57,17 @@ $$
 
 -   The residual sum of squares (RSS) is minimised by the ordinary least squares estimate:
 
-$$
 \begin{align}
 RSS(\alpha, \beta) & =   \epsilon_1^2  + … +  \epsilon_i^2   + … + \epsilon_n^2 =  \sum_{i=1}^n  \epsilon_i^2  \nonumber \\& =  \sum_{i=1}^n  \left(y_i - \hat{y}_i \right)^2  \nonumber  =  \sum_{i=1}^n  \left(y_i - (\alpha + \beta x_i) \right)^2  \nonumber
 \end{align}
-$$
 
 ## Residual sum of squares (RSS)
 
 ```{r}
 #| echo: false
 #| eval: true
+#| message: false
+#| warning: false
 
 library(ggplot2)
 library(dplyr)
@@ -99,13 +99,17 @@ ggplot(data = data.frame(x = x1, y = y1), aes(x = x1, y = y1)) +
   geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
   geom_segment(aes(xend = x1, yend = fitted)) +
   geom_point(size = 3) +
-  geom_point(aes(x = x1, y = fitted), shape = 25, fill = "blue", col = "blue", size = 3) +
+  geom_point(aes(x = x1, y = fitted), shape = 25, fill = "blue", 
+             col = "blue", size = 3) +
   theme_bw() +
   ylab("y-axis") +
   xlab("x-axis") +
-  annotate("text", x = 0.2, y = 0.1, label = expression(paste(r[i], "=", hat(y)[i], "-", y[i])), size = 8) +
-  annotate("text", x = 0.9, y = 0.5, label = expression(paste("(", x[i], ", ", y[i], ")")), size = 8) +
-  annotate("text", x = 0.9, y = -0.4, label = expression(paste("(", x[i], ", ", hat(y)[i], ")")), size = 8) +
+  annotate("text", x = 0.2, y = 0.1, label = 
+          expression(paste(r[i], "=", hat(y)[i], "-", y[i])), size = 8) +
+  annotate("text", x = 0.9, y = 0.5, label = 
+          expression(paste("(", x[i], ", ", y[i], ")")), size = 8) +
+  annotate("text", x = 0.9, y = -0.4, label =
+          expression(paste("(", x[i], ", ", hat(y)[i], ")")), size = 8) +
   annotation_custom(br1, xmin = 0.5, xmax = 0.501, ymin = -0.35, ymax = 0.5) +
   theme(text = element_text(size = 20))
 ```
@@ -184,7 +188,7 @@ Interpretation:
 
 ## Ridge regression: Geometric interpretation
 
-```{r}
+```{r warning=FALSE, message=FALSE, echo = FALSE}
 library(ggplot2)
 library(dplyr)
 library(mvtnorm)
@@ -330,6 +334,9 @@ This resembles the OLS estimate apart from $+ \lambda I$.
 ## Ridge regression and OLS
 
 ```{r}
+#| echo: false
+#| eval: true
+
 set.seed(11)
 x1 <- rnorm(n = 8, mean = 0, sd = 1)
 y1 <- 0.8 * x1 + rnorm(n = 8, mean = 0, sd = 1)
@@ -352,6 +359,9 @@ ggplot(data = data.frame(x = x1, y = y1), aes(x = x1, y = y1)) +
 ## Ridge regression and OLS
 
 ```{r}
+#| echo: false
+#| eval: true
+
 set.seed(11)
 x1 <- rnorm(n = 8, mean = 0, sd = 1)
 y1 <- 0.8 * x1 + rnorm(n = 8, mean = 0, sd = 1)
@@ -383,6 +393,11 @@ ggplot() +
 ## Ridge regression and OLS
 
 ```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+
 library(viridis)
 
 set.seed(11)
@@ -416,6 +431,10 @@ ggplot() +
 ## Ridge regression and OLS
 
 ```{r}
+#| echo: false
+#| eval: true
+
+
 set.seed(11)
 x1 <- rnorm(n = 8, mean = 0, sd = 1)
 y1 <- 0.8 * x1 + rnorm(n = 8, mean = 0, sd = 1)
@@ -447,6 +466,9 @@ ggplot() +
 ## Ridge regression and OLS
 
 ```{r}
+#| echo: false
+#| eval: true
+
 set.seed(11)
 x1 <- rnorm(n = 8, mean = 0, sd = 1)
 y1 <- 0.8 * x1 + rnorm(n = 8, mean = 0, sd = 1)
@@ -483,6 +505,9 @@ ggplot() +
 ## Ridge regression and OLS
 
 ```{r}
+#| echo: false
+#| eval: true
+
 set.seed(11)
 x1 <- rnorm(n = 8, mean = 0, sd = 1)
 y1 <- 0.8 * x1 + rnorm(n = 8, mean = 0, sd = 1)
@@ -536,6 +561,11 @@ Interpretation:
 ## Lasso regression: Geometric interpretation
 
 ```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+
 library(ggplot2)
 library(dplyr)
 library(mvtnorm)
@@ -641,6 +671,10 @@ ggplot() +
 ## Ridge and lasso: Induced shrinkage
 
 ```{r}
+#| echo: false
+#| eval: true
+
+
 ggplot() +
   geom_segment(aes(x = -5, y = 0, xend = 5, yend = 0),
     arrow = arrow(length = unit(0.4, "cm"))
@@ -695,6 +729,11 @@ p1 | p2
 ## Ridge and lasso: Bayesian interpretation
 
 ```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+
 library(VGAM)
 
 x <- seq(from = -3, to = 3, length.out = 1000)
@@ -741,6 +780,11 @@ $$\underset{\hat{\alpha}, \hat{\beta}_{\text{Elastic net}}}{argmin} = \underbrac
 ## Elastic net: Geometric interpretation
 
 ```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+
 library(shiny)
 library(ggplot2)
 library(dplyr)
@@ -955,6 +999,9 @@ Other packages in R
 ```{r}
 #| echo: true
 #| eval: true
+#| warning: false
+#| message: false
+
 library(lars)
 library(dplyr)
 library(glmnet)
@@ -969,8 +1016,10 @@ head(x)
 ## Ridge regression and diabetes data
 
 ```{r}
-#| echo: false
+#| echo: true
 #| eval: true
+#| warning: false
+#| message: false
 library(lars)
 library(dplyr)
 library(glmnet)
@@ -1057,10 +1106,12 @@ Takes a lot of time and eventually you will get a warning that the algorithm did
 #| echo: true
 #| eval: true
 
-lasso.out <- glmnet(x = as.matrix(x), y = severity, family = "binomial", alpha = 1, lambda = 0.001)
+lasso.out <- glmnet(x = as.matrix(x), y = severity, 
+                    family = "binomial", alpha = 1, lambda = 0.001)
 sum(abs(lasso.out$beta) > 0)
 
-lasso.out <- glmnet(x = as.matrix(x), y = severity, family = "binomial", alpha = 1, lambda = 0.12)
+lasso.out <- glmnet(x = as.matrix(x), y = severity, 
+                    family = "binomial", alpha = 1, lambda = 0.12)
 sum(abs(lasso.out$beta) > 0)
 lasso.out$a0
 lasso.out$beta %>% summary()
@@ -1072,10 +1123,12 @@ lasso.out$beta %>% summary()
 #| echo: true
 #| eval: true
 
-enet.out <- glmnet(x = as.matrix(x), y = severity, family = "binomial", alpha = 0.5, lambda = 0.003)
+enet.out <- glmnet(x = as.matrix(x), y = severity, 
+                   family = "binomial", alpha = 0.5, lambda = 0.003)
 sum(abs(enet.out$beta) > 0)
 
-enet.out <- glmnet(x = as.matrix(x), y = severity, family = "binomial", alpha = 0.5, lambda = 0.26)
+enet.out <- glmnet(x = as.matrix(x), y = severity, 
+                   family = "binomial", alpha = 0.5, lambda = 0.26)
 sum(abs(enet.out$beta) > 0)
 enet.out$a0
 enet.out$beta %>% summary()
