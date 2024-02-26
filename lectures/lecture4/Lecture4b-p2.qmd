@@ -85,7 +85,7 @@ num3 [label = '1', fillcolor = White, shape = none, xlabel = MB]
 res [label = '1', fillcolor = White, shape = none]
 
 # edge definitions with the node IDs
-data -> {data1 data2 data3 data4} 
+data -> {data1 data2 data3 data4}
 data1 -> num1
 data2 -> num2
 data4 -> num3
@@ -147,7 +147,7 @@ BostonHousing <- BostonHousing %>%
 fits <- NULL
 # boostrap sampling with replacement
 for (i in 1:20) {
-  sample_d <- BostonHousing[sample(1:nrow(BostonHousing), 
+  sample_d <- BostonHousing[sample(1:nrow(BostonHousing),
                                    nrow(BostonHousing), replace = TRUE), ]
   fit <- rpart(medv ~ log(crim), data = sample_d, control = ctrl)
 
@@ -162,7 +162,7 @@ fits <- bind_rows(fits)
 p_data_boot <-
   ggplot() +
   geom_point(aes(x = log(crim), y = medv), alpha = 0.2, size = 1, data = BostonHousing) +
-  geom_line(aes(x = log(crim), y = pred, colour = sample), 
+  geom_line(aes(x = log(crim), y = pred, colour = sample),
             data = fits, linewidth = .75) +
   labs(x = "crime score (log)", y = "median house price") +
   theme_minimal() +
@@ -189,9 +189,9 @@ fits_summary <- fits |>
 
 p_data_boot_summary <-
   ggplot() +
-  geom_point(aes(x = log(crim), y = medv), alpha = 0.2, size = 1, 
+  geom_point(aes(x = log(crim), y = medv), alpha = 0.2, size = 1,
              data = BostonHousing) +
-  geom_line(aes(x = log(crim), y = pred), colour = "red", 
+  geom_line(aes(x = log(crim), y = pred), colour = "red",
             data = fits_summary, linewidth = .75) +
   labs(x = "crime score (log)", y = "median house price") +
   theme_minimal() +
@@ -234,7 +234,7 @@ How to select $m$?
 :::
 :::
 
-## 
+##
 
 ::: {layout-ncol="2"}
 ![Bagging](assets/forest1.png){width="50%," fig-align="center"}

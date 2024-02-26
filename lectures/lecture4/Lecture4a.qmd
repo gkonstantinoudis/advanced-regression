@@ -41,7 +41,7 @@ library(e1071)
 ```
 
 ::: {style="font-size: 60%;"}
-## 
+##
 
 **Classification analysis:**
 

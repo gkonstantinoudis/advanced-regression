@@ -21,7 +21,7 @@ format:
         buttons: false
 ---
 
-## 
+##
 
 -   Motivation for decision trees
 -   Technical definition
