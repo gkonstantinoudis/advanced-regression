@@ -167,7 +167,7 @@ $$\underset{\alpha, \beta}{argmin} =  RSS(\alpha,\beta) +  \lambda f(\beta)$$
 
 -   Ridge regression: L2 penalty: $\lambda f(\beta) = \lambda \sum_{j=1}^p \beta_j^2$
 
--   Lasso regression: L1 penalty: $f(\beta) = \lambda \sum_{j=1}^p \left| \beta_j \right|$
+-   Lasso regression: L1 penalty: $\lambda f(\beta) = \lambda \sum_{j=1}^p \left| \beta_j \right|$
 
 -   Elastic net regression: L1 + L2 penalty:
 
