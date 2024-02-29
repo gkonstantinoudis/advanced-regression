@@ -57,10 +57,11 @@ $$
 
 -   The residual sum of squares (RSS) is minimised by the ordinary least squares estimate:
 
+```{=tex}
 \begin{align}
 RSS(\alpha, \beta) & =   \epsilon_1^2  + … +  \epsilon_i^2   + … + \epsilon_n^2 =  \sum_{i=1}^n  \epsilon_i^2  \nonumber \\& =  \sum_{i=1}^n  \left(y_i - \hat{y}_i \right)^2  \nonumber  =  \sum_{i=1}^n  \left(y_i - (\alpha + \beta x_i) \right)^2  \nonumber
 \end{align}
-
+```
 ## Residual sum of squares (RSS)
 
 ```{r}
@@ -327,7 +328,7 @@ $$\hat{\beta}_{Ridge} = \underbrace{(x^t x + \lambda I)^{(-1)} }_{p \times p}  \
 
 where $I$ is a $p \times p$ diagonal matrix with ones on the diagonal and zero on the off-diagonal
 
-$x^t x + \lambda I = n \begin{bmatrix} cov(x_1) & cov(x_{12}) & cov(x_{13} \\ cov(x_{21}) & cov(x_2) & cov(x_{23}) \\ cov(x_{31}) & cov(x_{23}) & cov(x_3) \end{bmatrix} + \begin{bmatrix} \lambda & 0 & 0 \\ 0 & \lambda & 0 \\ 0 & 0 & \lambda \end{bmatrix}$
+$x^t x + \lambda I = n \begin{bmatrix} cov(x_1) & cov(x_{12}) & cov(x_{13}) \\ cov(x_{21}) & cov(x_2) & cov(x_{23}) \\ cov(x_{31}) & cov(x_{23}) & cov(x_3) \end{bmatrix} + \begin{bmatrix} \lambda & 0 & 0 \\ 0 & \lambda & 0 \\ 0 & 0 & \lambda \end{bmatrix}$
 
 This resembles the OLS estimate apart from $+ \lambda I$.
 

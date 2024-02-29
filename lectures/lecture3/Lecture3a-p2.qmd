@@ -135,7 +135,7 @@ How to detect singularity?
 
 -   Rank of matrix
 
-How to detect multicollinearity
+How to detect multicollinearity?
 
 -   Variance inflation factor
 
@@ -186,9 +186,9 @@ $$\hat{cor}(x) = \frac{1}{n-1} \underbrace{x^t_s}_{p \times n} \underbrace{x_s}_
 
 where $x_s$ is a centred and scaled matrix $x_s=cxd^{-1}$
 
--   where \$d=diag(s)\$ is a diagonal matrix
+-   where $d=diag(s)$ is a diagonal matrix
 
--   with the sample standard deviation \$s\$ on the diagonal.
+-   with the sample standard deviation $s$ on the diagonal.
 
 This is equivalent to writing
 
@@ -208,7 +208,7 @@ cor(x %>% dplyr::select(age, male, female, map, ltg))
 
 -   Note the following correlation matrix captures the correlation between the samples and is of dimension $n \times n$
 
-$$\hat{cor}(x^t) = \frac{1}{p-1} \underbrace{x_s}_{n \times p} \underbrace{x_s^t}_{p \times n}$$
+$$\hat{cor}(x) = \frac{1}{p-1} \underbrace{x_s}_{n \times p} \underbrace{x_s^t}_{p \times n}$$
 :::
 
 ::: {style="font-size: 80%;"}
@@ -240,7 +240,7 @@ corrplot(corr = x %>% dplyr::select(age, male, female, map, ltg) %>% as.matrix()
 
 -   If we have more samples than variables ($n>p$) the rank is $p$.
 
-If we have less samples than variables ($n<p$) the rank is $n$.
+-   If we have less samples than variables ($n<p$) the rank is $n$.
 
 ::: {style="font-size: 80%;"}
 ## The rank of the correlation matrix
@@ -297,11 +297,11 @@ $$y =  \alpha + \beta_1 x_1 + \beta_2 x_2 + … + \beta_j x_j + … + \beta_p x_
 
 $$x_1 = \alpha +  \beta_2 x_2 + … + \beta_j x_j + … + \beta_p x_p + \epsilon.$$
 
--   Estimate $R_2(1)$, the proportion of variance of $x_1$ explained by the other predictors $x_{-1}$.
+-   Estimate $R^2(M_1)$, the proportion of variance of $x_1$ explained by the other predictors $x_{-1}$.
 
 -   The VIF for variable $1$ is defined as
 
-    $$VIF_1 =   \frac{1}{1-R_2(1)}$$
+    $$VIF_1 =   \frac{1}{1-R^2(M_1)}$$
 
 -   Repeat for the other $j \in 2,…,p$.
 :::

@@ -70,7 +70,7 @@ $$R^2 = \frac{var(x\beta)}{var(y)} = 1-\frac{var(\epsilon)}{Var(y)}$$
 
     -   Total variance
 
-        $\hat{var}(y) = \frac{1}{n-1} SS_{Total} = \frac{1}{n} \sum_{i=1}^n[y_i \bar{y}]^2$
+        $\hat{var}(y) = \frac{1}{n-1} SS_{Total} = \frac{1}{n} \sum_{i=1}^n[y_i -\bar{y}]^2$
 
     -   Explained variance $\hat{y}=x\beta$
 
@@ -86,7 +86,7 @@ $$R^2 = \frac{var(x\beta)}{var(y)} = 1-\frac{var(\epsilon)}{Var(y)}$$
 
 -   When comparing two models it is important not only to consider $R^2$ but also how complex they are, i.e. how many variables they include.
 
--   Occam's razor (law of parsimony): Simpler solutions are more likely to be correct than complex ones (William of Ockham 1287--1347ad).
+-   Occam's razor (law of parsimony): Simpler solutions are more likely to be correct than complex ones (William of Ockham 1287--1347).
 
 -   Problem: $R^2$ will always increase when including more variables.
 
@@ -155,7 +155,7 @@ plot(intersecting_inside,
 |--------------------|-----------|------------------------------|
 | **Regression fit** | $p_2$     | $SS_{\text{Explained}}(M_2)$ |
 | **Error**          | $n-p_2-1$ | $SS_{\text{Error}}(M_2)$     |
-| **Total**          | $n-2$     | $SS_{\text{Total}}(M_2)$     |
+| **Total**          | $n-1$     | $SS_{\text{Total}}(M_2)$     |
 
 -   $M_1$ full model included $p_1$ predictors, where $p_1<p_2$
 
@@ -170,9 +170,9 @@ plot(intersecting_inside,
 
 -   $F$-test, to compare two nested models:
 
-    -   \`full' model ($M_2$) with $p_2$ parameter
+    -   \`full' model ($M_2$) with $p_2$ parameters
 
-    -   \`reduced' model ($M_1$) with $p_1$ parameter
+    -   \`reduced' model ($M_1$) with $p_1$ parameters
 
 -   It will always hold that:
 
@@ -236,7 +236,12 @@ anova(mod1, mod2)
 
 $$LRT = - 2 (\log L(M_1)- \log L(M_2))$$
 
--   Note that $-\log L(M_2) \leq \log -L(M_1)$,
+-   Note that $L(M_2) \geq L(M_1)$ and thus:
+
+```{=html}
+<!-- -->
+```
+-   $-\log L(M_2) \leq -\log L(M_1)$,
 
     which is in analogy with $R^2 (M_2)\geq R^2 (M_1)$.
 
@@ -381,11 +386,11 @@ BIC(mod1, mod2)
 
 -   Backward selection
 
-    1.  Start with the full model and include all \$p\$ variables available.
+    1.  Start with the full model and include all $p$ variables available.
 
     2.  Identify the variable with the weakest evidence and remove it.
 
-    3.  Evaluate the model with \$p-1\$ variables.
+    3.  Evaluate the model with $p-1$ variables.
 
     4.  Identify the variable with the weakest evidence and remove it.
 
