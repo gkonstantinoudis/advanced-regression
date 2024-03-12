@@ -65,6 +65,9 @@ library(randomForest)
 #| eval: true
 #| warning: false
 #| message: false
+
+# If figure does not render, store and load. 
+
 library(DiagrammeR)
 
 DiagrammeR::grViz("digraph {
