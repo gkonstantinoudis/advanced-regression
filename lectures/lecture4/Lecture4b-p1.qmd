@@ -39,6 +39,14 @@ format:
 #| message: false
 #| warning: false
 
+# dependency issue between ggplot and patchwork
+# remotes::install_github("thomasp85/patchwork")
+# remotes::install_github("tidyverse/ggplot2", ref = remotes::github_pull("5592"))
+
+# partree
+# install.packages("remotes")
+# remotes::install_github("grantmcdermott/parttree")
+
 library(tidyverse)
 library(rpart)
 library(rpart.plot)
