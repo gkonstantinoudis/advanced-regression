@@ -275,7 +275,7 @@ $$
 
 -   Fit a Gaussian distribution for each class
 
--   Find the line where the probability if being in both classes is the same
+-   Find the line where the probability of being in both classes is the same
 
 ```{r discriminant-analysis-mot2}
 #| echo: false
