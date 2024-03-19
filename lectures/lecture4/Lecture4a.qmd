@@ -1,5 +1,5 @@
 ---
-title: "Advanced Regression 4b: Machine learning, classification"
+title: "Advanced Regression 4a: Machine learning, classification"
 date: "03-12-2024"
 author:
   name: "Garyfallos Konstantinoudis"
