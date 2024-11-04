@@ -66,7 +66,7 @@ library(randomForest)
 #| warning: false
 #| message: false
 
-# If figure does not render, store and load. 
+# If figure does not render, store and load.
 
 library(DiagrammeR)
 
@@ -151,7 +151,9 @@ fits <- NULL
 # boostrap sampling with replacement
 for (i in 1:20) {
   sample_d <- BostonHousing[sample(1:nrow(BostonHousing),
-                                   nrow(BostonHousing), replace = TRUE), ]
+    nrow(BostonHousing),
+    replace = TRUE
+  ), ]
   fit <- rpart(medv ~ log(crim), data = sample_d, control = ctrl)
 
   # Saving the coefficients
@@ -166,7 +168,8 @@ p_data_boot <-
   ggplot() +
   geom_point(aes(x = log(crim), y = medv), alpha = 0.2, size = 1, data = BostonHousing) +
   geom_line(aes(x = log(crim), y = pred, colour = sample),
-            data = fits, linewidth = .75) +
+    data = fits, linewidth = .75
+  ) +
   labs(x = "crime score (log)", y = "median house price") +
   theme_minimal() +
   theme(legend.position = "none")
@@ -192,10 +195,14 @@ fits_summary <- fits |>
 
 p_data_boot_summary <-
   ggplot() +
-  geom_point(aes(x = log(crim), y = medv), alpha = 0.2, size = 1,
-             data = BostonHousing) +
-  geom_line(aes(x = log(crim), y = pred), colour = "red",
-            data = fits_summary, linewidth = .75) +
+  geom_point(aes(x = log(crim), y = medv),
+    alpha = 0.2, size = 1,
+    data = BostonHousing
+  ) +
+  geom_line(aes(x = log(crim), y = pred),
+    colour = "red",
+    data = fits_summary, linewidth = .75
+  ) +
   labs(x = "crime score (log)", y = "median house price") +
   theme_minimal() +
   theme(legend.position = "none")
