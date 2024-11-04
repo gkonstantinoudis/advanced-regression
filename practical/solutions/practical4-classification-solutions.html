@@ -373,7 +373,7 @@ patients and the predictor matrix including expression of <span class="math inli
 y = as.factor(data_bc$rcb)
 table(y)</code></pre>
 <pre><code>## y
-##   0   1 
+##   0   1
 ## 117 297</code></pre>
 <pre class="r"><code>x = as.matrix(data_bc$x)
 dim(x)</code></pre>
@@ -388,25 +388,25 @@ threshold of local fdr &lt; 0.2?</p>
 lower than 0.2.</em></p>
 <pre class="r"><code>ranking.DDA = sda.ranking(x, y, diagonal=TRUE)</code></pre>
 <pre><code>## Computing t-scores (centroid vs. pooled mean) for feature ranking
-## 
-## Number of variables: 22283 
-## Number of observations: 414 
-## Number of classes: 2 
-## 
-## Estimating optimal shrinkage intensity lambda.freq (frequencies): 0.0104 
+##
+## Number of variables: 22283
+## Number of observations: 414
+## Number of classes: 2
+##
+## Estimating optimal shrinkage intensity lambda.freq (frequencies): 0.0104
 ## Estimating variances (pooled across classes)
-## Estimating optimal shrinkage intensity lambda.var (variance vector): 0.014 
-## 
-## 
+## Estimating optimal shrinkage intensity lambda.var (variance vector): 0.014
+##
+##
 ## Computing false discovery rates and higher cricitism scores for each feature</code></pre>
 <pre class="r"><code>numVarsDDA = sum(ranking.DDA[,&quot;lfdr&quot;]&lt;0.2)
 numVarsDDA</code></pre>
 <pre><code>## [1] 11</code></pre>
 <pre class="r"><code>selVars = ranking.DDA[,&quot;idx&quot;][1:numVarsDDA]
 selVars</code></pre>
-<pre><code>##   205225_at 220624_s_at 202134_s_at 203702_s_at 209644_x_at 213033_s_at 
-##        4752       19988        1662        3229        9133       12416 
-## 214164_x_at   214053_at   203963_at   205201_at   209747_at 
+<pre><code>##   205225_at 220624_s_at 202134_s_at 203702_s_at 209644_x_at 213033_s_at
+##        4752       19988        1662        3229        9133       12416
+## 214164_x_at   214053_at   203963_at   205201_at   209747_at
 ##       13543       13432        3490        4728        9235</code></pre>
 <p>Question 1.2</p>
 <p>Next we use the number of features with local fdr &lt; 0.2 to build a
@@ -418,22 +418,22 @@ like? What is the sensitivity and specificity of dda?</p>
 <p><em>Reply: The sensitivity of dda is 0.7609428 and specificity is
 0.6410256 .</em></p>
 <pre class="r"><code>dda.out = sda(x[, selVars, drop=FALSE], y, diagonal=TRUE)</code></pre>
-<pre><code>## Number of variables: 11 
-## Number of observations: 414 
-## Number of classes: 2 
-## 
-## Estimating optimal shrinkage intensity lambda.freq (frequencies): 0.0104 
+<pre><code>## Number of variables: 11
+## Number of observations: 414
+## Number of classes: 2
+##
+## Estimating optimal shrinkage intensity lambda.freq (frequencies): 0.0104
 ## Estimating variances (pooled across classes)
 ## Estimating optimal shrinkage intensity lambda.var (variance vector): 0.0119</code></pre>
 <pre class="r"><code>dda.pred = predict(dda.out, x[, selVars, drop=FALSE], verbose=FALSE)
 cM=confusionMatrix(as.character(y), as.character(dda.pred$class), negative=&quot;0&quot;)
 TPR = cM[2]/(cM[2]+cM[4])
 TPR</code></pre>
-<pre><code>##        TP 
+<pre><code>##        TP
 ## 0.7609428</code></pre>
 <pre class="r"><code>TNR = cM[3]/(cM[1]+cM[3])
 TNR</code></pre>
-<pre><code>##        TN 
+<pre><code>##        TN
 ## 0.6410256</code></pre>
 <p>Question 1.3</p>
 <p>Compute the area under the curve (AUC) of the receiver operating
@@ -476,18 +476,18 @@ better, lda or dda?</p>
 <pre class="r"><code>#ranking
 ranking.LDA = sda.ranking(x, y, diagonal=FALSE)</code></pre>
 <pre><code>## Computing cat scores (centroid vs. pooled mean) for feature ranking
-## 
-## Number of variables: 22283 
-## Number of observations: 414 
-## Number of classes: 2 
-## 
-## Estimating optimal shrinkage intensity lambda.freq (frequencies): 0.0104 
+##
+## Number of variables: 22283
+## Number of observations: 414
+## Number of classes: 2
+##
+## Estimating optimal shrinkage intensity lambda.freq (frequencies): 0.0104
 ## Estimating variances (pooled across classes)
-## Estimating optimal shrinkage intensity lambda.var (variance vector): 0.014 
-## 
+## Estimating optimal shrinkage intensity lambda.var (variance vector): 0.014
+##
 ## Computing the square root of the inverse pooled correlation matrix
-## Estimating optimal shrinkage intensity lambda (correlation matrix): 0.1644 
-## 
+## Estimating optimal shrinkage intensity lambda (correlation matrix): 0.1644
+##
 ## Computing false discovery rates and higher cricitism scores for each feature</code></pre>
 <pre class="r"><code>numVarsLDA = sum(ranking.LDA[,&quot;lfdr&quot;]&lt;0.2)
 numVarsLDA</code></pre>
@@ -495,15 +495,15 @@ numVarsLDA</code></pre>
 <pre class="r"><code>selVars = ranking.LDA[,&quot;idx&quot;][1:numVarsLDA]
 #fitting prediction rule
 lda.out = sda(x[, selVars, drop=FALSE], y, diagonal=FALSE)</code></pre>
-<pre><code>## Number of variables: 35 
-## Number of observations: 414 
-## Number of classes: 2 
-## 
-## Estimating optimal shrinkage intensity lambda.freq (frequencies): 0.0104 
+<pre><code>## Number of variables: 35
+## Number of observations: 414
+## Number of classes: 2
+##
+## Estimating optimal shrinkage intensity lambda.freq (frequencies): 0.0104
 ## Estimating variances (pooled across classes)
-## Estimating optimal shrinkage intensity lambda.var (variance vector): 0.0301 
-## 
-## 
+## Estimating optimal shrinkage intensity lambda.var (variance vector): 0.0301
+##
+##
 ## Computing inverse correlation matrix (pooled across classes)
 ## Estimating optimal shrinkage intensity lambda (correlation matrix): 0.5581</code></pre>
 <pre class="r"><code>lda.pred = predict(lda.out, x[, selVars, drop=FALSE], verbose=FALSE)
@@ -511,11 +511,11 @@ lda.out = sda(x[, selVars, drop=FALSE], y, diagonal=FALSE)</code></pre>
 cM=confusionMatrix(as.character(y), as.character(lda.pred$class), negative=&quot;0&quot;)
 TPR = cM[2]/(cM[2]+cM[4])
 TPR</code></pre>
-<pre><code>##        TP 
+<pre><code>##        TP
 ## 0.9326599</code></pre>
 <pre class="r"><code>TNR = cM[3]/(cM[1]+cM[3])
 TNR</code></pre>
-<pre><code>##        TN 
+<pre><code>##        TN
 ## 0.5555556</code></pre>
 <pre class="r"><code>roc.out=roc(y, lda.pred$posterior[,1])
 plot(roc.out)</code></pre>
@@ -538,11 +538,11 @@ svm.pred=predict(svm.out,newdata=x)
 cM=confusionMatrix(as.character(y), as.character(svm.pred), negative=&quot;0&quot;)
 TPR = cM[2]/(cM[2]+cM[4])
 TPR</code></pre>
-<pre><code>## TP 
+<pre><code>## TP
 ##  1</code></pre>
 <pre class="r"><code>TNR = cM[3]/(cM[1]+cM[3])
 TNR</code></pre>
-<pre><code>##        TN 
+<pre><code>##        TN
 ## 0.7606838</code></pre>
 <pre class="r"><code>roc.out=roc(y, as.vector(svm.pred.dv))
 plot(roc.out)</code></pre>
@@ -563,11 +563,11 @@ rf.pred.prob = predict(rf.out, newdata=x, type=&quot;prob&quot;)
 cM=confusionMatrix(as.character(y), as.character(rf.pred), negative=&quot;0&quot;)
 TPR = cM[2]/(cM[2]+cM[4])
 TPR</code></pre>
-<pre><code>## TP 
+<pre><code>## TP
 ##  1</code></pre>
 <pre class="r"><code>TNR = cM[3]/(cM[1]+cM[3])
 TNR</code></pre>
-<pre><code>## TN 
+<pre><code>## TN
 ##  1</code></pre>
 <pre class="r"><code>roc.out=roc(y, as.vector(rf.pred.prob[,2]))
 plot(roc.out)</code></pre>
@@ -676,28 +676,28 @@ TNR = rep(0.4)
 #dda
 cv.dda = crossval(predfun.da, X=x, Y=y, K=5, B=2, diagonal=TRUE, verbose=FALSE)
 cv.dda$stat</code></pre>
-<pre><code>##   FP   TP   TN   FN 
+<pre><code>##   FP   TP   TN   FN
 ## 13.9 48.1  9.5 11.3</code></pre>
 <pre class="r"><code>TPR[1] = cv.dda$stat[2]/(cv.dda$stat[2]+cv.dda$stat[4])
 TNR[1] = cv.dda$stat[3]/(cv.dda$stat[1]+cv.dda$stat[3])
 #lda
 cv.lda = crossval(predfun.da,  X=x, Y=y, K=5, B=2, diagonal=FALSE, verbose=FALSE)
 cv.lda$stat</code></pre>
-<pre><code>##   FP   TP   TN   FN 
+<pre><code>##   FP   TP   TN   FN
 ## 18.1 50.9  5.3  8.5</code></pre>
 <pre class="r"><code>TPR[2] = cv.lda$stat[2]/(cv.lda$stat[2]+cv.lda$stat[4])
 TNR[2] = cv.lda$stat[3]/(cv.lda$stat[1]+cv.lda$stat[3])
 #svm
 cv.svm = crossval(predfun.svm, X=x, Y=y, K=5, B=2, verbose=FALSE)
 cv.svm$stat</code></pre>
-<pre><code>##   FP   TP   TN   FN 
+<pre><code>##   FP   TP   TN   FN
 ## 23.0 59.0  0.4  0.4</code></pre>
 <pre class="r"><code>TPR[3] = cv.svm$stat[2]/(cv.svm$stat[2]+cv.svm$stat[4])
 TNR[3] = cv.svm$stat[3]/(cv.svm$stat[1]+cv.svm$stat[3])
 #randomForest
 cv.rf = crossval(predfun.rf, X=x, Y=y, K=5, B=2, verbose=FALSE)
 cv.rf$stat</code></pre>
-<pre><code>##   FP   TP   TN   FN 
+<pre><code>##   FP   TP   TN   FN
 ## 20.4 57.6  3.0  1.8</code></pre>
 <pre class="r"><code>TPR[4] = cv.rf$stat[2]/(cv.rf$stat[2]+cv.rf$stat[4])
 TNR[4] = cv.rf$stat[3]/(cv.rf$stat[1]+cv.rf$stat[3])
@@ -719,7 +719,7 @@ and 0 is a valid transaction.</p>
 y = as.factor(cc.data$Class)
 table(y)</code></pre>
 <pre><code>## y
-##      0      1 
+##      0      1
 ## 284315    492</code></pre>
 <p>Please note that fraudulent transactions are very rare events.</p>
 <p>The aim of this exercise is to predict credit card fraud from a set
@@ -751,11 +751,11 @@ too few variables. Given the large sample size we may include all
 features into the model.</p>
 <p><em>Reply: .</em></p>
 <pre class="r"><code>dda.out = sda(x, y, diagonal=TRUE)</code></pre>
-<pre><code>## Number of variables: 28 
-## Number of observations: 284807 
-## Number of classes: 2 
-## 
-## Estimating optimal shrinkage intensity lambda.freq (frequencies): 0 
+<pre><code>## Number of variables: 28
+## Number of observations: 284807
+## Number of classes: 2
+##
+## Estimating optimal shrinkage intensity lambda.freq (frequencies): 0
 ## Estimating variances (pooled across classes)
 ## Estimating optimal shrinkage intensity lambda.var (variance vector): 7e-04</code></pre>
 <pre class="r"><code>dda.pred = predict(dda.out, x, verbose=FALSE)</code></pre>
@@ -769,11 +769,11 @@ precision-recall curves can be used. </em></p>
 <pre class="r"><code>cM = confusionMatrix(as.character(y), as.character(dda.pred$class), negative=&quot;0&quot;)
 TPR = cM[2]/(cM[2]+cM[4])
 TPR</code></pre>
-<pre><code>##        TP 
+<pre><code>##        TP
 ## 0.7642276</code></pre>
 <pre class="r"><code>PPV = cM[2]/(cM[1]+cM[2])
 PPV</code></pre>
-<pre><code>##        TP 
+<pre><code>##        TP
 ## 0.8643678</code></pre>
 <pre class="r"><code>library(PRROC)
 fg = dda.pred$posterior[y==1,2]
@@ -801,25 +801,25 @@ measure the performance of the classification of rare events.</p>
   return(cm)
 }
 cv.dda = crossval(predfun.da, X=x, Y=y, K=5, B=1, diagonal=TRUE, verbose=TRUE)</code></pre>
-<pre><code>## Number of folds: 5 
-## Total number of CV fits: 5 
-## 
-## Round # 1 of 1 
-## CV Fit # 1 of 5 
-## CV Fit # 2 of 5 
-## CV Fit # 3 of 5 
-## CV Fit # 4 of 5 
+<pre><code>## Number of folds: 5
+## Total number of CV fits: 5
+##
+## Round # 1 of 1
+## CV Fit # 1 of 5
+## CV Fit # 2 of 5
+## CV Fit # 3 of 5
+## CV Fit # 4 of 5
 ## CV Fit # 5 of 5</code></pre>
 <pre class="r"><code>cv.dda$stat</code></pre>
-<pre><code>##      FP      TP      TN      FN 
+<pre><code>##      FP      TP      TN      FN
 ##    11.8    74.6 56851.2    23.8</code></pre>
 <pre class="r"><code>PPV = cv.dda$stat[2]/(cv.dda$stat[1]+cv.dda$stat[2])
 PPV</code></pre>
-<pre><code>##        TP 
+<pre><code>##        TP
 ## 0.8634259</code></pre>
 <pre class="r"><code>TPR = cv.dda$stat[2]/(cv.dda$stat[2]+cv.dda$stat[4])
 TPR</code></pre>
-<pre><code>##        TP 
+<pre><code>##        TP
 ## 0.7581301</code></pre>
 <p>Question 3.4</p>
 <p>Perform cross-validation using the prediction functions developed for
@@ -832,47 +832,47 @@ performance with a similar precision than svm, but a much better recall.
 Please remember to use set.seed(3) for reproducibility. </em></p>
 <pre class="r"><code>#svm
 cv.svm = crossval(predfun.svm, X=x, Y=y, K=5, B=1, verbose=TRUE)</code></pre>
-<pre><code>## Number of folds: 5 
-## Total number of CV fits: 5 
-## 
-## Round # 1 of 1 
-## CV Fit # 1 of 5 
-## CV Fit # 2 of 5 
-## CV Fit # 3 of 5 
-## CV Fit # 4 of 5 
+<pre><code>## Number of folds: 5
+## Total number of CV fits: 5
+##
+## Round # 1 of 1
+## CV Fit # 1 of 5
+## CV Fit # 2 of 5
+## CV Fit # 3 of 5
+## CV Fit # 4 of 5
 ## CV Fit # 5 of 5</code></pre>
 <pre class="r"><code>cv.svm$stat</code></pre>
-<pre><code>##      FP      TP      TN      FN 
+<pre><code>##      FP      TP      TN      FN
 ##     3.4    66.6 56859.6    31.8</code></pre>
 <pre class="r"><code>PPV = cv.svm$stat[2]/(cv.svm$stat[1]+cv.svm$stat[2])
 PPV</code></pre>
-<pre><code>##        TP 
+<pre><code>##        TP
 ## 0.9514286</code></pre>
 <pre class="r"><code>TPR = cv.svm$stat[2]/(cv.svm$stat[2]+cv.svm$stat[4])
 TPR</code></pre>
-<pre><code>##        TP 
+<pre><code>##        TP
 ## 0.6768293</code></pre>
 <pre class="r"><code>#randomForest
 cv.rf = crossval(predfun.rf, X=x, Y=y, K=5, B=1, verbose=TRUE)</code></pre>
-<pre><code>## Number of folds: 5 
-## Total number of CV fits: 5 
-## 
-## Round # 1 of 1 
-## CV Fit # 1 of 5 
-## CV Fit # 2 of 5 
-## CV Fit # 3 of 5 
-## CV Fit # 4 of 5 
+<pre><code>## Number of folds: 5
+## Total number of CV fits: 5
+##
+## Round # 1 of 1
+## CV Fit # 1 of 5
+## CV Fit # 2 of 5
+## CV Fit # 3 of 5
+## CV Fit # 4 of 5
 ## CV Fit # 5 of 5</code></pre>
 <pre class="r"><code>cv.rf$stat</code></pre>
-<pre><code>##      FP      TP      TN      FN 
+<pre><code>##      FP      TP      TN      FN
 ##     4.8    77.6 56858.2    20.8</code></pre>
 <pre class="r"><code>PPV = cv.rf$stat[2]/(cv.rf$stat[1]+cv.rf$stat[2])
 PPV</code></pre>
-<pre><code>##        TP 
+<pre><code>##        TP
 ## 0.9417476</code></pre>
 <pre class="r"><code>TPR = cv.rf$stat[2]/(cv.rf$stat[2]+cv.rf$stat[4])
 TPR</code></pre>
-<pre><code>##        TP 
+<pre><code>##        TP
 ## 0.7886179</code></pre>
 <!--
 require(knitr)

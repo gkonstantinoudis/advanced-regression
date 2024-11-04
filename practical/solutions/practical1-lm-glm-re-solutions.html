@@ -1697,28 +1697,28 @@ score by 540.784. Overall there is a good model fit with an adjusted
 R-squared of 0.4814. </em></p>
 <pre class="r"><code>lm1 = lm(y~sex+age+bmi+glu+map+ltg, data=x)
 summary(lm1)</code></pre>
-<pre><code>## 
+<pre><code>##
 ## Call:
 ## lm(formula = y ~ sex + age + bmi + glu + map + ltg, data = x)
-## 
+##
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -150.043  -39.021   -2.356   38.871  142.753 
-## 
+##      Min       1Q   Median       3Q      Max
+## -150.043  -39.021   -2.356   38.871  142.753
+##
 ## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
+##             Estimate Std. Error t value Pr(&gt;|t|)
 ## (Intercept)  152.133      2.641  57.610  &lt; 2e-16 ***
-## sex         -139.901     57.931  -2.415   0.0161 *  
-## age          -45.201     60.581  -0.746   0.4560    
+## sex         -139.901     57.931  -2.415   0.0161 *
+## age          -45.201     60.581  -0.746   0.4560
 ## bmi          586.705     65.453   8.964  &lt; 2e-16 ***
-## glu           68.628     66.989   1.024   0.3062    
+## glu           68.628     66.989   1.024   0.3062
 ## map          292.048     66.417   4.397 1.38e-05 ***
 ## ltg          540.784     67.806   7.975 1.35e-14 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
+##
 ## Residual standard error: 55.52 on 435 degrees of freedom
-## Multiple R-squared:  0.4884, Adjusted R-squared:  0.4814 
+## Multiple R-squared:  0.4884, Adjusted R-squared:  0.4814
 ## F-statistic: 69.22 on 6 and 435 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Question 1.4 Perform model diagnostics and outlier detection of model
 1. Do you think this is a good model fit? Justify your answers.</p>
@@ -1780,23 +1780,23 @@ R-squared (0.1444) is much smaller than in the multivariable model.
 </em></p>
 <pre class="r"><code>lm2=lm(y~glu, data = x)
 summary(lm2)</code></pre>
-<pre><code>## 
+<pre><code>##
 ## Call:
 ## lm(formula = y ~ glu, data = x)
-## 
+##
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -153.069  -57.716   -5.466   54.656  186.839 
-## 
+##      Min       1Q   Median       3Q      Max
+## -153.069  -57.716   -5.466   54.656  186.839
+##
 ## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
+##             Estimate Std. Error t value Pr(&gt;|t|)
 ## (Intercept)  152.133      3.392  44.851   &lt;2e-16 ***
 ## glu          619.223     71.312   8.683   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
+##
 ## Residual standard error: 71.31 on 440 degrees of freedom
-## Multiple R-squared:  0.1463, Adjusted R-squared:  0.1444 
+## Multiple R-squared:  0.1463, Adjusted R-squared:  0.1444
 ## F-statistic:  75.4 on 1 and 440 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div style="page-break-after: always;"></div>
 </div>
@@ -1826,7 +1826,7 @@ histogram of the squared difference and compute the mean and median.</p>
 hist(sq_diff1, main=&quot;&quot;)</code></pre>
 <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAAAPACAMAAADDuCPrAAAA0lBMVEUAAAAAADoAAGYAOjoAOmYAOpAAZmYAZrY6AAA6OgA6Ojo6OmY6ZmY6ZpA6ZrY6kJA6kLY6kNtmAABmOgBmOjpmOmZmZjpmZmZmZpBmkLZmkNtmtttmtv+QOgCQZjqQZmaQkGaQkJCQkLaQtraQttuQ2/+2ZgC2Zjq2kDq2kGa2tpC2tra2ttu227a229u22/+2/7a2///T09PbkDrbkGbbtmbbtpDbtrbbttvb25Db27bb29vb2//b/7bb////tmb/25D/27b/29v//7b//9v///+aU83MAAAACXBIWXMAAB2HAAAdhwGP5fFlAAAgAElEQVR4nO3dcWPTVrrgYZvCktKhu5TeSZkC3TtAGJpe2G6msEu6hID5/l9pLdtJHFsh8Vsf69XR8/xD4hLhE0m/ypZ0PPoCQMio6ycA0FcCChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIKECSgAEECChAkoABBAgoQJKAAQQIK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" width="672" /></p>
 <pre class="r"><code>summary(sq_diff1)</code></pre>
-<pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+<pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max.
 ##     0.001   280.290  1510.249  2979.775  4032.200 20455.815</code></pre>
 <p>Question 2.3 Repeat the steps 2.1 and 2.2 using the univariable
 linear model 2 including only glucose. Contrast the prediction error of
@@ -1840,7 +1840,7 @@ sq_diff2 = (y_predict2 - y_new)^2
 hist(sq_diff2, main=&quot;&quot;)</code></pre>
 <p><img src="data:image/png;base64,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" width="672" /></p>
 <pre class="r"><code>summary(sq_diff2)</code></pre>
-<pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+<pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max.
 ##     2.055   923.010  3074.797  4975.382  7295.496 22350.041</code></pre>
 <p>Question 2.4 Is it good practise to evaluate the prediction
 performance on a single training data? How appropriate is the split to
@@ -1870,29 +1870,29 @@ represent log odds, so the odds-ratio of glu is equal to exp(13). The
 effect of glu is not significant. </em></p>
 <pre class="r"><code>glm1 = glm(y_binary~sex+age+bmi+glu+map+ltg, data = x, family=binomial)
 summary(glm1)</code></pre>
-<pre><code>## 
+<pre><code>##
 ## Call:
-## glm(formula = y_binary ~ sex + age + bmi + glu + map + ltg, family = binomial, 
+## glm(formula = y_binary ~ sex + age + bmi + glu + map + ltg, family = binomial,
 ##     data = x)
-## 
+##
 ## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)    
+##             Estimate Std. Error z value Pr(&gt;|z|)
 ## (Intercept)  -1.6504     0.1753  -9.416  &lt; 2e-16 ***
-## sex          -2.3334     3.0187  -0.773    0.440    
-## age          -1.7950     3.3780  -0.531    0.595    
+## sex          -2.3334     3.0187  -0.773    0.440
+## age          -1.7950     3.3780  -0.531    0.595
 ## bmi          21.0236     3.6247   5.800 6.63e-09 ***
-## glu           1.0369     3.5349   0.293    0.769    
+## glu           1.0369     3.5349   0.293    0.769
 ## map          13.2277     3.3866   3.906 9.39e-05 ***
 ## ltg          22.0036     3.7190   5.917 3.29e-09 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
+##
 ## (Dispersion parameter for binomial family taken to be 1)
-## 
+##
 ##     Null deviance: 518.87  on 441  degrees of freedom
 ## Residual deviance: 323.04  on 435  degrees of freedom
 ## AIC: 337.04
-## 
+##
 ## Number of Fisher Scoring iterations: 6</code></pre>
 <p>Question 3.2 Consider now model 2 including only glucose. Fit a glm
 and see if glucose can distinguish between bad disease progression and
@@ -1904,23 +1904,23 @@ The AIC of model 1 is much smaller than the AIC of model 2, thus model 1
 provides the better overall fit. </em></p>
 <pre class="r"><code>glm2 = glm(y_binary~glu, data = x, family=binomial)
 summary(glm2)</code></pre>
-<pre><code>## 
+<pre><code>##
 ## Call:
 ## glm(formula = y_binary ~ glu, family = binomial, data = x)
-## 
+##
 ## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)    
+##             Estimate Std. Error z value Pr(&gt;|z|)
 ## (Intercept)   -1.098      0.118  -9.303  &lt; 2e-16 ***
 ## glu           16.587      2.604   6.370 1.89e-10 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
+##
 ## (Dispersion parameter for binomial family taken to be 1)
-## 
+##
 ##     Null deviance: 518.87  on 441  degrees of freedom
 ## Residual deviance: 471.24  on 440  degrees of freedom
 ## AIC: 475.24
-## 
+##
 ## Number of Fisher Scoring iterations: 4</code></pre>
 <p>Question 3.3 Look again at the training data (x_train and ybin_train)
 based on the first 300 cases, where</p>
@@ -1940,14 +1940,14 @@ linear and continuous scale.</em></p>
 <pre class="r"><code>glm_predict = glm(ybin_train~sex+age+bmi+glu+map+ltg, data = x_train, family=binomial)
 eta = predict.glm(glm_predict,x_new)
 summary(eta)</code></pre>
-<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
 ##  -6.663  -3.382  -1.574  -1.535   0.200   4.258</code></pre>
 <p><em>In order to transform the linear predictor to probabilities we
 use the inverse logit link. There are 39 cases that are predicted to
 have a bad disease progression. </em></p>
 <pre class="r"><code>p_predict = (exp(eta)/(exp(eta)+1))
 summary(p_predict)</code></pre>
-<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.
 ## 0.001275 0.032886 0.171826 0.308790 0.549780 0.986044</code></pre>
 <pre class="r"><code>sum(p_predict&gt;0.5)</code></pre>
 <pre><code>## [1] 39</code></pre>
@@ -1963,32 +1963,32 @@ variables are important for disease progression in type 2 diabetes?</p>
 predictors. </em></p>
 <pre class="r"><code>lm_all=lm(y~as.matrix(x))
 summary(lm_all)</code></pre>
-<pre><code>## 
+<pre><code>##
 ## Call:
 ## lm(formula = y ~ as.matrix(x))
-## 
+##
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -155.829  -38.534   -0.227   37.806  151.355 
-## 
+##      Min       1Q   Median       3Q      Max
+## -155.829  -38.534   -0.227   37.806  151.355
+##
 ## Coefficients:
-##                 Estimate Std. Error t value Pr(&gt;|t|)    
+##                 Estimate Std. Error t value Pr(&gt;|t|)
 ## (Intercept)      152.133      2.576  59.061  &lt; 2e-16 ***
-## as.matrix(x)age  -10.012     59.749  -0.168 0.867000    
+## as.matrix(x)age  -10.012     59.749  -0.168 0.867000
 ## as.matrix(x)sex -239.819     61.222  -3.917 0.000104 ***
 ## as.matrix(x)bmi  519.840     66.534   7.813 4.30e-14 ***
 ## as.matrix(x)map  324.390     65.422   4.958 1.02e-06 ***
-## as.matrix(x)tc  -792.184    416.684  -1.901 0.057947 .  
-## as.matrix(x)ldl  476.746    339.035   1.406 0.160389    
-## as.matrix(x)hdl  101.045    212.533   0.475 0.634721    
-## as.matrix(x)tch  177.064    161.476   1.097 0.273456    
+## as.matrix(x)tc  -792.184    416.684  -1.901 0.057947 .
+## as.matrix(x)ldl  476.746    339.035   1.406 0.160389
+## as.matrix(x)hdl  101.045    212.533   0.475 0.634721
+## as.matrix(x)tch  177.064    161.476   1.097 0.273456
 ## as.matrix(x)ltg  751.279    171.902   4.370 1.56e-05 ***
-## as.matrix(x)glu   67.625     65.984   1.025 0.305998    
+## as.matrix(x)glu   67.625     65.984   1.025 0.305998
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
+##
 ## Residual standard error: 54.15 on 431 degrees of freedom
-## Multiple R-squared:  0.5177, Adjusted R-squared:  0.5066 
+## Multiple R-squared:  0.5177, Adjusted R-squared:  0.5066
 ## F-statistic: 46.27 on 10 and 431 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p><em>The full model includes many covariates that do not have a
 significant effect, eg. age or hdl. Still for the interpretation we
@@ -2044,23 +2044,23 @@ reading ability and the final exam score and plot a scatterplot of exam
 score against reading ability.</p>
 <pre class="r"><code>exam.lm = lm(normexam~standLRT, data=exam)
 summary(exam.lm)</code></pre>
-<pre><code>## 
+<pre><code>##
 ## Call:
 ## lm(formula = normexam ~ standLRT, data = exam)
-## 
+##
 ## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -2.6518 -0.5182  0.0122  0.5404  2.9766 
-## 
+##     Min      1Q  Median      3Q     Max
+## -2.6518 -0.5182  0.0122  0.5404  2.9766
+##
 ## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) -0.003163   0.012873  -0.246    0.806    
+##              Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) -0.003163   0.012873  -0.246    0.806
 ## standLRT     0.596474   0.012972  45.981   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
+##
 ## Residual standard error: 0.8075 on 3933 degrees of freedom
-## Multiple R-squared:  0.3496, Adjusted R-squared:  0.3495 
+## Multiple R-squared:  0.3496, Adjusted R-squared:  0.3495
 ## F-statistic:  2114 on 1 and 3933 DF,  p-value: &lt; 2.2e-16</code></pre>
 <pre class="r"><code>plot(exam$standLRT,exam$normexam, xlab=&quot;Reading (LR) test&quot;, ylab=&quot;Final exam score&quot;)
 abline(exam.lm, lwd=2, col=&quot;red&quot;)</code></pre>
@@ -2081,39 +2081,39 @@ is the interpretation of the model and how many additional parameters do
 we need to estimate?</p>
 <pre class="r"><code>exam.fe = lm(normexam~standLRT+as.factor(school), data=exam)
 coef(exam.fe)</code></pre>
-<pre><code>##         (Intercept)            standLRT  as.factor(school)2  as.factor(school)3 
-##         0.405549804         0.560181196         0.156197429         0.168658362 
-##  as.factor(school)4  as.factor(school)5  as.factor(school)6  as.factor(school)7 
-##        -0.383878052        -0.134037654         0.181827272        -0.026970604 
-##  as.factor(school)8  as.factor(school)9 as.factor(school)10 as.factor(school)11 
-##        -0.413833357        -0.523084933        -0.780966981        -0.179456700 
-## as.factor(school)12 as.factor(school)13 as.factor(school)14 as.factor(school)15 
-##        -0.483312036        -0.571058377        -0.581067253        -0.606702657 
-## as.factor(school)16 as.factor(school)17 as.factor(school)18 as.factor(school)19 
-##        -0.825202132        -0.595818835        -0.490771143        -0.431115211 
-## as.factor(school)20 as.factor(school)21 as.factor(school)22 as.factor(school)23 
-##        -0.205049233        -0.126419704        -0.880185131        -1.000512830 
-## as.factor(school)24 as.factor(school)25 as.factor(school)26 as.factor(school)27 
-##        -0.179747660        -0.666833203        -0.429359943        -0.378424526 
-## as.factor(school)28 as.factor(school)29 as.factor(school)30 as.factor(school)31 
-##        -1.106500587        -0.163003687        -0.212081930        -0.414259745 
-## as.factor(school)32 as.factor(school)33 as.factor(school)34 as.factor(school)35 
-##        -0.411342710        -0.356107503        -0.537174088        -0.214086960 
-## as.factor(school)36 as.factor(school)37 as.factor(school)38 as.factor(school)39 
-##        -0.640611796        -0.647423110        -0.574310199        -0.241066377 
-## as.factor(school)40 as.factor(school)41 as.factor(school)42 as.factor(school)43 
-##        -0.645538637        -0.170886794        -0.306591722        -0.497881063 
-## as.factor(school)44 as.factor(school)45 as.factor(school)46 as.factor(school)47 
-##        -0.688387983        -0.520295271        -0.788708334        -0.455262007 
-## as.factor(school)48 as.factor(school)49 as.factor(school)50 as.factor(school)51 
-##        -0.587882734        -0.370351439        -0.744855302        -0.461041141 
-## as.factor(school)52 as.factor(school)53 as.factor(school)54 as.factor(school)55 
-##         0.008072604         0.398475436        -1.368601638         0.184024334 
-## as.factor(school)56 as.factor(school)57 as.factor(school)58 as.factor(school)59 
-##        -0.427019374        -0.377376447        -0.241451121        -1.128811022 
-## as.factor(school)60 as.factor(school)61 as.factor(school)62 as.factor(school)63 
-##        -0.143876751        -0.438222462        -0.493550060         0.242290425 
-## as.factor(school)64 as.factor(school)65 
+<pre><code>##         (Intercept)            standLRT  as.factor(school)2  as.factor(school)3
+##         0.405549804         0.560181196         0.156197429         0.168658362
+##  as.factor(school)4  as.factor(school)5  as.factor(school)6  as.factor(school)7
+##        -0.383878052        -0.134037654         0.181827272        -0.026970604
+##  as.factor(school)8  as.factor(school)9 as.factor(school)10 as.factor(school)11
+##        -0.413833357        -0.523084933        -0.780966981        -0.179456700
+## as.factor(school)12 as.factor(school)13 as.factor(school)14 as.factor(school)15
+##        -0.483312036        -0.571058377        -0.581067253        -0.606702657
+## as.factor(school)16 as.factor(school)17 as.factor(school)18 as.factor(school)19
+##        -0.825202132        -0.595818835        -0.490771143        -0.431115211
+## as.factor(school)20 as.factor(school)21 as.factor(school)22 as.factor(school)23
+##        -0.205049233        -0.126419704        -0.880185131        -1.000512830
+## as.factor(school)24 as.factor(school)25 as.factor(school)26 as.factor(school)27
+##        -0.179747660        -0.666833203        -0.429359943        -0.378424526
+## as.factor(school)28 as.factor(school)29 as.factor(school)30 as.factor(school)31
+##        -1.106500587        -0.163003687        -0.212081930        -0.414259745
+## as.factor(school)32 as.factor(school)33 as.factor(school)34 as.factor(school)35
+##        -0.411342710        -0.356107503        -0.537174088        -0.214086960
+## as.factor(school)36 as.factor(school)37 as.factor(school)38 as.factor(school)39
+##        -0.640611796        -0.647423110        -0.574310199        -0.241066377
+## as.factor(school)40 as.factor(school)41 as.factor(school)42 as.factor(school)43
+##        -0.645538637        -0.170886794        -0.306591722        -0.497881063
+## as.factor(school)44 as.factor(school)45 as.factor(school)46 as.factor(school)47
+##        -0.688387983        -0.520295271        -0.788708334        -0.455262007
+## as.factor(school)48 as.factor(school)49 as.factor(school)50 as.factor(school)51
+##        -0.587882734        -0.370351439        -0.744855302        -0.461041141
+## as.factor(school)52 as.factor(school)53 as.factor(school)54 as.factor(school)55
+##         0.008072604         0.398475436        -1.368601638         0.184024334
+## as.factor(school)56 as.factor(school)57 as.factor(school)58 as.factor(school)59
+##        -0.427019374        -0.377376447        -0.241451121        -1.128811022
+## as.factor(school)60 as.factor(school)61 as.factor(school)62 as.factor(school)63
+##        -0.143876751        -0.438222462        -0.493550060         0.242290425
+## as.factor(school)64 as.factor(school)65
 ##        -0.304716265        -0.593671312</code></pre>
 <p><em>Reply: Also the fixed effects model finds a linear relationship
 where the regression coefficient equals 0.560181196. By introducing the
@@ -2131,27 +2131,27 @@ model?</p>
 <pre class="r"><code>RandomIntercept = lme(normexam~standLRT,  random = ~1|school, data=exam)
 summary(RandomIntercept)</code></pre>
 <pre><code>## Linear mixed-effects model fit by REML
-##   Data: exam 
+##   Data: exam
 ##        AIC      BIC    logLik
 ##   9107.902 9133.011 -4549.951
-## 
+##
 ## Random effects:
 ##  Formula: ~1 | school
 ##         (Intercept)  Residual
 ## StdDev:   0.3071927 0.7535887
-## 
-## Fixed effects:  normexam ~ standLRT 
+##
+## Fixed effects:  normexam ~ standLRT
 ##                 Value  Std.Error   DF  t-value p-value
 ## (Intercept) 0.0003680 0.04052258 3869  0.00908  0.9928
 ## standLRT    0.5641318 0.01269508 3869 44.43704  0.0000
-##  Correlation: 
+##  Correlation:
 ##          (Intr)
-## standLRT 0.007 
-## 
+## standLRT 0.007
+##
 ## Standardized Within-Group Residuals:
-##         Min          Q1         Med          Q3         Max 
-## -3.69766166 -0.62537566  0.02378645  0.67363330  3.25607135 
-## 
+##         Min          Q1         Med          Q3         Max
+## -3.69766166 -0.62537566  0.02378645  0.67363330  3.25607135
+##
 ## Number of Observations: 3935
 ## Number of Groups: 65</code></pre>
 <p><em>Reply: There is almost no change in the interpretation of the
@@ -2176,30 +2176,30 @@ effect of the fixed effects changes.</p>
 <pre class="r"><code>RandomSlope = lme(fixed=normexam~standLRT, random = ~ 1 + standLRT | school, data = exam)
 summary(RandomSlope)</code></pre>
 <pre><code>## Linear mixed-effects model fit by REML
-##   Data: exam 
+##   Data: exam
 ##        AIC      BIC    logLik
 ##   9073.433 9111.096 -4530.716
-## 
+##
 ## Random effects:
 ##  Formula: ~1 + standLRT | school
 ##  Structure: General positive-definite, Log-Cholesky parametrization
-##             StdDev    Corr  
+##             StdDev    Corr
 ## (Intercept) 0.3036539 (Intr)
-## standLRT    0.1195874 0.515 
-## Residual    0.7457559       
-## 
-## Fixed effects:  normexam ~ standLRT 
+## standLRT    0.1195874 0.515
+## Residual    0.7457559
+##
+## Fixed effects:  normexam ~ standLRT
 ##                  Value  Std.Error   DF   t-value p-value
 ## (Intercept) -0.0128592 0.04019296 3869 -0.319936   0.749
 ## standLRT     0.5572347 0.01999295 3869 27.871557   0.000
-##  Correlation: 
+##  Correlation:
 ##          (Intr)
-## standLRT 0.374 
-## 
+## standLRT 0.374
+##
 ## Standardized Within-Group Residuals:
-##         Min          Q1         Med          Q3         Max 
-## -3.81039335 -0.63401728  0.03275735  0.67303397  3.44692474 
-## 
+##         Min          Q1         Med          Q3         Max
+## -3.81039335 -0.63401728  0.03275735  0.67303397  3.44692474
+##
 ## Number of Observations: 3935
 ## Number of Groups: 65</code></pre>
 <p><em>Reply: No, the strength of the fixed effect of reading ability
@@ -2211,33 +2211,33 @@ group-level variables to the random effects model.</p>
 <pre class="r"><code>RandomInterceptCov = lme( normexam~standLRT + schavg + schgend, random = ~ 1 | school, data = exam)
 summary(RandomInterceptCov)</code></pre>
 <pre><code>## Linear mixed-effects model fit by REML
-##   Data: exam 
+##   Data: exam
 ##        AIC     BIC    logLik
 ##   9104.396 9148.33 -4545.198
-## 
+##
 ## Random effects:
 ##  Formula: ~1 | school
 ##         (Intercept)  Residual
 ## StdDev:   0.2649784 0.7537166
-## 
-## Fixed effects:  normexam ~ standLRT + schavg + schgend 
+##
+## Fixed effects:  normexam ~ standLRT + schavg + schgend
 ##                   Value  Std.Error   DF  t-value p-value
 ## (Intercept)  -0.0814454 0.04847661 3869 -1.68010  0.0930
 ## standLRT      0.5601841 0.01276782 3869 43.87470  0.0000
 ## schavg        0.3519672 0.10711677   61  3.28583  0.0017
 ## schgendboys   0.1158202 0.10330517   61  1.12115  0.2666
 ## schgendgirls  0.2404062 0.08041229   61  2.98967  0.0040
-##  Correlation: 
+##  Correlation:
 ##              (Intr) stnLRT schavg schgndb
-## standLRT      0.000                      
-## schavg        0.053 -0.119               
-## schgendboys  -0.465 -0.001  0.053        
-## schgendgirls -0.603 -0.001 -0.031  0.280 
-## 
+## standLRT      0.000
+## schavg        0.053 -0.119
+## schgendboys  -0.465 -0.001  0.053
+## schgendgirls -0.603 -0.001 -0.031  0.280
+##
 ## Standardized Within-Group Residuals:
-##         Min          Q1         Med          Q3         Max 
-## -3.69621679 -0.62854698  0.02257168  0.67400518  3.22267911 
-## 
+##         Min          Q1         Med          Q3         Max
+## -3.69621679 -0.62854698  0.02257168  0.67400518  3.22267911
+##
 ## Number of Observations: 3935
 ## Number of Groups: 65</code></pre>
 <p><em>Reply: Group-level covariates are school gender, school average
@@ -2297,8 +2297,8 @@ survival.</p>
 dim(titanic)</code></pre>
 <pre><code>## [1] 1309   14</code></pre>
 <pre class="r"><code>table(titanic$survived)</code></pre>
-<pre><code>## 
-##   0   1 
+<pre><code>##
+##   0   1
 ## 809 500</code></pre>
 <p>The dataset includes:</p>
 <ul>
@@ -2327,26 +2327,26 @@ first’ was adapted for the evacuation of the titanic.</p>
 sex had an effect on survival.</p>
 <pre class="r"><code>glm.out = glm(as.factor(survived)~as.factor(sex)+age, family = &quot;binomial&quot;, data = titanic)
 summary(glm.out)</code></pre>
-<pre><code>## 
+<pre><code>##
 ## Call:
-## glm(formula = as.factor(survived) ~ as.factor(sex) + age, family = &quot;binomial&quot;, 
+## glm(formula = as.factor(survived) ~ as.factor(sex) + age, family = &quot;binomial&quot;,
 ##     data = titanic)
-## 
+##
 ## Coefficients:
-##                     Estimate Std. Error z value Pr(&gt;|z|)    
+##                     Estimate Std. Error z value Pr(&gt;|z|)
 ## (Intercept)         1.235414   0.192032   6.433 1.25e-10 ***
 ## as.factor(sex)male -2.460689   0.152315 -16.155  &lt; 2e-16 ***
-## age                -0.004254   0.005207  -0.817    0.414    
+## age                -0.004254   0.005207  -0.817    0.414
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
+##
 ## (Dispersion parameter for binomial family taken to be 1)
-## 
+##
 ##     Null deviance: 1414.6  on 1045  degrees of freedom
 ## Residual deviance: 1101.3  on 1043  degrees of freedom
 ##   (263 observations deleted due to missingness)
 ## AIC: 1107.3
-## 
+##
 ## Number of Fisher Scoring iterations: 4</code></pre>
 <p><em>Reply: We indeed see a worse chance of survival for men, but no
 effect of age.</em></p>
@@ -2357,13 +2357,13 @@ simple model.</p>
 <pre class="r"><code>glm.out.fixed = glm(as.factor(survived)~as.factor(pclass)+as.factor(sex)+age,
  family = &quot;binomial&quot;, data = titanic)
 summary(glm.out.fixed)</code></pre>
-<pre><code>## 
+<pre><code>##
 ## Call:
-## glm(formula = as.factor(survived) ~ as.factor(pclass) + as.factor(sex) + 
+## glm(formula = as.factor(survived) ~ as.factor(pclass) + as.factor(sex) +
 ##     age, family = &quot;binomial&quot;, data = titanic)
-## 
+##
 ## Coefficients:
-##                     Estimate Std. Error z value Pr(&gt;|z|)    
+##                     Estimate Std. Error z value Pr(&gt;|z|)
 ## (Intercept)         3.522074   0.326702  10.781  &lt; 2e-16 ***
 ## as.factor(pclass)2 -1.280570   0.225538  -5.678 1.36e-08 ***
 ## as.factor(pclass)3 -2.289661   0.225802 -10.140  &lt; 2e-16 ***
@@ -2371,14 +2371,14 @@ summary(glm.out.fixed)</code></pre>
 ## age                -0.034393   0.006331  -5.433 5.56e-08 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
+##
 ## (Dispersion parameter for binomial family taken to be 1)
-## 
+##
 ##     Null deviance: 1414.62  on 1045  degrees of freedom
 ## Residual deviance:  982.45  on 1041  degrees of freedom
 ##   (263 observations deleted due to missingness)
 ## AIC: 992.45
-## 
+##
 ## Number of Fisher Scoring iterations: 4</code></pre>
 <p><em>Reply: After accounting for passenger class, we find a
 significant effect of age. The beta coefficient is negative, which means
@@ -2403,30 +2403,30 @@ summary(lmm.intercept)</code></pre>
 ##  Family: binomial  ( logit )
 ## Formula: as.factor(survived) ~ as.factor(sex) + age + (1 | pclass)
 ##    Data: titanic
-## 
-##      AIC      BIC   logLik deviance df.resid 
-##   1004.9   1024.7   -498.4    996.9     1042 
-## 
-## Scaled residuals: 
-##     Min      1Q  Median      3Q     Max 
-## -5.4491 -0.5260 -0.3182  0.5015  4.0059 
-## 
+##
+##      AIC      BIC   logLik deviance df.resid
+##   1004.9   1024.7   -498.4    996.9     1042
+##
+## Scaled residuals:
+##     Min      1Q  Median      3Q     Max
+## -5.4491 -0.5260 -0.3182  0.5015  4.0059
+##
 ## Random effects:
 ##  Groups Name        Variance Std.Dev.
-##  pclass (Intercept) 0.8512   0.9226  
+##  pclass (Intercept) 0.8512   0.9226
 ## Number of obs: 1046, groups:  pclass, 3
-## 
+##
 ## Fixed effects:
-##                     Estimate Std. Error z value Pr(&gt;|z|)    
+##                     Estimate Std. Error z value Pr(&gt;|z|)
 ## (Intercept)         2.301841   0.583885   3.942 8.07e-05 ***
 ## as.factor(sex)male -2.496596   0.165643 -15.072  &lt; 2e-16 ***
 ## age                -0.033552   0.006332  -5.299 1.17e-07 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
+##
 ## Correlation of Fixed Effects:
 ##             (Intr) as.f()
-## as.fctr(sx) -0.195       
+## as.fctr(sx) -0.195
 ## age         -0.344  0.065</code></pre>
 <p><em>Reply: When fitting a random effects model we do account for
 potential group structure induced by the passenger class, but we do not
@@ -2455,31 +2455,31 @@ summary(lmm.slope)</code></pre>
 ##  Family: binomial  ( logit )
 ## Formula: as.factor(survived) ~ as.factor(sex) + age + (age | pclass)
 ##    Data: titanic
-## 
-##      AIC      BIC   logLik deviance df.resid 
-##   1008.5   1038.3   -498.3    996.5     1040 
-## 
-## Scaled residuals: 
-##     Min      1Q  Median      3Q     Max 
-## -5.2804 -0.5201 -0.3173  0.4922  3.8245 
-## 
+##
+##      AIC      BIC   logLik deviance df.resid
+##   1008.5   1038.3   -498.3    996.5     1040
+##
+## Scaled residuals:
+##     Min      1Q  Median      3Q     Max
+## -5.2804 -0.5201 -0.3173  0.4922  3.8245
+##
 ## Random effects:
-##  Groups Name        Variance  Std.Dev. Corr 
-##  pclass (Intercept) 9.277e-01 0.963156      
+##  Groups Name        Variance  Std.Dev. Corr
+##  pclass (Intercept) 9.277e-01 0.963156
 ##         age         7.439e-05 0.008625 -0.35
 ## Number of obs: 1046, groups:  pclass, 3
-## 
+##
 ## Fixed effects:
-##                     Estimate Std. Error z value Pr(&gt;|z|)    
+##                     Estimate Std. Error z value Pr(&gt;|z|)
 ## (Intercept)         2.328316   0.607938   3.830 0.000128 ***
 ## as.factor(sex)male -2.506036   0.166748 -15.029  &lt; 2e-16 ***
 ## age                -0.034232   0.008161  -4.194 2.73e-05 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
+##
 ## Correlation of Fixed Effects:
 ##             (Intr) as.f()
-## as.fctr(sx) -0.194       
+## as.fctr(sx) -0.194
 ## age         -0.460  0.065</code></pre>
 <p><em>Reply: Also the random slope and intercept model supports an
 effect of both sex and age.</em></p>

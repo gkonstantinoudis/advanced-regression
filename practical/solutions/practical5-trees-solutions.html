@@ -1817,7 +1817,7 @@ data and familiarise yourself with the data structure.</p>
 exposed = experimental_mice$exposed
 table(exposed)</code></pre>
 <pre><code>## exposed
-##  0  1 
+##  0  1
 ## 95 36</code></pre>
 <pre class="r"><code>x.test = experimental_mice$x_exp
 dim(x.test)</code></pre>
@@ -1888,55 +1888,55 @@ where we test if the biological (predicted) age differs between exposed
 and healthy control mice.</em></p>
 <pre class="r"><code>#random forest
 t.test(rf.hat~as.factor(exposed))</code></pre>
-<pre><code>## 
+<pre><code>##
 ##  Welch Two Sample t-test
-## 
+##
 ## data:  rf.hat by as.factor(exposed)
 ## t = -0.49541, df = 91.857, p-value = 0.6215
 ## alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
 ## 95 percent confidence interval:
 ##  -0.2593670  0.1558082
 ## sample estimates:
-## mean in group 0 mean in group 1 
+## mean in group 0 mean in group 1
 ##        31.16626        31.21804</code></pre>
 <pre class="r"><code>#ridge
 t.test(ridge.hat~as.factor(exposed))</code></pre>
-<pre><code>## 
+<pre><code>##
 ##  Welch Two Sample t-test
-## 
+##
 ## data:  ridge.hat by as.factor(exposed)
 ## t = 0.04826, df = 66.985, p-value = 0.9617
 ## alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
 ## 95 percent confidence interval:
 ##  -0.1150906  0.1207938
 ## sample estimates:
-## mean in group 0 mean in group 1 
+## mean in group 0 mean in group 1
 ##        30.61442        30.61157</code></pre>
 <pre class="r"><code>#lasso
 t.test(lasso.hat~as.factor(exposed))</code></pre>
-<pre><code>## 
+<pre><code>##
 ##  Welch Two Sample t-test
-## 
+##
 ## data:  lasso.hat by as.factor(exposed)
 ## t = -3.1688, df = 60.151, p-value = 0.002407
 ## alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
 ## 95 percent confidence interval:
 ##  -1.7288699 -0.3908636
 ## sample estimates:
-## mean in group 0 mean in group 1 
+## mean in group 0 mean in group 1
 ##        31.16419        32.22405</code></pre>
 <pre class="r"><code>#elastic net
 t.test(enet.hat~as.factor(exposed))</code></pre>
-<pre><code>## 
+<pre><code>##
 ##  Welch Two Sample t-test
-## 
+##
 ## data:  enet.hat by as.factor(exposed)
 ## t = -3.6711, df = 60.703, p-value = 0.0005115
 ## alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
 ## 95 percent confidence interval:
 ##  -1.8551755 -0.5467499
 ## sample estimates:
-## mean in group 0 mean in group 1 
+## mean in group 0 mean in group 1
 ##        31.10006        32.30103</code></pre>
 <p><em>Interpretation: We do see a significant difference in biological
 age using the lasso and elastic net prediction rules. Given the
@@ -1958,8 +1958,8 @@ survival.</p>
 dim(titanic)</code></pre>
 <pre><code>## [1] 1309   14</code></pre>
 <pre class="r"><code>table(titanic$survived)</code></pre>
-<pre><code>## 
-##   0   1 
+<pre><code>##
+##   0   1
 ## 809 500</code></pre>
 <p>Here we use decision trees and random forest to analyse the titanic
 data. Make sure to have the following two packages</p>
@@ -1981,7 +1981,7 @@ dim(x.input)</code></pre>
 y.input = as.factor(titanic$survived[-rm])
 table(y.input)</code></pre>
 <pre><code>## y.input
-##   0   1 
+##   0   1
 ## 619 427</code></pre>
 <p>Use the function tree in the tree package.</p>
 <pre class="r"><code>tree.out = tree(y.input ~ x.input)
@@ -2003,16 +2003,16 @@ cv.out = cv.tree(tree.out, FUN=prune.misclass)
 cv.out</code></pre>
 <pre><code>## $size
 ## [1] 5 4 2 1
-## 
+##
 ## $dev
 ## [1] 322 325 382 407
-## 
+##
 ## $k
 ## [1] -Inf    0   35   47
-## 
+##
 ## $method
 ## [1] &quot;misclass&quot;
-## 
+##
 ## attr(,&quot;class&quot;)
 ## [1] &quot;prune&quot;         &quot;tree.sequence&quot;</code></pre>
 <p><em>Reply: The models with size 6 and 5 have the same
@@ -2035,13 +2035,13 @@ importance. What was the key variable for survival in the titanic
 disaster?</p>
 <pre class="r"><code>x.input &lt;- as.data.frame(x.input)
 summary(x.input)</code></pre>
-<pre><code>##     pclass              sex                age               sibsp          
-##  Length:1046        Length:1046        Length:1046        Length:1046       
-##  Class :character   Class :character   Class :character   Class :character  
-##  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
-##     parch          
-##  Length:1046       
-##  Class :character  
+<pre><code>##     pclass              sex                age               sibsp
+##  Length:1046        Length:1046        Length:1046        Length:1046
+##  Class :character   Class :character   Class :character   Class :character
+##  Mode  :character   Mode  :character   Mode  :character   Mode  :character
+##     parch
+##  Length:1046
+##  Class :character
 ##  Mode  :character</code></pre>
 <pre class="r"><code>x.input$pclass &lt;- as.numeric(x.input$pclass)
 x.input$age &lt;- as.numeric(x.input$age)
@@ -2067,17 +2067,17 @@ skipped</p>
 <pre class="r"><code>y_bin = spotify.data$y_bin
 table(y_bin)</code></pre>
 <pre><code>## y_bin
-## FALSE  TRUE 
+## FALSE  TRUE
 ##   853  3466</code></pre>
 <p>As predictors we consider the variables given in the x_mat matrix.
 For more information on the features, please see <a href="https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-features/" class="uri">https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-features/</a>.</p>
 <pre class="r"><code>x_mat = spotify.data$x_mat
 colnames(x_mat)</code></pre>
 <pre><code>##  [1] &quot;age&quot;                    &quot;duration&quot;               &quot;us_popularity_estimate&quot;
-##  [4] &quot;acousticness&quot;           &quot;beat_strength&quot;          &quot;danceability&quot;          
-##  [7] &quot;dyn_range_mean&quot;         &quot;energy&quot;                 &quot;flatness&quot;              
-## [10] &quot;instrumentalness&quot;       &quot;liveness&quot;               &quot;loudness&quot;              
-## [13] &quot;mechanism&quot;              &quot;speechiness&quot;            &quot;tempo&quot;                 
+##  [4] &quot;acousticness&quot;           &quot;beat_strength&quot;          &quot;danceability&quot;
+##  [7] &quot;dyn_range_mean&quot;         &quot;energy&quot;                 &quot;flatness&quot;
+## [10] &quot;instrumentalness&quot;       &quot;liveness&quot;               &quot;loudness&quot;
+## [13] &quot;mechanism&quot;              &quot;speechiness&quot;            &quot;tempo&quot;
 ## [16] &quot;valence&quot;</code></pre>
 <p>Question 4.1</p>
 <p>Fit a random forest model that uses x_mat as predictors. Which song
