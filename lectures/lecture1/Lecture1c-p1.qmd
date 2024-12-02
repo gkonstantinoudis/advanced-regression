@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression: Random effects and hierarchical models I"
-date: "02-20-2024"
+date: "02-21-2025"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -28,7 +28,18 @@ format:
 
 library(tidyverse)
 data_chol <- read_csv("assets/cholesterol.csv")
+
 ```
+
+## **Learning Objectives**
+
+After this session students should be able to:
+
+-   Understand the concept of random and mixed effects regression models
+
+-   Use hierarchical models to incorporate structure into the analysis
+
+-   Be able to analyse data in R with random/mixed effects linear models
 
 ::: {style="font-size:90%;"}
 ## Motivation

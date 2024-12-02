@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression: Linear and generalised linear models I"
-date: "02-20-2024"
+date: "02-21-2025"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -20,6 +20,12 @@ format:
       chalkboard:
         buttons: false
 ---
+
+## Learning Objectives
+
+After this session students should be able to:
+
+-   Repeat the basic concepts of linear regression
 
 ::: {style="font-size: 70%;"}
 ## Main goal of (linear) regression
@@ -121,7 +127,7 @@ Alternative representation:
 
 -   $x$: predictor matrix
 
-```
+```         
 -   clinical parameters: age, sex, bmi
 
 -   map: blood pressure
@@ -218,7 +224,7 @@ Reduction of the regression coeffient from 619 to 175 after conditioning on othe
 
 -   Bayesian linear regression (Module: Bayesian Statistics)
 
-::: {style="font-size: 80%;"}
+:::: {style="font-size: 80%;"}
 ## Fitted values and residuals
 
 -   Fitted values
@@ -234,7 +240,7 @@ $\hat{y} = x \hat{\beta} = \underbrace{x (x^t x)^{-1} x^t}_{h} y$
 ::: callout-tip
 Residuals are an important quantity for model diagnostics.
 :::
-:::
+::::
 
 ## Fitted values and residuals
 
@@ -607,3 +613,5 @@ predict.lm(lm_train, x_new)
 -   Model diagnostics
 
 -   Using the linear model to predict
+
+## Questions?

@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression: Linear and generalised linear models II"
-date: "02-20-2024"
+date: "02-21-2025"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -21,6 +21,18 @@ format:
         buttons: false
 ---
 
+## **Learning Objectives**
+
+After this session students should be able to:
+
+-   Understand generalised linear model (GLM) terminology
+
+-   Distinguish between key distributions such as binomial, poisson, or beta
+
+-   Employ and interpret diagnostic checks of model fit
+
+-   Practically apply these models to actual data using R
+
 ## Generalised linear model
 
 -   Basic definition
@@ -31,7 +43,7 @@ format:
 
 -   Generalised linear models in R
 
-::: {style="font-size:90%;"}
+:::: {style="font-size:90%;"}
 ## Generalised linear model (GLM)
 
 -   Linear models can only model a quantitative outcome.
@@ -47,7 +59,7 @@ format:
 ::: {.callout-note icon="false"}
 Flexible generalization of ordinary linear regression that allows for response variables that have error distribution models other than a normal distribution. Residuals are an important quantity for model diagnostics.
 :::
-:::
+::::
 
 ## Binary outcome and logistic regression
 
@@ -389,3 +401,5 @@ Most common data types can be modelled using GLMs
 -   Dichotomous or binary $\rightarrow$ Bernoulli distribution
 
 -   Counts $\rightarrow$ Poisson or Binomial (with known number of trial) distribution
+
+## Questions?

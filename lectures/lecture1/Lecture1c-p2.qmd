@@ -4,7 +4,7 @@ author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
 editor: visual
-date: "02-20-2024"
+date: "02-21-2025"
 date-format: medium
 title-slide-attributes:
   data-background-color: "#f3f4f4"
@@ -32,7 +32,7 @@ data_chol <- read_csv("assets/cholesterol.csv")
 
 ## 4. Random effects
 
-::: {style="font-size: 75%;"}
+:::: {style="font-size: 75%;"}
 1.  Random effect model with random intercept $$
     y_i = (\alpha_0 + {\color{red}{u_k}}) + \beta x_i  + \epsilon_i,
     $$ where $\color{red}{u_k \sim N(0, \sigma_u^2)}$.
@@ -47,7 +47,7 @@ Group effects are also called random effects:
 1.  Random effect for the intercept $u_k \sim N(0, \sigma_u^2)$
 2.  Random effect for the slope $w_k \sim N(0, \sigma_w^2)$
 :::
-:::
+::::
 
 ## Random intercept
 
@@ -334,12 +334,9 @@ Akaike information criterion (AIC):
 GP example:
 
 ::: {style="font-size: 60%;"}
--   Model A (Random intercept) 
-`model_random_intercept = lme(chol ~ age, random = ~ 1 | doctor, data = data_chol)`
--   Model B (Random intercept and slope) 
-`model_random_slope = lme(chol ~ age, random = ~ 1 + age | doctor, data = data_chol)`
--   Model C (Random intercept and slope and group covariate) 
-`model_random_cov = lme(chol ~ age + agedoc, random = ~ 1 + age | doctor, data = data_chol)`
+-   Model A (Random intercept) `model_random_intercept = lme(chol ~ age, random = ~ 1 | doctor, data = data_chol)`
+-   Model B (Random intercept and slope) `model_random_slope = lme(chol ~ age, random = ~ 1 + age | doctor, data = data_chol)`
+-   Model C (Random intercept and slope and group covariate) `model_random_cov = lme(chol ~ age + agedoc, random = ~ 1 + age | doctor, data = data_chol)`
 :::
 
 ## Model comparison
@@ -382,3 +379,5 @@ glmer(formula = y ~ x + (1 + x | factor), family = gaussian)
 -   Implementation in `R`: `lme()` function in the `nlme` package.
 -   Models including both, fixed and random effects, are often called linear mixed models.
 :::
+
+## Questions?
