@@ -27,7 +27,7 @@ Run `pre-commit install` to install the hooks. You now won't be able to commit u
 `renv` maintains consistency between users' `R` environments. Run `renv::restore()` and the environment will be downloaded into the repository based on the `renv.lock` file. If you want to add a packages to the lockfile, install the package and then run `renv::snapshot()`. For more details, see the [docs](https://rstudio.github.io/renv/articles/renv.html).
 
 ### Data for practicals
-You can download the data for practicals from here: https://drive.google.com/drive/folders/1nAZxKP8rN8oavqjwmz4XwdCwBfcPMLYO?usp=sharing 
+You can download the data for practicals from here: [https://drive.google.com/drive/folders/1nAZxKP8rN8oavqjwmz4XwdCwBfcPMLYO?usp=sharing ](https://drive.google.com/drive/folders/1Ccy2BPyZAJ6chBJHV7Z2r2uwkYwSp2NO?usp=sharing)
 
 ### Using `Quarto` for presentations
 
