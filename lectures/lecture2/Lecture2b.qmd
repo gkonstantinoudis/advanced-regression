@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression: Bias and variance trade off and penalised splines"
-date: "02-27-2024"
+date: "02-28-2025"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -551,6 +551,12 @@ gratia::draw(res.mod)
 #| fig-align: "center"
 gratia::smooth_estimates(res.mod) %>%
   gratia::add_confint() %>%
+    mutate(
+    smooth = .smooth, 
+    est = .estimate, 
+    upper_ci = .upper_ci, 
+    lower_ci = .lower_ci
+  ) %>% 
   filter(smooth == "s(temp)") %>%
   mutate(
     est = exp(est), lower_ci = exp(lower_ci), upper_ci = exp(upper_ci),
@@ -599,6 +605,12 @@ Let's add the effect of air-pollution (PM10):
 #| fig-align: "center"
 gratia::smooth_estimates(res.mod1) %>%
   gratia::add_confint() %>%
+    mutate(
+    smooth = .smooth, 
+    est = .estimate, 
+    upper_ci = .upper_ci, 
+    lower_ci = .lower_ci
+  ) %>% 
   filter(smooth == "s(pm10)") %>%
   ggplot() +
   geom_line(aes(pm10, est), lwd = 1) +
@@ -645,6 +657,12 @@ for (i in 1:length(k)) {
   ) %>%
     gratia::smooth_estimates() %>%
     gratia::add_confint() %>%
+    mutate(
+    smooth = .smooth, 
+    est = .estimate, 
+    upper_ci = .upper_ci, 
+    lower_ci = .lower_ci
+  ) %>% 
     filter(smooth == "s(temperature_laggeg)") %>%
     mutate(
       est = exp(est),

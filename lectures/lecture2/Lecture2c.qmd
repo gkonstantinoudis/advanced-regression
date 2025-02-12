@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression: Distributed non-linear lag models and other extensions"
-date: "02-27-2024"
+date: "02-28-2025"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -177,14 +177,12 @@ The idea: $\beta_{\ell}$ can be modelled using a basis function.
 
 Let $\beta_\ell = \sum_j^p\tau_j\ell^j, \;\;\; \ell = 0, \dots, q$ , lets write it for 2 lags using a 3rd degree polynomial to see it explicitly:
 
-```{=tex}
 \begin{align}Y_t &= \beta_0 + \beta_{10}X_t + \beta_{11}X_{t-1} + \beta_{12}X_{t-2} + \epsilon_t\\\beta_{10} &= \tau_0, \; \beta_{11} = \tau_0 + \tau_1 + \tau_2 + \tau_3, \; \beta_{12} = \tau_0 + \tau_1 2 + \tau_2 2^2 + \tau_3 2^3\end{align}
-```
+
 and we can modify as per first lecture to model more localized structures using: $\beta_\ell = \sum_j^p\tau_j\ell^j + \sum_k^K\nu_k(\ell-\kappa_k)^p_+$, thus:
 
-```{=tex}
 \begin{align*}\beta_{10} &= \tau_0 + \nu_1(0-\kappa_1)^3_+ + \dots + \nu_K(0-\kappa_K)^3_+, \\\beta_{11} &= \tau_0 + \tau_1 + \tau_2 + \tau_3 + \nu_1(1-\kappa_1)^3_+ + \dots + \nu_K(1-\kappa_K)^3_+, \\\beta_{12} &= \tau_0 + \tau_1 2  + \tau_2 2^2 + \tau_3 2^3 + \nu_1(2-\kappa_1)^3_+ + \dots + \nu_K(2-\kappa_K)^3_+\end{align*}
-```
+
 and similarly we can penalize it can estimate *the penalised spline distributed lag estimate* of $\beta_{\ell}$
 :::
 

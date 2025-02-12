@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression: Introduction to non-linear regression"
-date: "02-27-2024"
+date: "02-28-2025"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -21,7 +21,7 @@ format:
         buttons: false
 ---
 
-::: {style="font-size: 90%;"}
+:::: {style="font-size: 90%;"}
 ## Non-linear regression
 
 So far we have studied the linear regression models, which are very flexible tool for estimating relationships in a set of data. In particular, we have seen:
@@ -37,7 +37,7 @@ So far we have studied the linear regression models, which are very flexible too
 ::: {.callout-note icon="false"}
 One of the most crucial assumptions of the previous lecture was that the associations between the outcome and the covariates are linear. What if the association was not linear?
 :::
-:::
+::::
 
 ::: {style="font-size: 90%;"}
 ## A clarification
@@ -593,7 +593,6 @@ ggplot() +
 
 Linear threshold model
 
-```{=tex}
 \begin{align}
 Y_i &= \beta_0^{(1)} + \beta_1^{(1)}x + \epsilon_i \qquad x\leq-1\\
 Y_i &= \beta_0^{(2)} + \beta_1^{(2)}x + \epsilon_i \qquad -1<x\leq0.5\\
@@ -601,7 +600,7 @@ Y_i &= \beta_0^{(3)} + \beta_1^{(3)}x + \epsilon_i \qquad 0.5<x\leq1.5\\
 Y_i &= \beta_0^{(4)} + \beta_1^{(4)}x + \epsilon_i \qquad 1.5<x\leq3\\
 Y_i &= \beta_0^{(5)} + \beta_1^{(5)}x + \epsilon_i \qquad x\geq3\\
 \end{align}
-```
+
 Linear spline model
 
 $Y_i = \beta_0 + \beta_1x + \beta_2(x+1)_+ + \beta_3(x-0.5)_+ + \beta_4 (x-1.5)_+ + \beta_5(x-3)_+ + \epsilon_i$
@@ -633,7 +632,6 @@ ggplot() +
 
 Similarly we can define higher order polynomial splines, for instance:
 
-```{=tex}
 \begin{align}
 Y_i = \beta_0 &+ \beta_1 x + \beta_2 x^2 + \beta_3 x^3 + \\
 & \beta_4 (X+1)_+ + \beta_5 (X+1)_+^2 + \beta_6(X+1)_+^3 + \\
@@ -644,15 +642,13 @@ Y_i = \beta_0 &+ \beta_1 x + \beta_2 x^2 + \beta_3 x^3 + \\
 0, \quad x<k \\ x-k, \quad x\geq k
 \end{cases}
 \end{align}
-```
+
 which reduces to the following to ensure smooth curvature on the knots (it can be seen after deriving the first and second derivative):
 
-```{=tex}
 \begin{align}
 Y_i = \beta_0 & + \beta_1 x +\beta_2 x^2 + \beta_3 x_3 + \\
 &\beta_6 (x+1)_+^3 + \beta_9(x-0.5)_+^3 + \dots + \epsilon_i
 \end{align}
-```
 :::
 
 ::: {style="font-size: 80%;"}
