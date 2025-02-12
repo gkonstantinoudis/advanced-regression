@@ -21,6 +21,7 @@ format:
         buttons: false
 ---
 
+
 ## **Learning Objectives**
 
 After this session students should be able to:
@@ -259,7 +260,7 @@ $$
 
 Binomial distribution with known number of trials $n$, but unknown probability $p$:
 
-$$ \begin{align} f(x \mid p) &= {n\choose x} p^x (1-p)^{n-x} = \\ &= {n \choose x} \exp \{x \log (\frac{p}{1-p}) + n\log(1-p)\}  \end{align} $$
+\begin{align} f(x \mid p) &= {n\choose x} p^x (1-p)^{n-x} = \\ &= {n \choose x} \exp \{x \log (\frac{p}{1-p}) + n\log(1-p)\}  \end{align}
 
 -   $\theta = p$
 
