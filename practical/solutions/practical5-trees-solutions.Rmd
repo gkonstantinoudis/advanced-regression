@@ -1,7 +1,7 @@
 ---
 title: "Practical 5: The epigenetic clock: Predicting biological age on new data"
 author: "Garyfallos Konstantinoudis"
-date: "Spring Term 2024"
+date: "Spring Term 2025"
 output: pdf_document
 highlight: tango
 ---
@@ -415,12 +415,4 @@ Contrast these findings with the results from the elastic net fit in practical 3
 
 *Reply: While elastic net optimises for prediction, it selects a model (set of variables) which is able to predict the outcome well. In contrast, variable importance in random forest is concerned with ranking the variables based on their importance in a specific model. In order to predict the sparse model may work fine, but in order to explain the relationship between music features and if the songs are skipped a much more complex picture including nearly all of the variables emerges.
 So before doing the analysis you may want to think what is your motivation to do the analysis: Do you want to predict if a song is skipped (what spotify may want to optimise as a business concept) or do you want to understand what is the relationship between song features and response of the listeners (what an artist may want to know when composing music).*
-
-
-<!--
-require(knitr)
-require(markdown)
-require(rmarkdown)
-render("practical5_solutions.Rmd")
--->
 

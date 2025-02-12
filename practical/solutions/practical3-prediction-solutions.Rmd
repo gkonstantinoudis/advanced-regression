@@ -1,7 +1,7 @@
 ---
 title: "Practical 3: Variable selection"
 author: "Garyfallos Konstantinoudis"
-date: "Spring Term 2024"
+date: "Spring Term 2025"
 output: pdf_document
 highlight: tango
 ---
@@ -476,10 +476,4 @@ detach(spotify.data)
 
 
 
-<!--
-require(knitr)
-require(markdown)
-require(rmarkdown)
-render("practical3-prediction-solutions.Rmd")
--->
 

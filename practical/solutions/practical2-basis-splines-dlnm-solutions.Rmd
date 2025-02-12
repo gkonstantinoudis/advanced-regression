@@ -1,7 +1,7 @@
 ---
 title: "Practical 2: Non-linear Regression"
 author: "Garyfallos Konstantinoudis"
-date: "Spring Term 2024"
+date: "Spring Term 2025"
 output: pdf_document
 highlight: tango
 ---
@@ -710,7 +710,7 @@ plot(pred.hw, "slice", var=30, las = 1,
 
 *and with the \texttt{plotly} package:*
 
-```{r}
+```{r eval = FALSE}
 p <- plot_ly()
 p <- add_surface(p,
                x = 0:10, # the lags
@@ -724,10 +724,4 @@ layout(p, scene = list(xaxis = list(title = "Lag"),
 ```
 
 
-<!--
-require(knitr)
-require(markdown)
-require(rmarkdown)
-render("practical1-lm-glm-re.Rmd")
--->
 
