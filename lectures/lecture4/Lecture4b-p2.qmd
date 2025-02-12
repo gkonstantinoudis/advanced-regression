@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression 4b: Machine learning, ensemble methods"
-date: "03-12-2024"
+date: "03-14-2025"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -62,7 +62,7 @@ library(randomForest)
 
 ```{r dag}
 #| echo: false
-#| eval: true
+#| eval: false
 #| warning: false
 #| message: false
 
@@ -95,6 +95,9 @@ data4 -> num3
 -> res
 }")
 ```
+
+![](assets/DAG.png){fig-align="center"}
+
 
 ::: {style="font-size: 70%;"}
 ## Example (taken from Prof Filippi lecture)
@@ -204,7 +207,7 @@ p_data_boot + p_data_boot_summary
 ```
 :::
 
-::: {style="font-size: 90%;"}
+:::: {style="font-size: 90%;"}
 ## Out-of-bag error
 
 -   Bagging has an intrinsic way of evaluating prediction performance
@@ -218,9 +221,9 @@ p_data_boot + p_data_boot_summary
 
 -   The out-of-bag error can be used to estimate the test error and prediction performance.
 -   No cross-validation is needed.
-:::
+::::
 
-::: {style="font-size: 80%;"}
+:::: {style="font-size: 80%;"}
 ## Random forest
 
 -   Bagging always considers all $p$ variables to build a decision tree.
@@ -235,9 +238,9 @@ How to select $m$?
 -   Classification random forest: $m=\sqrt{p}$
 -   Bagging: $m=p$
 :::
-:::
+::::
 
-##
+## 
 
 ::: {layout-ncol="2"}
 ![Bagging](assets/forest1.png){width="50%," fig-align="center"}

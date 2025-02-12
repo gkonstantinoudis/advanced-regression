@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression 4a: Machine learning, classification"
-date: "03-12-2024"
+date: "03-14-2025"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -41,7 +41,7 @@ library(e1071)
 ```
 
 ::: {style="font-size: 60%;"}
-##
+## 
 
 **Classification analysis:**
 

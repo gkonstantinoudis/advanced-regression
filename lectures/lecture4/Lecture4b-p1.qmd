@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression 4b: Machine learning, decision trees"
-date: "03-12-2024"
+date: "03-14-2025"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -21,7 +21,7 @@ format:
         buttons: false
 ---
 
-##
+## 
 
 -   Motivation for decision trees
 -   Technical definition
@@ -175,7 +175,7 @@ Problem: How to select the partition?
 
 ## Exercise: Reconstruct the tree
 
-::: columns
+:::::: columns
 ::: {.column width="60%"}
 ```{r decision-boundary}
 #| echo: false
@@ -214,14 +214,14 @@ p_tree
 ```
 :::
 
-::: {.column width="40%"}
+:::: {.column width="40%"}
 ::: {style="font-size: 80%;"}
 -   Assume we have two variables, $X_1$ on the x-axis and $X_2$ on the y-axis.
 -   $R_1$ to $R_5$ map out a partition.
 -   $t_1$ to $t_4$ are the split values.
 :::
-:::
-:::
+::::
+::::::
 
 Reconstruct the respective tree
 
