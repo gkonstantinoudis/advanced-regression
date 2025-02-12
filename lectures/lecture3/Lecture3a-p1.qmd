@@ -1,6 +1,6 @@
 ---
 title: "Advanced Regression: Variable selection"
-date: "03-05-2024"
+date: "03-07-2025"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -238,9 +238,8 @@ $$LRT = - 2 (\log L(M_1)- \log L(M_2))$$
 
 -   Note that $L(M_2) \geq L(M_1)$ and thus:
 
-```{=html}
 <!-- -->
-```
+
 -   $-\log L(M_2) \leq -\log L(M_1)$,
 
     which is in analogy with $R^2 (M_2)\geq R^2 (M_1)$.
@@ -413,7 +412,7 @@ BIC(mod1, mod2)
     5.  ...
 :::
 
-::: {style="font-size: 80%;"}
+:::: {style="font-size: 80%;"}
 ## Alternative for model selection
 
 ::: {.callout-warning icon="false"}
@@ -429,4 +428,4 @@ Alternatives for model selection:
     -   $p=20$ variables have $2^{20} =1,048,576$ possible models
 
 -   Penalised regression (Lecture 3b)
-:::
+::::

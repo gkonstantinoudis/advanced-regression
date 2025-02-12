@@ -1,6 +1,6 @@
 ---
 title: "Cross validation"
-date: "03-05-2024"
+date: "03-07-2025"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -129,7 +129,7 @@ Aims
 
 ## Cross-validation in R: crossval
 
-1. Write a prediction function
+1.  Write a prediction function
 
 ```{r}
 #| echo: true
@@ -147,7 +147,7 @@ predfun.lm = function(train.x, train.y, test.x, test.y){
 
 ## Cross-validation in R: crossval
 
-2. Load the `crossval` package and perform the CV for model `x` (all data) and `x1` (first 6 columns).
+2.  Load the `crossval` package and perform the CV for model `x` (all data) and `x1` (first 6 columns).
 
 ```{r}
 #| echo: true
@@ -170,7 +170,8 @@ cv.out1 = crossval(predfun.lm, x1, y, K = 5, verbose = FALSE)
 
 ## Cross-validation in R: crossval
 
-3. Evaluate the CV test error rate for `x`, and `x1`:
+3.  Evaluate the CV test error rate for `x`, and `x1`:
+
 ```{r}
 #| echo: true
 #| eval: true
@@ -182,4 +183,4 @@ rownames(cv.compare) <- c("x", "x1")
 cv.compare
 ```
 
-4. Model x has lower CV test error than x1
+4.  Model x has lower CV test error than x1

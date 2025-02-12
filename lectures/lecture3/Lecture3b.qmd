@@ -1,6 +1,6 @@
 ---
 title: "Penalised regression models"
-date: "03-05-2024"
+date: "03-07-2025"
 author:
   name: "Garyfallos Konstantinoudis"
 institute: "Imperial College London"
@@ -57,11 +57,10 @@ $$
 
 -   The residual sum of squares (RSS) is minimised by the ordinary least squares estimate:
 
-```{=tex}
 \begin{align}
 RSS(\alpha, \beta) & =   \epsilon_1^2  + … +  \epsilon_i^2   + … + \epsilon_n^2 =  \sum_{i=1}^n  \epsilon_i^2  \nonumber \\& =  \sum_{i=1}^n  \left(y_i - \hat{y}_i \right)^2  \nonumber  =  \sum_{i=1}^n  \left(y_i - (\alpha + \beta x_i) \right)^2  \nonumber
 \end{align}
-```
+
 ## Residual sum of squares (RSS)
 
 ```{r}
