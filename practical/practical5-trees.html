@@ -352,7 +352,7 @@ display: none;
 <h1 class="title toc-ignore">Practical 5: The epigenetic clock:
 Predicting biological age on new data</h1>
 <h4 class="author">Garyfallos Konstantinoudis</h4>
-<h4 class="date">Spring Term 2024</h4>
+<h4 class="date">Spring Term 2025</h4>
 
 </div>
 
@@ -454,7 +454,7 @@ data and familiarise yourself with the data structure.</p>
 exposed = experimental_mice$exposed
 table(exposed)</code></pre>
 <pre><code>## exposed
-##  0  1
+##  0  1 
 ## 95 36</code></pre>
 <pre class="r"><code>x.test = experimental_mice$x_exp
 dim(x.test)</code></pre>
@@ -503,8 +503,8 @@ survival.</p>
 dim(titanic)</code></pre>
 <pre><code>## [1] 1309   14</code></pre>
 <pre class="r"><code>table(titanic$survived)</code></pre>
-<pre><code>##
-##   0   1
+<pre><code>## 
+##   0   1 
 ## 809 500</code></pre>
 <p>Here we use decision trees and random forest to analyse the titanic
 data. Make sure to have the following two packages</p>
@@ -525,7 +525,7 @@ dim(x.input)</code></pre>
 y.input = as.factor(titanic$survived[-rm])
 table(y.input)</code></pre>
 <pre><code>## y.input
-##   0   1
+##   0   1 
 ## 619 427</code></pre>
 <p>Use the function tree in the tree package.</p>
 <p>Question 3.2</p>
@@ -550,17 +550,17 @@ skipped</p>
 <pre class="r"><code>y_bin = spotify.data$y_bin
 table(y_bin)</code></pre>
 <pre><code>## y_bin
-## FALSE  TRUE
+## FALSE  TRUE 
 ##   853  3466</code></pre>
 <p>As predictors we consider the variables given in the x_mat matrix.
 For more information on the features, please see <a href="https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-features/" class="uri">https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-features/</a>.</p>
 <pre class="r"><code>x_mat = spotify.data$x_mat
 colnames(x_mat)</code></pre>
 <pre><code>##  [1] &quot;age&quot;                    &quot;duration&quot;               &quot;us_popularity_estimate&quot;
-##  [4] &quot;acousticness&quot;           &quot;beat_strength&quot;          &quot;danceability&quot;
-##  [7] &quot;dyn_range_mean&quot;         &quot;energy&quot;                 &quot;flatness&quot;
-## [10] &quot;instrumentalness&quot;       &quot;liveness&quot;               &quot;loudness&quot;
-## [13] &quot;mechanism&quot;              &quot;speechiness&quot;            &quot;tempo&quot;
+##  [4] &quot;acousticness&quot;           &quot;beat_strength&quot;          &quot;danceability&quot;          
+##  [7] &quot;dyn_range_mean&quot;         &quot;energy&quot;                 &quot;flatness&quot;              
+## [10] &quot;instrumentalness&quot;       &quot;liveness&quot;               &quot;loudness&quot;              
+## [13] &quot;mechanism&quot;              &quot;speechiness&quot;            &quot;tempo&quot;                 
 ## [16] &quot;valence&quot;</code></pre>
 <p>Question 4.1</p>
 <p>Fit a random forest model that uses x_mat as predictors. Which song
