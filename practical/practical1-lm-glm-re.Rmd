@@ -3,9 +3,7 @@ title: "Practical 1: Linear and logistic regression, random and fixed effect"
 author: "Garyfallos Konstantinoudis"
 date: "Spring Term 2025"
 output:
-  html_document:
-  df_print: paged
-  pdf_document: default
+  pdf_document:
 highlight: tango
 ---
 
@@ -52,7 +50,7 @@ x1 =  cbind(rep(1,nrow(diabetes$x)), x$sex, x$age, x$bmi, x$glu, x$map, x$ltg)
 ```
 
 Question 1.6
-Compute the regression coefficient estimate using the sample covariance based estimate, defined as $\hat{beta}_{COV}=cov(x)^{-1} cov(xy)$. Use the solve() function to invert the covariance matrix cov(x) of dimension 6 x 6 and compute this estimate without the intercept using
+Compute the regression coefficient estimate using the sample covariance based estimate, defined as $\hat{\beta}_{COV}=cov(x)^{-1} cov(xy)$. Use the solve() function to invert the covariance matrix cov(x) of dimension 6 x 6 and compute this estimate without the intercept using
 ```{r message=FALSE, warning=FALSE}
 x11 =  cbind(x$sex, x$age, x$bmi, x$glu, x$map, x$ltg)
 ```
