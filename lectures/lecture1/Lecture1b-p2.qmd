@@ -21,7 +21,6 @@ format:
         buttons: false
 ---
 
-
 ## **Learning Objectives**
 
 After this session students should be able to:
@@ -185,9 +184,9 @@ data.frame(
 
 ## Logistic regression
 
-$$
-\text{logit}(P(y=1 \mid x)) = \log(P(y=1 \mid x))/(1-P(y=1)\mid x) = \alpha + \beta x
-$$
+\begin{align}
+\text{logit}(P(y=1 \mid x)) &= \log(P(y=1 \mid x))/(1-P(y=1)\mid x) \\ &= \alpha + \beta x
+\end{align}
 
 -   **Interpretation**: The regression coefficient $\beta$ in logistic regression represents the **log odds ratio** between $y=0$ and $y=1$.
 
@@ -206,7 +205,7 @@ $$
 |-------------|--------------|-----------|----------------|
 | Continuous  | Gaussian     | $\mu$     | $1$ (identity) |
 | Dichotomous | Bernoulli    | $p$       | $\text{logit}$ |
-| Counts      | Poison       | $\lambda$ | $\log$         |
+| Counts      | Poisson      | $\lambda$ | $\log$         |
 
 <https://en.wikipedia.org/wiki/Generalized_linear_model>
 :::
