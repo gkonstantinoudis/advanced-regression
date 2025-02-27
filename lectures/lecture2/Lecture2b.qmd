@@ -279,7 +279,7 @@ No general selection method for number and position of knots
 
 The type of splines we have seen so far allow the use of standard estimation methods, derived by minimizing the usual least square objective:
 
-$$\sum_i\Bigg(Y_i - \beta_0 - f(x;\beta) + \sum_p\gamma_pz_p\Bigg)^2,$$
+$$\sum_i\Bigg(Y_i - \beta_0 - f(x;\beta) - \sum_p\gamma_pz_p\Bigg)^2,$$
 
 where $f(x;\beta) = \sum_j\beta_jb_j(x_i)$ the splines basis function, $z$ a set of other covariates with corresponding coefficients $\gamma$.
 
@@ -329,7 +329,7 @@ So if $f(x;\beta)$ is the spline basis function we defined, then we need to some
 
 The objective now is to minimise the \`augmented\` sum of squares error:
 
-$$\sum_i\Bigg(Y_i - \beta_0 - f(x;\beta) + \sum_p\gamma_pz_p\Bigg)^2 + \lambda \int [f''(x; \beta)]^2dx$$
+$$\sum_i\Bigg(Y_i - \beta_0 - f(x;\beta) - \sum_p\gamma_pz_p\Bigg)^2 + \lambda \int [f''(x; \beta)]^2dx$$
 
 with $\lambda$ being the smoothing parameter (variance-bias trade off).
 
