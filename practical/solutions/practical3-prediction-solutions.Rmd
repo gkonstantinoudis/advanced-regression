@@ -2,7 +2,8 @@
 title: "Practical 3: Variable selection"
 author: "Garyfallos Konstantinoudis"
 date: "Spring Term 2025"
-output: pdf_document
+output:
+  pdf_document: default
 highlight: tango
 ---
 

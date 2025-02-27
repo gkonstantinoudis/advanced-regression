@@ -98,7 +98,6 @@ data4 -> num3
 
 ![](assets/DAG.png){fig-align="center"}
 
-
 ::: {style="font-size: 70%;"}
 ## Example (taken from Prof Filippi lecture)
 

@@ -2,7 +2,8 @@
 title: "Practical 1: Linear and logistic regression, random and fixed effect"
 author: "Garyfallos Konstantinoudis"
 date: "Spring Term 2025"
-output: pdf_document
+output:
+  pdf_document: 
 highlight: tango
 ---
 
@@ -14,7 +15,7 @@ Type 2 diabetes is a long-term metabolic disorder that is characterized by high 
 
 In this practical we consider an observational study that measures progression of type 2 diabetes (quantitative score) as outcome and several clinical parameters like age. sex, and bmi, but also common risk factors like  map: blood pressure, tc: total cholesterol, ldl: low-density lipoprotein, hdl: high-density lipoprotein, tch: total cholesterol,  ltg: triglycerides, and glu: glucose. The dataset includes n=442 cases. It is available in the lars package, which is easy to install using for example the install.packages("lars") command.
 
-As a first step we load the data and assign x as a data.frame of the predictors and y as the quantitative score of type 2 diabetes progression.progression.
+As a first step we load the data and assign x as a data.frame of the predictors and y as the quantitative score of type 2 diabetes progression.
 ```{r message=FALSE, warning=FALSE}
 library(lars)
 data(diabetes)

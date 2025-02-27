@@ -3,8 +3,6 @@ title: "Practical 2: Non-linear Regression"
 author: "Garyfallos Konstantinoudis"
 date: "Spring Term 2025"
 output:
-  html_document:
-  df_print: paged
   pdf_document: default
 highlight: tango
 ---
