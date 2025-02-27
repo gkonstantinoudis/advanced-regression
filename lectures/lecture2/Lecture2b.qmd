@@ -21,6 +21,16 @@ format:
         buttons: false
 ---
 
+## Learning Objectives
+
+After this lecture you should:
+
+-   Understand the concept of overfitting
+
+-   Be familiar with penalised regression
+
+-   Be able to fit and interpret penalised splines in R
+
 ## Principles of non-linear regression
 
 Concepts we cover in this lecture:

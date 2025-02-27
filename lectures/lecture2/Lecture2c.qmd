@@ -21,6 +21,18 @@ format:
         buttons: false
 ---
 
+
+## Learning Objectives
+
+After this lecture you should:
+
+-   Understand the concept and need for the distributed non-linear lag models
+
+-   Be familiar with the cross-covariance matrix
+
+-   Be able to fit distributed non-linear lag models in R
+
+
 ## Overview
 
 Concepts we cover in this lecture:
