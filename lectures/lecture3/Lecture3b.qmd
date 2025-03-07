@@ -133,7 +133,7 @@ ggplot(data = data.frame(x = x1, y = y1), aes(x = x1, y = y1)) +
 ## Idea
 
 ::: {.callout-tip icon="false"}
-Control the estimates' variance by not allowing the to be too big. Constraints on how big they get. Does it remind you anything?
+Control the estimates' variance by not allowing them to be too big. Constraints on how big they get. Does it remind you anything?
 :::
 
 ## Motivation for penalised least squares
@@ -1028,6 +1028,8 @@ data(diabetes)
 x <- as.matrix(diabetes$x)
 y <- diabetes$y
 ```
+
+## Ridge regression and diabetes data
 
 ```{r}
 #| echo: true

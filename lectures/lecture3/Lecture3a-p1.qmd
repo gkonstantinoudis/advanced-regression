@@ -147,7 +147,7 @@ plot(intersecting_inside,
 
 ```
 
--   $F$-test, to compare to nested models: a full and a reduced model
+-   $F$-test, to compare two nested models: a full and a reduced model
 
 -   $M_2$ full model included $p_2$ predictors
 

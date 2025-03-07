@@ -91,6 +91,10 @@ Aims
 -   Overall mean CV test error is defined as: $$CV_{\{comb\}} = \frac{1}{comb} \sum_{i=1}^{comb} MSE_i$$
 :::
 
+## Leave-p-out (at random) cross-validation (LOOCV)
+
+![](assets/cvk.png){width="80%," fig-align="center"}
+
 ::: {style="font-size: 78%;"}
 ## k-fold cross-validation
 
@@ -109,9 +113,9 @@ Aims
     $$CV_{k-fold} = \frac{1}{k} \sum_{g=1}^k MSE_g$$
 :::
 
-## Leave-p-out cross-validation (LOOCV)
 
-![](assets/cvk.png){width="80%," fig-align="center"}
+## k-fold (random) cross-validation
+![](assets/Random-k-fold-cross-validation-process.png){width="80%," fig-align="center"}
 
 ## Repeated random sub-sampling validation
 
