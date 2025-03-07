@@ -276,7 +276,7 @@ x %>%
 Interpretation: The correlation matrix of the design matrix with 5 predictors is of dimension $5\times5$, yet the rank is 4 which indicates singularity.
 :::
 
-## Variance ination factor (VIF)
+## Variance inflation factor (VIF)
 
 -   The VIF is the ratio of the variance of $\beta_j$ when fitting the full model divided by the variance of $\beta_{UNI}(j)$ in a unvariable linear model.
 
@@ -337,6 +337,6 @@ vif(lm2)
 
     -   The rank of a matrix
 
-    -   Variance in ation factor
+    -   Variance inflation factor
 
 Questions?
