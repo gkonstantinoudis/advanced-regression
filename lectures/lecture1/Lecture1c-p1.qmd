@@ -28,7 +28,6 @@ format:
 
 library(tidyverse)
 data_chol <- read_csv("assets/cholesterol.csv")
-
 ```
 
 ## **Learning Objectives**
