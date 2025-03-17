@@ -79,7 +79,7 @@ $$
 #| fig-width: 6
 #| fig-height: 4
 #| fig-align: "center"
-#| warning: false 
+#| warning: false
 #| message: false
 
 library(lars)
@@ -114,7 +114,7 @@ $$y = \underbrace{\alpha + \beta x}_{\text{Linear predictor}} + \epsilon$$
 #| fig-width: 6
 #| fig-height: 4
 #| fig-align: "center"
-#| warning: false 
+#| warning: false
 #| message: false
 
 library(lars)
@@ -163,7 +163,7 @@ This can be achieved using the logit function: $\text{logit}(p) = \log (p/(1-p))
 #| fig-width: 5
 #| fig-height: 3
 #| fig-align: "center"
-#| warning: false 
+#| warning: false
 #| message: false
 
 library(ggplot2)
