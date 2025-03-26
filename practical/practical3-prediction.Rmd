@@ -41,7 +41,7 @@ In order to compute the massively univariate linear regression estimate, we need
 ```{r message=FALSE, warning=FALSE}
 pvec = rep(NaN, 3663)
 ```
-Write a 'for loop' to iterate through all variables. In case you are not familiar with the 'for loop', use this practical here for help https://www.r-bloggers.com/how-to-write-the-first-for-loop-in-r/ . In each iteration $j$ save the $p-$value of the respective regression into the pvec vector at position pvec[j].
+Write a 'for loop' to iterate through all variables. In case you are not familiar with the 'for loop', use this practical here for help https://www.r-bloggers.com/2021/09/r-for-loop/ In each iteration $j$ save the $p-$value of the respective regression into the pvec vector at position pvec[j].
 
 
 Question 1.3

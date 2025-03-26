@@ -599,8 +599,8 @@ cM = crossval::confusionMatrix(y, dda.pred$class, negative = "B")
 cM
 TPR = cM[2]/(cM[2] + cM[4])
 TPR
-TNR = cM[1]/(cM[1] + cM[3])
-TNR
+FPR = cM[1]/(cM[1] + cM[3])
+FPR
 ```
 :::
 

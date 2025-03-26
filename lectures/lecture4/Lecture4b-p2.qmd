@@ -34,6 +34,14 @@ library(ggparty)
 library(randomForest)
 ```
 
+
+## Previous questions
+-   How is FDR calculated in `sda.ranking`?
+-   `caret::confusionMatrix` inconsistencies. 
+-   Show how to do a ROC curve.
+-   Maximum margin classifier.
+
+
 **Ensemble methods:**
 
 -   Bagging
@@ -405,3 +413,7 @@ Further functions
 -   Ensemble methods like bagging, random forest and boosting, fit many trees in different variations and average over them.
 -   This reduces the variance and leads to greater generalizability.
 -   Variable importance measures help to understand the contribution of specific variables
+
+## Feedback
+
+![](assets/Advanced%20Regression.png){width="100%," fig-align="center"}

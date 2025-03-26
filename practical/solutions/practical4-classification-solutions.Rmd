@@ -61,6 +61,11 @@ TPR = cM[2]/(cM[2]+cM[4])
 TPR
 TNR = cM[3]/(cM[1]+cM[3])
 TNR
+
+caret::confusionMatrix(y, dda.pred$class)
+?caret::confusionMatrix
+caret::confusionMatrix(relevel(dda.pred$class, "1"), relevel(y, "1"))
+
 ```
 
 
