@@ -21,10 +21,10 @@ In this practical we consider data on $n=409$ healthy mice and methylation of $p
 
 ```{r message=FALSE, warning=FALSE, fig.height=2.8}
 load("../../data/data_epigenetic_clock_control")
-#alternatively try load("data_epigenetic_clock_control.dms")
-y = control_mice$y_control
-hist(y,breaks=50, main="")
-x = control_mice$x_control
+# alternatively try load("data_epigenetic_clock_control.dms")
+y <- control_mice$y_control
+hist(y, breaks = 50, main = "")
+x <- control_mice$x_control
 dim(x)
 ```
 The first part is concerned with performing a ranking of methylation sites that have the strongest association with ageing.
@@ -36,19 +36,19 @@ Compute a linear regression of the first methylation site against the age of the
 
 *Reply: We fit the regression using the lm() function and look at the value  $\$$coefficients.*
 ```{r message=FALSE, warning=FALSE}
-summary(lm(y~x[,1]))$coefficients
+summary(lm(y ~ x[, 1]))$coefficients
 ```
 *The element in the 2nd row and the 4th columns of the $\$$coefficient value contains the $p-$value.*
 
 ```{r message=FALSE, warning=FALSE}
-summary(lm(y~x[,1]))$coefficients[2,4]
+summary(lm(y ~ x[, 1]))$coefficients[2, 4]
 ```
 
 Question 1.2
 
 In order to compute the massively univariate linear regression estimate, we need to automate this computation for all $p=3,663$ methylation sites. First initiate a vector where to save your $p-$values.
 ```{r message=FALSE, warning=FALSE}
-pvec = rep(NaN, 3663)
+pvec <- rep(NaN, 3663)
 ```
 
 Write a 'for loop' to iterate through all variables. In case you are not familiar with the 'for loop', use this practical here for help https://www.r-bloggers.com/how-to-write-the-first-for-loop-in-r/ . In each iteration $j$ save the $p-$value of the respective regression into the pvec vector at position pvec[j].
@@ -57,8 +57,8 @@ Write a 'for loop' to iterate through all variables. In case you are not familia
 *Reply: This is how such a for loop could look like. *
 
 ```{r message=FALSE, warning=FALSE}
-for(j in 1:ncol(x)){
-	pvec[j]=summary(lm(y~x[,j]))$coefficients[2,4]
+for (j in 1:ncol(x)) {
+  pvec[j] <- summary(lm(y ~ x[, j]))$coefficients[2, 4]
 }
 ```
 
@@ -69,9 +69,9 @@ Rank the methylation sites according to their $p-$values and show the top 10 met
 *Reply: First we combine the column names of the methylation sites with the $p-$values and then we sort the output using the order function. *
 
 ```{r message=FALSE, warning=FALSE}
-output=cbind(colnames(x),pvec)
-output_sorted=output[order(pvec),]
-head(output_sorted,n=10)
+output <- cbind(colnames(x), pvec)
+output_sorted <- output[order(pvec), ]
+head(output_sorted, n = 10)
 ```
 
 
@@ -84,10 +84,10 @@ Load the dataset, that contains the methylation matrix as predictor matrix and t
 
 ```{r message=FALSE, warning=FALSE, fig.height=3.2}
 load("../../data/data_epigenetic_clock_control")
-#alternatively try load("../../data/data_epigenetic_clock_control.dms")
-y = control_mice$y_control
-hist(y,breaks=50)
-x = control_mice$x_control
+# alternatively try load("../../data/data_epigenetic_clock_control.dms")
+y <- control_mice$y_control
+hist(y, breaks = 50)
+x <- control_mice$x_control
 dim(x)
 ```
 
@@ -104,8 +104,8 @@ library(glmnet)
 
 ```{r message=FALSE, warning=FALSE}
 is.matrix(x)
-lasso.out11 = glmnet(x,y,family="gaussian",alpha=1,lambda=0.9)
-sum(abs(lasso.out11$beta)>0)
+lasso.out11 <- glmnet(x, y, family = "gaussian", alpha = 1, lambda = 0.9)
+sum(abs(lasso.out11$beta) > 0)
 ```
 *Note that $beta gives out the beta-coefficients only, coef(lasso.out11), returns both the intercept and the beta-coefficients.*
 
@@ -118,7 +118,7 @@ When performing penalised regression it is not advised to set the regularisation
 
 ```{r message=FALSE, warning=FALSE}
 set.seed(12)
-lasso.cv = cv.glmnet(x,y,family="gaussian",alpha=1, type.measure="mse")
+lasso.cv <- cv.glmnet(x, y, family = "gaussian", alpha = 1, type.measure = "mse")
 lasso.cv$lambda.min
 lasso.cv$lambda.1se
 ```
@@ -134,15 +134,15 @@ Fit the two lasso models, one with the lambda that optimises the mse, the second
 *Reply: The first model with minimum mse includes 301 variables.*
 
 ```{r message=FALSE, warning=FALSE}
-lasso.out.min = glmnet(x,y,family="gaussian",alpha=1,lambda=lasso.cv$lambda.min)
-sum(abs(lasso.out.min$beta)>0)
+lasso.out.min <- glmnet(x, y, family = "gaussian", alpha = 1, lambda = lasso.cv$lambda.min)
+sum(abs(lasso.out.min$beta) > 0)
 ```
 
 *Reply: The second model with lambda.1se includes 158 variables, and has almost half of the variables as the first model trained on the minimum mse. The second model is the sparsest model that has nearly the same mse (within 1 standard error) as the first model with the minimum mse.*
 
 ```{r message=FALSE, warning=FALSE}
-lasso.out.1se = glmnet(x,y,family="gaussian",alpha=1,lambda=lasso.cv$lambda.1se)
-sum(abs(lasso.out.1se$beta)>0)
+lasso.out.1se <- glmnet(x, y, family = "gaussian", alpha = 1, lambda = lasso.cv$lambda.1se)
+sum(abs(lasso.out.1se$beta) > 0)
 ```
 
 
@@ -159,19 +159,25 @@ How do you interpret these plots?
 
 
 ```{r message=FALSE, warning=FALSE, fig.height=3.5, fig.width=8}
-par(mfrow=c(1,3))
-plot(1:100, lasso.cv$lambda, main="1. Regularization parameter",
-     xlab="Regularisation model", ylab="Lambda")
-abline(v=which(lasso.cv$lambda == lasso.cv$lambda.min),col="red",lwd=2)
-abline(v=which(lasso.cv$lambda == lasso.cv$lambda.1se),col="red",lty=2,lwd=2)
-plot(1:100, lasso.cv$cvm, main="2. Cross-validation error",
-     xlab="Regularisation model", ylab="Cross-validation error")
-abline(v=which(lasso.cv$lambda == lasso.cv$lambda.min),col="red",lwd=2)
-abline(v=which(lasso.cv$lambda == lasso.cv$lambda.1se),col="red",lty=2,lwd=2)
-plot(1:100, as.vector(lasso.cv$nzero), main= "3. Model size",
-     xlab="Regularisation model", ylab="Model size")
-abline(v=which(lasso.cv$lambda == lasso.cv$lambda.min),col="red",lwd=2)
-abline(v=which(lasso.cv$lambda == lasso.cv$lambda.1se),col="red",lty=2,lwd=2)
+par(mfrow = c(1, 3))
+plot(1:100, lasso.cv$lambda,
+  main = "1. Regularization parameter",
+  xlab = "Regularisation model", ylab = "Lambda"
+)
+abline(v = which(lasso.cv$lambda == lasso.cv$lambda.min), col = "red", lwd = 2)
+abline(v = which(lasso.cv$lambda == lasso.cv$lambda.1se), col = "red", lty = 2, lwd = 2)
+plot(1:100, lasso.cv$cvm,
+  main = "2. Cross-validation error",
+  xlab = "Regularisation model", ylab = "Cross-validation error"
+)
+abline(v = which(lasso.cv$lambda == lasso.cv$lambda.min), col = "red", lwd = 2)
+abline(v = which(lasso.cv$lambda == lasso.cv$lambda.1se), col = "red", lty = 2, lwd = 2)
+plot(1:100, as.vector(lasso.cv$nzero),
+  main = "3. Model size",
+  xlab = "Regularisation model", ylab = "Model size"
+)
+abline(v = which(lasso.cv$lambda == lasso.cv$lambda.min), col = "red", lwd = 2)
+abline(v = which(lasso.cv$lambda == lasso.cv$lambda.1se), col = "red", lty = 2, lwd = 2)
 ```
 
 *Reply:
@@ -195,15 +201,15 @@ set.seed(123)
 
 *Reply: This is how to fit cv for ridge. Note alpha=0 as option is ridge regression, alpha=1 is lasso and alpha in between is elastic net.*
 ```{r message=FALSE, warning=FALSE}
-ridge.cv = cv.glmnet(x,y,family="gaussian",alpha=0, type.measure="mse")
+ridge.cv <- cv.glmnet(x, y, family = "gaussian", alpha = 0, type.measure = "mse")
 ridge.cv$lambda.min
 ridge.cv$lambda.1se
 ```
 *This is the final ridge regression fit.*
 ```{r message=FALSE, warning=FALSE}
-ridge.out.min = glmnet(x,y,family="gaussian",alpha=0,lambda=ridge.cv$lambda.min)
-ridge.out.1se = glmnet(x,y,family="gaussian",alpha=0,lambda=ridge.cv$lambda.1se)
-sum(abs(ridge.out.1se$beta)>0)
+ridge.out.min <- glmnet(x, y, family = "gaussian", alpha = 0, lambda = ridge.cv$lambda.min)
+ridge.out.1se <- glmnet(x, y, family = "gaussian", alpha = 0, lambda = ridge.cv$lambda.1se)
+sum(abs(ridge.out.1se$beta) > 0)
 ```
 
 *Ridge regression does not perform variable selection, all regression coefficients are unequal to zero and thus included into the model. In contrast lasso and elastic net set regression coefficient to exactly zero and exclude them from the model.*
@@ -218,13 +224,15 @@ Fit a cv to define the two optimal regularisation parameter for elastic net regr
 ```{r message=FALSE, warning=FALSE}
 set.seed(1234)
 library("foreach")
-a = seq(0.05, 0.95, 0.05)
-search = foreach(i = a, .combine = rbind)%do%{
-  			cv = cv.glmnet(x,y,family = "gaussian", type.measure = "mse", alpha = i)
-  			data.frame(cvm = cv$cvm[cv$lambda == cv$lambda.1se],
-  			           lambda.1se = cv$lambda.1se, alpha = i)
+a <- seq(0.05, 0.95, 0.05)
+search <- foreach(i = a, .combine = rbind) %do% {
+  cv <- cv.glmnet(x, y, family = "gaussian", type.measure = "mse", alpha = i)
+  data.frame(
+    cvm = cv$cvm[cv$lambda == cv$lambda.1se],
+    lambda.1se = cv$lambda.1se, alpha = i
+  )
 }
-elasticnet.cv = search[search$cvm == min(search$cvm), ]
+elasticnet.cv <- search[search$cvm == min(search$cvm), ]
 elasticnet.cv
 ```
 *Reply: CV in elastic net defines lambda.1se as `r elasticnet.cv[2]` and alpha as `r elasticnet.cv[3]`. Note for elastic net alpha is between 0 and 1 and needs to be specified as well.*
@@ -232,9 +240,11 @@ elasticnet.cv
 
 Finally fit an elastic net model using the optimal lambda and alpha regularisation parameter.
 ```{r message=FALSE, warning=FALSE}
-enet.out = glmnet(x, y, family = "gaussian", lambda = elasticnet.cv$lambda.1se,
-                  alpha = elasticnet.cv$alpha)
-sum(abs(enet.out$beta)>0)
+enet.out <- glmnet(x, y,
+  family = "gaussian", lambda = elasticnet.cv$lambda.1se,
+  alpha = elasticnet.cv$alpha
+)
+sum(abs(enet.out$beta) > 0)
 ```
 *There are 359 methylation sites included into the elastic net model.*
 
@@ -253,14 +263,14 @@ library(crossval)
 package for which we need to write a prediction function. Please see here how to define a prediction function for a linear regression model.
 
 ```{r message=FALSE, warning=FALSE}
-predfun.lm = function(train.x, train.y, test.x, test.y){
-	#fit the model and build a prediction rule
-	lm.fit = lm(train.y ~ ., data=train.x)
-	#predict the new observation based on the test data and the prediction rule
-	ynew = predict(lm.fit, test.x )
-	#compute mse as squared difference between predicted and observed outcome
-	out = mean( (ynew - test.y)^2 )
-	return( out )
+predfun.lm <- function(train.x, train.y, test.x, test.y) {
+  # fit the model and build a prediction rule
+  lm.fit <- lm(train.y ~ ., data = train.x)
+  # predict the new observation based on the test data and the prediction rule
+  ynew <- predict(lm.fit, test.x)
+  # compute mse as squared difference between predicted and observed outcome
+  out <- mean((ynew - test.y)^2)
+  return(out)
 }
 ```
 
@@ -275,13 +285,12 @@ Question 3.1
 Lasso (with the regularisation parameter lambda as set in Question 1.2 to be  the largest lambda that has a mse that is within one standard error of the minimum mse using the value $\$$lambda.1se)
 
 ```{r message=FALSE, warning=FALSE}
-predfun.lasso = function(train.x, train.y, test.x, test.y){
-
-	glmnet.fit = glmnet(x=train.x, y=train.y, lambda = lasso.out.1se, alpha=1)
-	ynew = predict(glmnet.fit , test.x)
-	# compute squared error risk (MSE)
-	out = mean( (ynew - test.y)^2 )
-	return( out )
+predfun.lasso <- function(train.x, train.y, test.x, test.y) {
+  glmnet.fit <- glmnet(x = train.x, y = train.y, lambda = lasso.out.1se, alpha = 1)
+  ynew <- predict(glmnet.fit, test.x)
+  # compute squared error risk (MSE)
+  out <- mean((ynew - test.y)^2)
+  return(out)
 }
 ```
 
@@ -291,13 +300,12 @@ Question 3.2
 Ridge (with lambda as $\$$lambda.1se in Question 1.5)
 
 ```{r message=FALSE, warning=FALSE}
-predfun.ridge = function(train.x, train.y, test.x, test.y){
-
-	glmnet.fit = glmnet(x=train.x, y=train.y, lambda = ridge.out.1se, alpha=0)
-	ynew = predict(glmnet.fit , test.x)
-	# compute squared error risk (MSE)
-	out = mean( (ynew - test.y)^2 )
-	return( out )
+predfun.ridge <- function(train.x, train.y, test.x, test.y) {
+  glmnet.fit <- glmnet(x = train.x, y = train.y, lambda = ridge.out.1se, alpha = 0)
+  ynew <- predict(glmnet.fit, test.x)
+  # compute squared error risk (MSE)
+  out <- mean((ynew - test.y)^2)
+  return(out)
 }
 ```
 
@@ -309,13 +317,12 @@ Elastic net (with lambda and alpha as $\$$lambda.1se in Question 1.6)
 *Reply: Since all three methods essentially build on the glmnet function, it is actually possible to build a more general prediction function, that has both, lambda and alpha as free paramters.*
 
 ```{r message=FALSE, warning=FALSE}
-predfun.glmnet = function(train.x, train.y, test.x, test.y, lambda = lambda, alpha=alpha){
-
-	glmnet.fit = glmnet(x=train.x, y=train.y, lambda = lambda, alpha=alpha)
-	ynew = predict(glmnet.fit , test.x)
-	# compute squared error risk (MSE)
-	out = mean( (ynew - test.y)^2 )
-	return( out )
+predfun.glmnet <- function(train.x, train.y, test.x, test.y, lambda = lambda, alpha = alpha) {
+  glmnet.fit <- glmnet(x = train.x, y = train.y, lambda = lambda, alpha = alpha)
+  ynew <- predict(glmnet.fit, test.x)
+  # compute squared error risk (MSE)
+  out <- mean((ynew - test.y)^2)
+  return(out)
 }
 ```
 
@@ -328,18 +335,26 @@ Use the crossval package to perform a $k$-fold cross validation with $k=5$ folds
 
 ```{r message=FALSE, warning=FALSE}
 set.seed(24)
-cv.out.ridge =  crossval(predfun.glmnet, x, y, lambda=ridge.cv$lambda.1se, alpha=0,
- K=5, B=20, verbose=FALSE)
-cv.out.lasso =  crossval(predfun.glmnet, x, y, lambda=lasso.cv$lambda.1se, alpha=1,
- K=5, B=20, verbose=FALSE)
-cv.out.enet  =  crossval(predfun.glmnet, x, y, lambda=elasticnet.cv$lambda.1se,
- alpha=elasticnet.cv$alpha, K=5, B=20, verbose=FALSE)
+cv.out.ridge <- crossval(predfun.glmnet, x, y,
+  lambda = ridge.cv$lambda.1se, alpha = 0,
+  K = 5, B = 20, verbose = FALSE
+)
+cv.out.lasso <- crossval(predfun.glmnet, x, y,
+  lambda = lasso.cv$lambda.1se, alpha = 1,
+  K = 5, B = 20, verbose = FALSE
+)
+cv.out.enet <- crossval(predfun.glmnet, x, y,
+  lambda = elasticnet.cv$lambda.1se,
+  alpha = elasticnet.cv$alpha, K = 5, B = 20, verbose = FALSE
+)
 
-#save to table
-table.out = rbind(c(cv.out.ridge$stat, cv.out.ridge$stat.se),
- c(cv.out.lasso$stat, cv.out.lasso$stat.se), c(cv.out.enet$stat, cv.out.enet$stat.se))
-rownames(table.out) = c("ridge", "lasso", "elastic net")
-colnames(table.out) = c("mse", "se")
+# save to table
+table.out <- rbind(
+  c(cv.out.ridge$stat, cv.out.ridge$stat.se),
+  c(cv.out.lasso$stat, cv.out.lasso$stat.se), c(cv.out.enet$stat, cv.out.enet$stat.se)
+)
+rownames(table.out) <- c("ridge", "lasso", "elastic net")
+colnames(table.out) <- c("mse", "se")
 table.out
 ```
 
@@ -357,8 +372,10 @@ attach(spotify.data)
 and familiarise yourself with the outcome variables
 ```{r message=FALSE, warning=FALSE, fig.height = 3}
 # hist(y_perc)
-library(ggplot2); library(dplyr)
-ggplot() + geom_histogram(aes(x=spotify.data$y_perc))
+library(ggplot2)
+library(dplyr)
+ggplot() +
+  geom_histogram(aes(x = spotify.data$y_perc))
 table(y_bin)
 ```
 y_perc is the ratio of the number of skips divided by the number of plays.  A value close to one indicates that the song was skipped every time it was played. Please note that y_perc is a quantitative variable, but it is confined in the range of 0 and 1. Consequently, y_perc does not follow a Gaussian distribution. A beta-binomial distribution would be more appropriate. For this practical we are going to focus on y_bin, which is a binary indicator if a song is skipped more than half of the time (y_perc>0.5).
@@ -375,12 +392,12 @@ Build a univariable glm using the glm function where you test each predictor in 
 
 
 ```{r message=FALSE, warning=FALSE}
-results.uni.glm = matrix(0,ncol=4, nrow=ncol(x_mat))
-row.names(results.uni.glm) = colnames(x_mat)
-colnames(results.uni.glm) = c("beta","se","z-score","p-val")
+results.uni.glm <- matrix(0, ncol = 4, nrow = ncol(x_mat))
+row.names(results.uni.glm) <- colnames(x_mat)
+colnames(results.uni.glm) <- c("beta", "se", "z-score", "p-val")
 
-for(i in 1:ncol(x_mat)){
-	results.uni.glm[i,] = summary(glm(y_bin~x_mat[,i], family="binomial"))$coefficients[2,]
+for (i in 1:ncol(x_mat)) {
+  results.uni.glm[i, ] <- summary(glm(y_bin ~ x_mat[, i], family = "binomial"))$coefficients[2, ]
 }
 
 results.uni.glm
@@ -393,10 +410,12 @@ Question 4.2
 Rank your results by $p-$value add perform a multiple testing correction. To correct for multiple testing, check the function `p.adjust()` and select the `bonferroni` method. How many features are significant after multiple testing?
 
 ```{r message=FALSE, warning=FALSE}
-results.uni.glm = cbind(results.uni.glm, p.adjust(results.uni.glm[,4], method="bonferroni"),
-                        p.adjust(results.uni.glm[,4], method="BH"))
-colnames(results.uni.glm)[5:6] = c("p.adjust", "BH")
-results.uni.glm[order(results.uni.glm[,4]),]
+results.uni.glm <- cbind(
+  results.uni.glm, p.adjust(results.uni.glm[, 4], method = "bonferroni"),
+  p.adjust(results.uni.glm[, 4], method = "BH")
+)
+colnames(results.uni.glm)[5:6] <- c("p.adjust", "BH")
+results.uni.glm[order(results.uni.glm[, 4]), ]
 ```
 *Reply:  8 features are significant after multiple testing control. *
 
@@ -417,9 +436,9 @@ Question 4.4
 
 Compute a glm using the following command.
 ```{r message=FALSE, warning=FALSE}
-x_mat = as.data.frame(x_mat)
+x_mat <- as.data.frame(x_mat)
 attach(x_mat)
-glm.out = glm(y_bin~age+duration+us_popularity_estimate+acousticness+beat_strength+danceability+dyn_range_mean+energy+flatness+instrumentalness+liveness+loudness+mechanism+speechiness+tempo+valence, family = "binomial")
+glm.out <- glm(y_bin ~ age + duration + us_popularity_estimate + acousticness + beat_strength + danceability + dyn_range_mean + energy + flatness + instrumentalness + liveness + loudness + mechanism + speechiness + tempo + valence, family = "binomial")
 ```
 Based on this glm compute the variance inflation factor (car package) and the condition number. Are there signs for multi-collinearity?
 
@@ -438,11 +457,11 @@ Now perform lasso using glmnet() to predict the binary outcome y_bin. Perform cr
 
 ```{r message=FALSE, warning=FALSE}
 set.seed(1)
-x_mat=as.matrix(x_mat)
-lasso.cv = cv.glmnet(x_mat,y_bin,family="binomial",alpha=1, type.measure="deviance")
+x_mat <- as.matrix(x_mat)
+lasso.cv <- cv.glmnet(x_mat, y_bin, family = "binomial", alpha = 1, type.measure = "deviance")
 lasso.cv$lambda.1se
-lasso.out.1se = glmnet(x_mat,y_bin,family="binomial",alpha=1,lambda=lasso.cv$lambda.1se)
-sum(abs(lasso.out.1se$beta)>0)
+lasso.out.1se <- glmnet(x_mat, y_bin, family = "binomial", alpha = 1, lambda = lasso.cv$lambda.1se)
+sum(abs(lasso.out.1se$beta) > 0)
 lasso.out.1se$beta
 ```
 
@@ -455,15 +474,15 @@ Finally perform elastic net using glmnet() to predict the binary outcome y_bin. 
 
 ```{r message=FALSE, warning=FALSE}
 set.seed(2)
-a = seq(0.05, 0.95, 0.05)
-search = foreach(i = a, .combine = rbind)%do%{
-  			cv = cv.glmnet(x_mat,y_bin,family = "binomial", type.measure = "deviance", alpha = i)
-  			data.frame(cvm = cv$cvm[cv$lambda == cv$lambda.1se], lambda.1se = cv$lambda.1se, alpha = i)
+a <- seq(0.05, 0.95, 0.05)
+search <- foreach(i = a, .combine = rbind) %do% {
+  cv <- cv.glmnet(x_mat, y_bin, family = "binomial", type.measure = "deviance", alpha = i)
+  data.frame(cvm = cv$cvm[cv$lambda == cv$lambda.1se], lambda.1se = cv$lambda.1se, alpha = i)
 }
-elasticnet.cv = search[search$cvm == min(search$cvm), ]
+elasticnet.cv <- search[search$cvm == min(search$cvm), ]
 elasticnet.cv
-enet.out = glmnet(x_mat, y_bin, family = "binomial", lambda = elasticnet.cv$lambda.1se, alpha = elasticnet.cv$alpha)
-sum(abs(enet.out$beta)>0)
+enet.out <- glmnet(x_mat, y_bin, family = "binomial", lambda = elasticnet.cv$lambda.1se, alpha = elasticnet.cv$alpha)
+sum(abs(enet.out$beta) > 0)
 enet.out$beta
 ```
 
