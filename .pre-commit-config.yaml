@@ -1,14 +1,14 @@
 exclude: '^(renv/)'
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: check-added-large-files
         args:
           - --maxkb=50000
   - repo: https://github.com/lorenzwalthert/precommit
-    rev: v0.3.2.9027
+    rev: v0.4.3.9020
     hooks:
       - id: style-files
         args: [--style_pkg=styler, --style_fun=tidyverse_style]
