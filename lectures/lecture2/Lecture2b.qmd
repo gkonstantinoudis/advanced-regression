@@ -561,12 +561,12 @@ gratia::draw(res.mod)
 #| fig-align: "center"
 gratia::smooth_estimates(res.mod) %>%
   gratia::add_confint() %>%
-    mutate(
-    smooth = .smooth, 
-    est = .estimate, 
-    upper_ci = .upper_ci, 
+  mutate(
+    smooth = .smooth,
+    est = .estimate,
+    upper_ci = .upper_ci,
     lower_ci = .lower_ci
-  ) %>% 
+  ) %>%
   filter(smooth == "s(temp)") %>%
   mutate(
     est = exp(est), lower_ci = exp(lower_ci), upper_ci = exp(upper_ci),
@@ -577,7 +577,8 @@ gratia::smooth_estimates(res.mod) %>%
   ggplot() +
   geom_line(aes(temp, rr)) +
   geom_ribbon(aes(x = temp, ymin = rr_lower, ymax = rr_upper),
-              alpha = 0.3, fill = "blue", col = NA) +
+    alpha = 0.3, fill = "blue", col = NA
+  ) +
   geom_hline(yintercept = 1, col = "red", linetype = "dashed") +
   theme_bw() +
   ylab("Mortality risk") +
@@ -615,17 +616,18 @@ Let's add the effect of air-pollution (PM10):
 #| fig-align: "center"
 gratia::smooth_estimates(res.mod1) %>%
   gratia::add_confint() %>%
-    mutate(
-    smooth = .smooth, 
-    est = .estimate, 
-    upper_ci = .upper_ci, 
+  mutate(
+    smooth = .smooth,
+    est = .estimate,
+    upper_ci = .upper_ci,
     lower_ci = .lower_ci
-  ) %>% 
+  ) %>%
   filter(smooth == "s(pm10)") %>%
   ggplot() +
   geom_line(aes(pm10, est), lwd = 1) +
   geom_ribbon(aes(x = pm10, ymin = lower_ci, ymax = upper_ci),
-              alpha = 0.3, fill = "blue", col = NA) +
+    alpha = 0.3, fill = "blue", col = NA
+  ) +
   theme_bw() +
   ylab("Mortality risk") +
   xlab("PM10") +
@@ -668,11 +670,11 @@ for (i in 1:length(k)) {
     gratia::smooth_estimates() %>%
     gratia::add_confint() %>%
     mutate(
-    smooth = .smooth, 
-    est = .estimate, 
-    upper_ci = .upper_ci, 
-    lower_ci = .lower_ci
-  ) %>% 
+      smooth = .smooth,
+      est = .estimate,
+      upper_ci = .upper_ci,
+      lower_ci = .lower_ci
+    ) %>%
     filter(smooth == "s(temperature_laggeg)") %>%
     mutate(
       est = exp(est),
@@ -691,8 +693,10 @@ do.call(rbind, res_store) %>%
   mutate(lag = factor(lag, levels = c(paste0("lag", k)))) %>%
   ggplot() +
   geom_line(aes(temperature_laggeg, rr, col = lag), lwd = 1) +
-  geom_ribbon(aes(x = temperature_laggeg, ymin = rr_lower,
-                  ymax = rr_upper, fill = lag), alpha = 0.3, col = NA) +
+  geom_ribbon(aes(
+    x = temperature_laggeg, ymin = rr_lower,
+    ymax = rr_upper, fill = lag
+  ), alpha = 0.3, col = NA) +
   geom_hline(yintercept = 1, col = "red", linetype = "dashed", lwd = 1) +
   theme_bw() +
   ylab("Mortality risk") +

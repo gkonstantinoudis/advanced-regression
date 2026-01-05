@@ -99,17 +99,25 @@ ggplot(data = data.frame(x = x1, y = y1), aes(x = x1, y = y1)) +
   geom_abline(intercept = coefs[1], slope = coefs[2], lwd = 1, col = "red") +
   geom_segment(aes(xend = x1, yend = fitted)) +
   geom_point(size = 3) +
-  geom_point(aes(x = x1, y = fitted), shape = 25, fill = "blue",
-             col = "blue", size = 3) +
+  geom_point(aes(x = x1, y = fitted),
+    shape = 25, fill = "blue",
+    col = "blue", size = 3
+  ) +
   theme_bw() +
   ylab("y-axis") +
   xlab("x-axis") +
-  annotate("text", x = 0.2, y = 0.1, label =
-          expression(paste(r[i], "=", hat(y)[i], "-", y[i])), size = 8) +
-  annotate("text", x = 0.9, y = 0.5, label =
-          expression(paste("(", x[i], ", ", y[i], ")")), size = 8) +
-  annotate("text", x = 0.9, y = -0.4, label =
-          expression(paste("(", x[i], ", ", hat(y)[i], ")")), size = 8) +
+  annotate("text",
+    x = 0.2, y = 0.1, label =
+      expression(paste(r[i], "=", hat(y)[i], "-", y[i])), size = 8
+  ) +
+  annotate("text",
+    x = 0.9, y = 0.5, label =
+      expression(paste("(", x[i], ", ", y[i], ")")), size = 8
+  ) +
+  annotate("text",
+    x = 0.9, y = -0.4, label =
+      expression(paste("(", x[i], ", ", hat(y)[i], ")")), size = 8
+  ) +
   annotation_custom(br1, xmin = 0.5, xmax = 0.501, ymin = -0.35, ymax = 0.5) +
   theme(text = element_text(size = 20))
 ```
@@ -830,7 +838,6 @@ plotElasticNet <- function(mixing_alpha) {
   dat.plot3 <- dat.plot3[!is.nan(dat.plot3$beta_1), ]
 
 
-
   ggplot() +
     geom_path(data = dat.plot1, aes(x = beta_1, y = beta_2), col = "blue4", lwd = 1) +
     geom_path(data = dat.plot2, aes(x = beta_1, y = beta_2), lty = "dashed", col = "blue4") +
@@ -1108,12 +1115,16 @@ Takes a lot of time and eventually you will get a warning that the algorithm did
 #| echo: true
 #| eval: true
 
-lasso.out <- glmnet(x = as.matrix(x), y = severity,
-                    family = "binomial", alpha = 1, lambda = 0.001)
+lasso.out <- glmnet(
+  x = as.matrix(x), y = severity,
+  family = "binomial", alpha = 1, lambda = 0.001
+)
 sum(abs(lasso.out$beta) > 0)
 
-lasso.out <- glmnet(x = as.matrix(x), y = severity,
-                    family = "binomial", alpha = 1, lambda = 0.12)
+lasso.out <- glmnet(
+  x = as.matrix(x), y = severity,
+  family = "binomial", alpha = 1, lambda = 0.12
+)
 sum(abs(lasso.out$beta) > 0)
 lasso.out$a0
 lasso.out$beta %>% summary()
@@ -1125,12 +1136,16 @@ lasso.out$beta %>% summary()
 #| echo: true
 #| eval: true
 
-enet.out <- glmnet(x = as.matrix(x), y = severity,
-                   family = "binomial", alpha = 0.5, lambda = 0.003)
+enet.out <- glmnet(
+  x = as.matrix(x), y = severity,
+  family = "binomial", alpha = 0.5, lambda = 0.003
+)
 sum(abs(enet.out$beta) > 0)
 
-enet.out <- glmnet(x = as.matrix(x), y = severity,
-                   family = "binomial", alpha = 0.5, lambda = 0.26)
+enet.out <- glmnet(
+  x = as.matrix(x), y = severity,
+  family = "binomial", alpha = 0.5, lambda = 0.26
+)
 sum(abs(enet.out$beta) > 0)
 enet.out$a0
 enet.out$beta %>% summary()

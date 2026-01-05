@@ -41,7 +41,7 @@ library(e1071)
 ```
 
 ::: {style="font-size: 60%;"}
-## 
+##
 
 **Classification analysis:**
 
@@ -253,12 +253,16 @@ ggplot() +
 #| fig-align: "center"
 
 ggplot(data = data.frame(x = c(-3, 5)), aes(x)) +
-  stat_function(fun = dnorm, n = 101,
-                args = list(mean = 0, sd = 1), col = "red") +
-  stat_function(fun = dnorm, n = 101,
-                args = list(mean = 2, sd = 0.5), col = "blue") +
-  ylab("") + theme_bw()
-
+  stat_function(
+    fun = dnorm, n = 101,
+    args = list(mean = 0, sd = 1), col = "red"
+  ) +
+  stat_function(
+    fun = dnorm, n = 101,
+    args = list(mean = 2, sd = 0.5), col = "blue"
+  ) +
+  ylab("") +
+  theme_bw()
 ```
 
 Example of classification rule: Assign the new value $x$ to the class with the greatest likelihood
@@ -283,16 +287,21 @@ $$
 #| fig-align: "center"
 
 
-ggplot(data = data.frame(x = c(1, 1.2, 1.3, 1.4, 2, 2, 2.1, 2.4, 2.5, 2.7),
-                         y = c(0.3, 0.5, 0.2, 0.1, 0.3, 0.6, 0.7, 1, 0.7, 0.6),
-                         class = rep(x = c(1, 2), each = 5) %>% as.factor())) +
-  geom_point(aes(x=x, y=y, col = class), size = 3) +
-  geom_abline(slope = c(-0.15, -0.1, -0.8, -0.002, -0.2),
-              intercept = c(0.7, 0.72, 2, 0.55, 0.8),
-              lwd = 0.9, col = "darkgreen") +
+ggplot(data = data.frame(
+  x = c(1, 1.2, 1.3, 1.4, 2, 2, 2.1, 2.4, 2.5, 2.7),
+  y = c(0.3, 0.5, 0.2, 0.1, 0.3, 0.6, 0.7, 1, 0.7, 0.6),
+  class = rep(x = c(1, 2), each = 5) %>% as.factor()
+)) +
+  geom_point(aes(x = x, y = y, col = class), size = 3) +
+  geom_abline(
+    slope = c(-0.15, -0.1, -0.8, -0.002, -0.2),
+    intercept = c(0.7, 0.72, 2, 0.55, 0.8),
+    lwd = 0.9, col = "darkgreen"
+  ) +
   xlim(c(0.9, 2.8)) +
   theme_bw() +
-  ylab("") + xlab("") +
+  ylab("") +
+  xlab("") +
   theme(legend.position = "none")
 ```
 :::
@@ -529,10 +538,13 @@ Equivalently use `qda(Species ~ ., data = iris)`
 #| echo: true
 #| eval: true
 lda_pred <- predict(mod,
-                    newdata = data.frame(Sepal.Length = 1,
-                                         Sepal.Width = 2,
-                                         Petal.Length = 3,
-                                         Petal.Width = 2))
+  newdata = data.frame(
+    Sepal.Length = 1,
+    Sepal.Width = 2,
+    Petal.Length = 3,
+    Petal.Width = 2
+  )
+)
 lda_pred$class # predicted class
 lda_pred$posterior # posterior probabilities for group
 lda_pred$x # discriminant score
@@ -586,7 +598,6 @@ table(y)
 
 dda.out <- sda(x %>% as.matrix(), y, diagonal = TRUE)
 dda.pred <- predict(dda.out, x %>% as.matrix(), verbose = FALSE)
-
 ```
 
 -   `confusionMatrix` from the `crossval` package
@@ -595,11 +606,11 @@ dda.pred <- predict(dda.out, x %>% as.matrix(), verbose = FALSE)
 #| echo: true
 #| eval: true
 
-cM = crossval::confusionMatrix(y, dda.pred$class, negative = "B")
+cM <- crossval::confusionMatrix(y, dda.pred$class, negative = "B")
 cM
-TPR = cM[2]/(cM[2] + cM[4])
+TPR <- cM[2] / (cM[2] + cM[4])
 TPR
-FPR = cM[1]/(cM[1] + cM[3])
+FPR <- cM[1] / (cM[1] + cM[3])
 FPR
 ```
 :::
@@ -615,7 +626,6 @@ FPR
 
 lda.out <- sda(x %>% as.matrix(), y, diagonal = FALSE)
 lda.pred <- predict(lda.out, x %>% as.matrix(), verbose = FALSE)
-
 ```
 
 -   `confusionMatrix` from the `crossval` package
@@ -624,11 +634,11 @@ lda.pred <- predict(lda.out, x %>% as.matrix(), verbose = FALSE)
 #| echo: true
 #| eval: true
 
-cM = crossval::confusionMatrix(y, lda.pred$class, negative = "B")
+cM <- crossval::confusionMatrix(y, lda.pred$class, negative = "B")
 cM
-TPR = cM[2]/(cM[2] + cM[4])
+TPR <- cM[2] / (cM[2] + cM[4])
 TPR
-TNR = cM[1]/(cM[1] + cM[3])
+TNR <- cM[1] / (cM[1] + cM[3])
 TNR
 ```
 :::
@@ -642,13 +652,13 @@ TNR
 #| echo: true
 #| eval: true
 
-fg = dda.pred$posterior[y == 'M', 2]
-bg = dda.pred$posterior[y == 'B', 2]
-roc.dda = roc.curve(fg, bg, curve=T)
+fg <- dda.pred$posterior[y == "M", 2]
+bg <- dda.pred$posterior[y == "B", 2]
+roc.dda <- roc.curve(fg, bg, curve = T)
 
-fg = lda.pred$posterior[y == 'M', 2]
-bg = lda.pred$posterior[y == 'B', 2]
-roc.lda = roc.curve(fg, bg, curve=T)
+fg <- lda.pred$posterior[y == "M", 2]
+bg <- lda.pred$posterior[y == "B", 2]
+roc.lda <- roc.curve(fg, bg, curve = T)
 ```
 
 2.  Compute the ROC curve:
@@ -661,7 +671,6 @@ roc.lda = roc.curve(fg, bg, curve=T)
 par(mfrow = c(1, 2), mar = c(4, 4, 3, 0))
 plot(roc.dda, color = FALSE, main = "Diagonal discriminant analysis")
 plot(roc.dda, color = FALSE, main = "Linear discriminant analysis")
-
 ```
 :::
 
@@ -674,13 +683,13 @@ plot(roc.dda, color = FALSE, main = "Linear discriminant analysis")
 #| echo: true
 #| eval: true
 
-fg = dda.pred$posterior[y == 'M', 2]
-bg = dda.pred$posterior[y == 'B', 2]
-pr.dda = pr.curve(fg, bg, curve=T)
+fg <- dda.pred$posterior[y == "M", 2]
+bg <- dda.pred$posterior[y == "B", 2]
+pr.dda <- pr.curve(fg, bg, curve = T)
 
-fg = lda.pred$posterior[y == 'M', 2]
-bg = lda.pred$posterior[y == 'B', 2]
-pr.lda = pr.curve(fg, bg, curve=T)
+fg <- lda.pred$posterior[y == "M", 2]
+bg <- lda.pred$posterior[y == "B", 2]
+pr.lda <- pr.curve(fg, bg, curve = T)
 ```
 
 2.  Compute the ROC curve:
@@ -693,7 +702,6 @@ pr.lda = pr.curve(fg, bg, curve=T)
 par(mfrow = c(1, 2), mar = c(4, 4, 3, 0))
 plot(pr.dda, color = FALSE, main = "Diagonal discriminant analysis")
 plot(pr.lda, color = FALSE, main = "Linear discriminant analysis")
-
 ```
 :::
 
@@ -1041,14 +1049,17 @@ Idea: Convert to higher dimension and separate using a hyperplane
 #| warning: false
 #| fig-align: "center"
 
-dat.plot.svm <- data.frame(x = -4:4,
-                           y = 0,
-                           class = c(rep(1, times = 3), rep(2, times = 3), rep(1, times = 3)) %>% as.factor(),
-                           y.pol = .1*c(-4:4)^2)
+dat.plot.svm <- data.frame(
+  x = -4:4,
+  y = 0,
+  class = c(rep(1, times = 3), rep(2, times = 3), rep(1, times = 3)) %>% as.factor(),
+  y.pol = .1 * c(-4:4)^2
+)
 dat.plot.svm %>%
   ggplot() +
-  geom_point(aes(x=x, y=y, col = class), cex=3) +
-  theme_bw() + ylim(c(-.1, 2)) +
+  geom_point(aes(x = x, y = y, col = class), cex = 3) +
+  theme_bw() +
+  ylim(c(-.1, 2)) +
   theme(legend.position = "none")
 ```
 :::
@@ -1064,11 +1075,11 @@ dat.plot.svm %>%
 
 dat.plot.svm %>%
   ggplot() +
-  geom_point(aes(x=x, y=y, col = class), cex=3) +
-  geom_function(fun = function(x) .1*x^2, colour = "black") +
-  theme_bw() + ylim(c(-.1, 2)) +
+  geom_point(aes(x = x, y = y, col = class), cex = 3) +
+  geom_function(fun = function(x) .1 * x^2, colour = "black") +
+  theme_bw() +
+  ylim(c(-.1, 2)) +
   theme(legend.position = "none")
-
 ```
 :::
 
@@ -1083,13 +1094,13 @@ dat.plot.svm %>%
 
 dat.plot.svm %>%
   ggplot() +
-  geom_point(aes(x=x, y=y, col = class), cex=3) +
-  geom_function(fun = function(x) .1*x^2, colour = "black") +
-  theme_bw() + ylim(c(-.1, 2)) +
-  geom_point(aes(x=x, y=y.pol, col = class), cex=3) +
+  geom_point(aes(x = x, y = y, col = class), cex = 3) +
+  geom_function(fun = function(x) .1 * x^2, colour = "black") +
+  theme_bw() +
+  ylim(c(-.1, 2)) +
+  geom_point(aes(x = x, y = y.pol, col = class), cex = 3) +
   geom_segment(aes(x = x, y = y, yend = y.pol, xend = x), lty = 2) +
   theme(legend.position = "none")
-
 ```
 :::
 
@@ -1104,10 +1115,11 @@ dat.plot.svm %>%
 
 dat.plot.svm %>%
   ggplot() +
-  geom_point(aes(x=x, y=y, col = class), cex=3) +
-  geom_function(fun = function(x) .1*x^2, colour = "black") +
-  theme_bw() + ylim(c(-.1, 2)) +
-  geom_point(aes(x=x, y=y.pol, col = class), cex=3) +
+  geom_point(aes(x = x, y = y, col = class), cex = 3) +
+  geom_function(fun = function(x) .1 * x^2, colour = "black") +
+  theme_bw() +
+  ylim(c(-.1, 2)) +
+  geom_point(aes(x = x, y = y.pol, col = class), cex = 3) +
   geom_segment(aes(x = x, y = y, yend = y.pol, xend = x), lty = 2) +
   theme(legend.position = "none") +
   geom_hline(yintercept = 0.22, col = "red", lwd = 2)

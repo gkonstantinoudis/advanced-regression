@@ -139,12 +139,12 @@ Aims
 #| echo: true
 #| eval: true
 
-predfun.lm = function(train.x, train.y, test.x, test.y){
-  lm.fit = lm(train.y~., data=train.x)
-  ynew = predict(lm.fit, test.x)
-  
+predfun.lm <- function(train.x, train.y, test.x, test.y) {
+  lm.fit <- lm(train.y ~ ., data = train.x)
+  ynew <- predict(lm.fit, test.x)
+
   # compute squared error risk (MSE)
-  out = mean( (ynew - test.y)^2 )
+  out <- mean((ynew - test.y)^2)
   return(out)
 }
 ```
@@ -165,11 +165,11 @@ library(crossval)
 data(diabetes)
 x <- diabetes$x
 y <- diabetes$y
-x1 <- x[,1:6]
+x1 <- x[, 1:6]
 
 set.seed(11)
-cv.out = crossval(predfun.lm, x, y, K = 5, verbose = FALSE)
-cv.out1 = crossval(predfun.lm, x1, y, K = 5, verbose = FALSE)
+cv.out <- crossval(predfun.lm, x, y, K = 5, verbose = FALSE)
+cv.out1 <- crossval(predfun.lm, x1, y, K = 5, verbose = FALSE)
 ```
 
 ## Cross-validation in R: crossval
@@ -180,8 +180,10 @@ cv.out1 = crossval(predfun.lm, x1, y, K = 5, verbose = FALSE)
 #| echo: true
 #| eval: true
 
-cv.compare = rbind(c(cv.out$stat, cv.out$stat.se), 
-                   c(cv.out1$stat, cv.out1$stat.se))
+cv.compare <- rbind(
+  c(cv.out$stat, cv.out$stat.se),
+  c(cv.out1$stat, cv.out1$stat.se)
+)
 colnames(cv.compare) <- c("CV", "se")
 rownames(cv.compare) <- c("x", "x1")
 cv.compare
