@@ -127,7 +127,7 @@ Alternative representation:
 
 -   $x$: predictor matrix
 
-```         
+```
 -   clinical parameters: age, sex, bmi
 
 -   map: blood pressure
@@ -304,25 +304,25 @@ lm0 <- lm(y ~ glu, data = x)
     -   Regression coefficients
 
     ```{r}
-    #| echo: true
-    #| eval: true
-    lm0$coefficients
+#| echo: true
+#| eval: true
+lm0$coefficients
     ```
 
     -   Fitted values
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    lm0$fitted.values
+#| echo: true
+#| eval: false
+lm0$fitted.values
     ```
 
     -   Residuals
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    lm0$residuals
+#| echo: true
+#| eval: false
+lm0$residuals
     ```
 :::
 
@@ -526,42 +526,42 @@ ggplot(mod, aes(.hat, .stdresid)) +
 -   Linear relationship and outliers (Scatterplot of y against x)
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    plot(x, y)
-    abline(mod, col = "red")
+#| echo: true
+#| eval: false
+plot(x, y)
+abline(mod, col = "red")
     ```
 
 -   Linear relationship and outliers (Residuals against fitted values)
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    plot(mod, which = 1)
+#| echo: true
+#| eval: false
+plot(mod, which = 1)
     ```
 
 -   Homoscedasticity (Standardised residuals against fitted values)
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    plot(mod, which = 3)
+#| echo: true
+#| eval: false
+plot(mod, which = 3)
     ```
 
 -   Normal-distribution of residuals (Q-Q plots of observed residuals against theoretical values under the Normal distribution)
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    plot(mod, which = 2)
+#| echo: true
+#| eval: false
+plot(mod, which = 2)
     ```
 
 -   Influential variants: (Standardised residuals against Cook's distance)
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    plot(mod, which = 5)
+#| echo: true
+#| eval: false
+plot(mod, which = 5)
     ```
 :::
 
@@ -586,10 +586,10 @@ For a new case we only have the predictor matrix $x_{\text{new}}$, but not $y_{\
 -   Use the linear model to learn a prediction rule from the training data, where both $x$ and $y$ are observed on the same individuals.
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    lm_train <-
-      lm(formula = y_train ~ age + sex + bmi + map + ltg, data = x_train)
+#| echo: true
+#| eval: false
+lm_train <-
+  lm(formula = y_train ~ age + sex + bmi + map + ltg, data = x_train)
     ```
 
 -   Predict the outcome based on the prediction rule and the predictors of the new data.

@@ -22,9 +22,9 @@ Load the dataset, that contains the methylation matrix as predictor matrix and t
 
 ```{r message=FALSE, warning=FALSE, fig.height=3.2}
 load("../data/data_epigenetic_clock_control")
-#alternatively try load("../../data/data_epigenetic_clock_control.dms")
-y = control_mice$y_control
-x = control_mice$x_control
+# alternatively try load("../../data/data_epigenetic_clock_control.dms")
+y <- control_mice$y_control
+x <- control_mice$x_control
 dim(x)
 ```
 
@@ -51,14 +51,14 @@ Question 1.4
 Next step is to write a prediction function for the random forest algorithm. Re-use your code from last week (Practical 3 Question 2) and see the prediction function for a linear regression model below. Set the number of trees as an open parameter.
 
 ```{r message=FALSE, warning=FALSE}
-predfun.lm = function(train.x, train.y, test.x, test.y){
-	#fit the model and build a prediction rule
-	lm.fit = lm(train.y ~ ., data=train.x)
-	#predict the new observation based on the test data and the prediction rule
-	ynew = predict(lm.fit, test.x )
-	#compute mse as squared difference between predicted and observed outcome
-	out = mean( (ynew - test.y)^2 )
-	return( out )
+predfun.lm <- function(train.x, train.y, test.x, test.y) {
+  # fit the model and build a prediction rule
+  lm.fit <- lm(train.y ~ ., data = train.x)
+  # predict the new observation based on the test data and the prediction rule
+  ynew <- predict(lm.fit, test.x)
+  # compute mse as squared difference between predicted and observed outcome
+  out <- mean((ynew - test.y)^2)
+  return(out)
 }
 ```
 
@@ -79,15 +79,14 @@ Finally, we want to know if random forests outperform regularised regression wit
 
 ```{r message=FALSE, warning=FALSE}
 library(glmnet)
-predfun.glmnet = function(train.x, train.y, test.x, test.y, lambda = lambda, alpha=alpha){
-
-	#fit glmnet prediction rule
-	glmnet.fit = glmnet(x=train.x, y=train.y, lambda = lambda, alpha=alpha)
-	#predict the new observation based on the test data and the prediction rule
-	ynew = predict(glmnet.fit , newx=test.x)
-	# compute squared error risk (MSE)
-	out = mean( (ynew - test.y)^2 )
-	return( out )
+predfun.glmnet <- function(train.x, train.y, test.x, test.y, lambda = lambda, alpha = alpha) {
+  # fit glmnet prediction rule
+  glmnet.fit <- glmnet(x = train.x, y = train.y, lambda = lambda, alpha = alpha)
+  # predict the new observation based on the test data and the prediction rule
+  ynew <- predict(glmnet.fit, newx = test.x)
+  # compute squared error risk (MSE)
+  out <- mean((ynew - test.y)^2)
+  return(out)
 }
 ```
 and perform cv to tune the regularisation parameter.
@@ -95,17 +94,19 @@ and perform cv to tune the regularisation parameter.
 ```{r message=FALSE, warning=FALSE}
 library(foreach)
 set.seed(12)
-lasso.cv = cv.glmnet(x,y,family="gaussian",alpha=1, type.measure="mse")
+lasso.cv <- cv.glmnet(x, y, family = "gaussian", alpha = 1, type.measure = "mse")
 set.seed(123)
-ridge.cv = cv.glmnet(x,y,family="gaussian",alpha=0, type.measure="mse")
+ridge.cv <- cv.glmnet(x, y, family = "gaussian", alpha = 0, type.measure = "mse")
 set.seed(1234)
-a = seq(0.05, 0.95, 0.05)
-search = foreach(i = a, .combine = rbind)%do%{
-  			cv = cv.glmnet(x,y,family = "gaussian", type.measure = "mse", alpha = i)
-  			data.frame(cvm = cv$cvm[cv$lambda == cv$lambda.1se],
-			 lambda.1se = cv$lambda.1se, alpha = i)
+a <- seq(0.05, 0.95, 0.05)
+search <- foreach(i = a, .combine = rbind) %do% {
+  cv <- cv.glmnet(x, y, family = "gaussian", type.measure = "mse", alpha = i)
+  data.frame(
+    cvm = cv$cvm[cv$lambda == cv$lambda.1se],
+    lambda.1se = cv$lambda.1se, alpha = i
+  )
 }
-elasticnet.cv = search[search$cvm == min(search$cvm), ]
+elasticnet.cv <- search[search$cvm == min(search$cvm), ]
 ```
 
 Finally, use cv as implemented in crossval() to determine if random forests (ntree = 100) is better than lasso and elastic net as implemented in the glmnet package.
@@ -121,10 +122,10 @@ An environmental research group gets in contact with us. They have measured the 
 
 ```{r message=FALSE, warning=FALSE, fig.height=3.2}
 load("../data/data_epigenetic_clock_experimental")
-#alternatively try load("../../data/data_epigenetic_clock_experimental.dms")
-exposed = experimental_mice$exposed
+# alternatively try load("../../data/data_epigenetic_clock_experimental.dms")
+exposed <- experimental_mice$exposed
 table(exposed)
-x.test = experimental_mice$x_exp
+x.test <- experimental_mice$x_exp
 dim(x.test)
 ```
 The working hypothesis is that NO2 exposure reduces the biological age of mice and makes the exposed mice age more quickly. The environmental research group asks us to predict the biological age of the mice using our algorithms to determine the biological age of a mouse.
@@ -164,7 +165,7 @@ Can you confirm the working hypothesis that NO2 exposure reduces the biological 
 The sinking of the titanic was one of the greatest disaster in navel history. After colliding with an iceberg, the titanic sank and 1,502 out of 2,224 passengers and crew were killed. The following data set has collected information on n=1,309 of the passengers and their survival.
 
 ```{r message=FALSE, warning=FALSE}
-titanic = read.csv("../data/titanic.csv")
+titanic <- read.csv("../data/titanic.csv")
 dim(titanic)
 table(titanic$survived)
 ```
@@ -182,12 +183,12 @@ Question 3.1
 Fit a decision tree on the titanic data using the following predictor matrix including passenger class, sex, age, number of siblings/spouses aboard, and number of parents/children aboard after excluding missing values.
 
 ```{r message=FALSE, warning=FALSE}
-x=cbind(titanic$pclass, titanic$sex, titanic$age, titanic$sibsp, titanic$parch)
-rm = which(is.na(titanic$age)==TRUE)
-x.input = x[-rm,]
+x <- cbind(titanic$pclass, titanic$sex, titanic$age, titanic$sibsp, titanic$parch)
+rm <- which(is.na(titanic$age) == TRUE)
+x.input <- x[-rm, ]
 dim(x.input)
-colnames(x.input) = c("pclass", "sex", "age", "sibsp", "parch")
-y.input = as.factor(titanic$survived[-rm])
+colnames(x.input) <- c("pclass", "sex", "age", "sibsp", "parch")
+y.input <- as.factor(titanic$survived[-rm])
 table(y.input)
 ```
 Use the function tree in the tree package.
@@ -216,13 +217,13 @@ load("../data/spotify.Rdata")
 ```
 and consider the binary outcome data if a song is likely to be skipped
 ```{r message=FALSE, warning=FALSE}
-y_bin = spotify.data$y_bin
+y_bin <- spotify.data$y_bin
 table(y_bin)
 ```
 As predictors we consider the variables given in the x_mat matrix. For more information on the features, please see https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-features/.
 
 ```{r message=FALSE, warning=FALSE}
-x_mat = spotify.data$x_mat
+x_mat <- spotify.data$x_mat
 colnames(x_mat)
 ```
 

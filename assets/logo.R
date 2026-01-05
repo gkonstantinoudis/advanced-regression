@@ -128,8 +128,6 @@ ggplot() +
 # + annotation_custom(br1, xmin = 0.5, xmax = 2, ymin = 0.4, ymax = -2.9)
 
 
-
-
 # basis function
 
 x <- seq(from = -2, to = 2, length.out = 1000)
@@ -152,11 +150,6 @@ ggplot() +
   geom_line(data = dat2plot %>% dplyr::filter(z %in% "res"), aes(x = x, y = y), lwd = 1.3, col = "red3") +
   theme_void() +
   theme(legend.position = "none")
-
-
-
-
-
 
 
 ##
