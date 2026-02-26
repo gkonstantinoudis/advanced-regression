@@ -1,0 +1,1219 @@
+---
+title: "Advanced Regression 4a: Machine learning, classification"
+date: "03-20-2026"
+author:
+  name: "Garyfallos Konstantinoudis"
+institute: "Imperial College London"
+editor: visual
+date-format: medium
+title-slide-attributes:
+  data-background-color: "#f3f4f4"
+  data-background-image: "../../assets/logo_trans.png"
+  data-background-size: 50%
+  data-background-position: 90% 120%
+format:
+    revealjs:
+      theme: [default, ../../assets/style.scss]
+      logo: "../../assets/logo_trans.png"
+      slide-number: true
+      incremental: false
+      chalkboard:
+        buttons: false
+---
+
+```{r load-packages-and-data}
+#| echo: false
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(patchwork)
+library(gt)
+library(yardstick)
+library(MASS)
+library(mlbench)
+library(kernlab)
+library(sda)
+library(pROC)
+library(PRROC)
+library(caret)
+library(e1071)
+```
+
+::: {style="font-size: 60%;"}
+## 
+
+**Classification analysis:**
+
+-   Basic concepts
+-   Evaluation
+
+**Discriminant analysis:**
+
+-   Bayes' theorem for classification
+-   Model specifications
+-   Linear and quadratic discriminant analysis in `R`
+-   Shrinkage estimates
+-   Shrinkage discriminant analysis in `R`
+
+**Support vector machines:**
+
+-   Motivation
+-   Hyperplanes
+-   Maximal margin classifier
+-   Support vector classifier
+-   Support vector machines
+-   Support vector machines in `R`
+:::
+
+::: {style="font-size: 70%;"}
+## Classification of binary outcomes
+
+-   Assume we have a binary outcome $y_i$ for subject $i$.
+
+$$
+y_i = \begin{cases}
+1 \text{ if subject } i  \text{ is a case} \\
+0 \text{ if subject } i  \text{ is a control} \\
+\end{cases}
+$$
+
+-   Additionally, we have for each subject a predictor matrix $x_i$ including $p$ predictors or features.
+
+> $K=2$ Classification of two classes.
+>
+> Aim is to predict the outcome of a new observation $i$ based on $x_i$ and to assign observation $i$ to either class $k=0$ or $k=1$.
+>
+> Decisions are based on the probability to belong to class $k$ conditional on $x_i$.
+
+$$
+\mathbb{P}(y_i=k \mid x_i)
+$$
+:::
+
+::: {style="font-size: 70%;"}
+## Evaluation of classification performance: Confusion matrix
+
+```{r confusion-matrix}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+tribble(
+  ~a, ~b, ~Negatives, ~Positives,
+  "Predicted", "Negatives", "True Negative", "False Negative",
+  "Predicted", "Positives", "False Positive", "True Positive"
+) |>
+  gt(
+    rowname_col = "b",
+    groupname_col = "a"
+  ) |>
+  tab_spanner(
+    label = "Unobserved truth",
+    columns = c(Negatives, Positives)
+  ) |>
+  tab_options(row_group.as_column = TRUE)
+```
+
+The sum of the columns are the number of negatives and the number of positives in the data.
+:::
+
+::: {style="font-size: 70%;"}
+## Characteristics derived from the confusion matrix
+
+-   **Sensitivity**, recall, or true positive rate (TPR) $$
+    TPR = \frac{TP}{P} = \frac{TP}{TP+FN}
+    $$
+
+-   **Specificity**, or true negative rate (TNR): $$
+    TNR = \frac{TN}{N} = \frac{TN}{TN+FP} = 1-FPR
+    $$
+
+-   False positive rate (FPR): $$
+    FPR = \frac{FP}{N} = \frac{FP}{TN+FP} = 1-TNR
+    $$
+
+-   **Precision**, or positive predictive value (PPV): $$
+    PPV = \frac{TP}{\text{Declared } P} = \frac{TP}{TP+FP} = 1-FDR
+    $$
+:::
+
+::: {style="font-size: 90%;"}
+## Interpretation
+
+-   **Sensitivity**, or true positive rate (TPR): The probability that the test result picks up the disease.
+-   **Specificity**, or true negative rate (TNR): The probability that the test result identifies the ones that do not have the disease.
+-   **False positive rate** (FPR): the expectancy of the false positive ratio, i.e. how likely is to have a negative test given that the patient has the disease.
+-   **Precision**, or positive predictive value (PPV): how likely it is for someone to truly have the disease, in case of a positive test result.
+:::
+
+::: {style="font-size: 70%;"}
+## Receiver operating characteristic (ROC)
+
+-   Plot sensitivity (TPR) on the $y$-axis against 1-specificity (FPR) on the $x$-axis.
+-   Area under the ROC curve as summary-statistic for prediction performance.
+-   [Tweetorial](https://twitter.com/cecilejanssens/status/1104134423673479169) on AUC.
+
+```{r roc}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+
+data(two_class_example)
+
+roc_curve(two_class_example, truth, Class1) %>%
+  ggplot(aes(x = 1 - specificity, y = sensitivity)) +
+  geom_path() +
+  geom_abline(lty = 3) +
+  coord_equal() +
+  theme_minimal()
+
+roc_auc(two_class_example, truth, Class1)
+```
+:::
+
+::: {style="font-size: 70%;"}
+## Precision-recall curve
+
+-   Plot precision or positive predictive value (PPV) on the $y$-axis against the recall or true positive rate (TPR) on the $x$-axis.
+
+```{r pr}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+pr_curve(two_class_example, truth, Class1) %>%
+  ggplot(aes(x = recall, y = precision)) +
+  geom_path() +
+  geom_abline(lty = 3) +
+  coord_equal() +
+  theme_minimal()
+
+pr_auc(two_class_example, truth, Class1)
+```
+:::
+
+## ROC and precision-recall curve in `R`
+
+1.  `pROC::roc(truth, predicted)`
+2.  `yardstick::roc_auc(truth, predicted)`
+
+::: {style="font-size: 70%;"}
+## Motivation for discriminant analysis
+
+1.  DA partitions $X = R^d$ into regions with the same class predictions via separating hyperplanes.
+2.  Fit a Gaussian distribution for each class
+3.  Find the line where the probability of being in both classes is the same.
+
+```{r discriminant-analysis}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+set.seed(2)
+
+Ng <- 100 # number of cases per group
+
+data_sim <- bind_rows(
+  tibble(
+    X1 = rnorm(n = Ng, mean = 2, sd = 3),
+    X2 = rnorm(n = Ng, mean = 2, sd = 3),
+    group = "A"
+  ),
+  tibble(
+    X1 = rnorm(n = Ng, mean = 11, sd = 3),
+    X2 = rnorm(n = Ng, mean = 11, sd = 3),
+    group = "B"
+  ),
+)
+
+# construct the model
+mod <- lda(group ~ X1 + X2, data = data_sim)
+
+# draw discrimination line
+np <- 500
+predictions <- expand_grid(
+  X1 = seq(from = min(data_sim$X1), to = max(data_sim$X1), length.out = np),
+  X2 = seq(from = min(data_sim$X2), to = max(data_sim$X2), length.out = np)
+)
+
+predictions$pred <- as.numeric(predict(mod, newdata = predictions)$class)
+
+ggplot() +
+  geom_point(aes(x = X1, y = X2, colour = group), data = data_sim) +
+  geom_contour(aes(x = X1, y = X2, z = pred), data = predictions, colour = "grey30", alpha = 0.5) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+:::
+
+::: {style="font-size: 80%;"}
+## Motivation for discriminant analysis
+
+```{r discriminant-analysis-mot1}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+
+ggplot(data = data.frame(x = c(-3, 5)), aes(x)) +
+  stat_function(fun = dnorm, n = 101,
+                args = list(mean = 0, sd = 1), col = "red") +
+  stat_function(fun = dnorm, n = 101,
+                args = list(mean = 2, sd = 0.5), col = "blue") +
+  ylab("") + theme_bw()
+
+```
+
+Example of classification rule: Assign the new value $x$ to the class with the greatest likelihood
+
+$$
+\hat{y} = \text{argmax}L(\mu_i, \sigma_i|x)
+$$
+:::
+
+::: {style="font-size: 80%;"}
+## Motivation for discriminant analysis
+
+-   DA partitions $X=R^d$ into regions with the same class predictions via separating hyperplanes.
+
+-   Fit a Gaussian distribution for each class
+
+-   Find the line where the probability of being in both classes is the same
+
+```{r discriminant-analysis-mot2}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+
+
+ggplot(data = data.frame(x = c(1, 1.2, 1.3, 1.4, 2, 2, 2.1, 2.4, 2.5, 2.7),
+                         y = c(0.3, 0.5, 0.2, 0.1, 0.3, 0.6, 0.7, 1, 0.7, 0.6),
+                         class = rep(x = c(1, 2), each = 5) %>% as.factor())) +
+  geom_point(aes(x=x, y=y, col = class), size = 3) +
+  geom_abline(slope = c(-0.15, -0.1, -0.8, -0.002, -0.2),
+              intercept = c(0.7, 0.72, 2, 0.55, 0.8),
+              lwd = 0.9, col = "darkgreen") +
+  xlim(c(0.9, 2.8)) +
+  theme_bw() +
+  ylab("") + xlab("") +
+  theme(legend.position = "none")
+```
+:::
+
+::: {style="font-size: 80%;"}
+## Motivation for discriminant analysis
+
+Derive the posterior probability for subject $i$ to belong to class $k$ based on
+
+-   **Likelihood** of the data for $p=1$ predictor (univariate Gaussian distribution) conditional on class $k$ $$
+    f (x\mid k) = \frac{1}{\sqrt{2\pi} \sigma_k} \exp\left\{ -\frac{1}{2} (\frac{x- \mu_k}{\sigma_k})^2 \right\}
+    $$ where
+
+    -   $\mu_k$ is the expectation of $x$ in group $k$ and
+    -   $\sigma_k^2$ the variance of $x$ in group $k$.
+    -   Note that each class $k=0$ or $k=1$ has its specific mean $\mu_k$ and variance $\sigma_k^2$.
+
+-   **Prior probability** of belonging to class $k$ is $\pi_k$
+:::
+
+::: {style="font-size: 80%;"}
+## Motivation for discriminant analysis
+
+Derive the posterior probability for subject $i$ to belong to class $k$ based on:
+
+-   **Likelihood** of the data for $p$ predictors (multivariate Gaussian distribution) conditional on class $k$ $$
+    f (x\mid k) = \frac{1}{ (2\pi)^{p/2} \mid \Sigma_k \mid^{1/2}} \exp \left\{ -\frac{1}{2} (x- \mu_k)^t \Sigma^{-1}_k (x - \mu_k) \right\}
+    $$ where
+
+    -   $\mu_k$ is the vector of expectations (length $p$) of $x$ in group $k$ and
+    -   $\Sigma_k$ the covariance matrix (dimension $p \times p$) of $x$ in group $k$.
+    -   Note that each class $k=0$ or $k=1$ has its specific mean $\mu_k$ and covariance $\Sigma_k$.
+
+-   **Prior probability** of belonging to class $k$ is $\pi_k$
+:::
+
+::: {style="font-size: 80%;"}
+## Note on the multivariate Gaussian distribution
+
+```{r mvn}
+N_samples <- 10000
+
+mu <- c(0, 0)
+cross <- c(0, 0.7, 0.99)
+Sigma <- lapply(X = cross, FUN = \(x) matrix(c(1, x, x, 1), 2, 2))
+
+data_sim <- lapply(X = Sigma, FUN = \(S) mvrnorm(n = N_samples, mu, S))
+
+samples <- do.call(bind_rows, lapply(data_sim, data.frame)) |>
+  as_tibble() |>
+  mutate(group = c(rep("a", N_samples), rep("b", N_samples), rep("c", N_samples)))
+
+ggplot(samples, aes(x = X1, y = X2)) +
+  geom_density_2d_filled(alpha = 0.9) +
+  coord_fixed() +
+  facet_wrap(~group) +
+  theme_minimal() +
+  theme(strip.text = element_blank(), legend.position = "none")
+```
+
+Different multivariate normals with the same mean but increasing cross-correlation.
+:::
+
+::: {style="font-size: 80%;"}
+## Bayes' theorem for classification
+
+Probability of being in a class or more formally: posterior probability that $y=k$, where $k=1$ or $k=0$, given the data $x$ $$
+\mathbb{P}(y=k \mid x) = \frac{\pi_k f(x\mid k)}{f(x)}
+$$ where
+
+-   $\pi_k$ prior probability for class $k$
+-   $f(x\mid k)$ likelihood of $x$ conditional on class $k$
+-   $f(x)$ joint distribution defined as mixture
+
+$$
+f(x) = \pi_0 f_0(x) + \pi_1 f_1(x)
+$$
+:::
+
+::: {style="font-size: 80%;"}
+## Prediction rule
+
+The prediction rule is given by the difference between the two discriminant scores $d_0$ and $d_1$ \begin{eqnarray}
+\delta(x_i) & = &  \log(\mathbb{P}(y=0 \mid x_i)) - \log(\mathbb{P}(y=1 \mid x_i))  \\
+             & = &  d_0(x) - d_1(x)
+\end{eqnarray} where observation $i$ is classified as
+
+-   $y_i = 1$ if $\delta(x_i)\leq 0$
+-   $y_i = 0$ if $\delta(x_i) > 0$
+:::
+
+::: {style="font-size: 75%;"}
+## Model specifications and flexibility
+
+There are three types of discriminant analysis depending on the specification of the covariance $\Sigma_k$:
+
+1.  **Diagonal discriminant analysis (dda)**: $\Sigma_k = diag(\sigma^2)$, assuming no covariance between predictors.
+
+-   Parameters to estimate: $p$ diagonal elements
+
+2.  **Linear discriminant analysis (lda)**: $\Sigma_k = \Sigma$, assuming covariance between predictors, but it is the same for both groups $k=0$ and $k=1$.
+
+-   Parameters to estimate: full covariance matrix ($p(p+1)/2$ parameters)
+
+3.  **Quadratic discriminant analysis (qda**): $\Sigma_k = \Sigma_k$, assuming covariance between predictors, which may differ between group $k=0$ and $k=1$.
+
+-   Parameters to estimate: twice full covariance matrix ($2 \times p(p+1)/2$ parameters)
+:::
+
+::: {style="font-size: 75%;"}
+## Diagonal discriminant analysis
+
+1.  **dda**: $\Sigma_k = diag(\sigma^2)$, assuming **no covariance** between predictors.
+2.  dda is also known as **naive Bayes** classifier.
+3.  The discriminant function $d_k$ for dda simplifies (after dropping terms which are identical for $d_0$ and $d_1$) to:
+
+$$
+d_k(x) = \mu_k^t diag(\sigma^2)^{-1} x - \frac{1}{2} \mu_k^t diag(\sigma^2)^{-1} \mu_k + log(\pi_k)
+$$
+
+Advantages of dda:
+
+1.  Easy to fit.
+2.  Strong assumptions (no correlation between predictors and the same covariance matrix in both groups).
+:::
+
+::: {style="font-size: 75%;"}
+## Linear discriminant analysis
+
+1.  **lda**: $\Sigma_k = \Sigma$, allowing for covariance between predictors.
+2.  The discriminant function $d_k$ for lda simplifies (after dropping terms which are identical for $d_0$ and $d_1$) to:
+
+$$
+d_k(x) = \mu_k^t \Sigma^{-1} x - \frac{1}{2} \mu_k^t \Sigma^{-1} \mu_k + log(\pi_k)
+$$
+
+Advantages of lda:
+
+1.  Allowing for correlation between predictors.
+2.  Issues for big data ($n<p$) to invert $\Sigma$.
+3.  Assuming the same covariance matrix $\Sigma$ for group $k=0$ and $k=1$.
+:::
+
+## LDA example
+
+```{r iris}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+p_iris <- ggplot() +
+  geom_point(aes(x = Petal.Length, y = Petal.Width, colour = Species), data = iris) +
+  theme_minimal() +
+  theme(legend.position = "none")
+p_iris
+```
+
+## LDA example
+
+```{r iris-lda}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+mod <- lda(Species ~ Petal.Length + Petal.Width, data = iris)
+
+# draw discrimination line
+np <- 500
+predictions <- expand_grid(
+  Petal.Length = seq(from = min(iris$Petal.Length), to = max(iris$Petal.Length), length.out = np),
+  Petal.Width = seq(from = min(iris$Petal.Width), to = max(iris$Petal.Width), length.out = np)
+)
+
+predictions$pred <- as.numeric(predict(mod, newdata = predictions)$class)
+
+p_iris +
+  geom_contour(aes(x = Petal.Length, y = Petal.Width, z = pred), data = predictions, colour = "grey30", alpha = 0.5) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+::: {style="font-size: 75%;"}
+## Quadratic discriminant analysis
+
+1.  **qda**: $\Sigma_k$, allowing for different covariances between groups.
+2.  The discriminant function $d_k$ for qda simplifies (after dropping terms which are identical for $d_0$ and $d_1$) to:
+
+$$
+d_k(x) = \mu_k^t \Sigma^{-1}_k x - \frac{1}{2} \mu_k^t \Sigma^{-1}_k \mu_k + log(\pi_k)
+$$
+
+Advantages of qda:
+
+1.  Allowing for correlation between predictors.
+2.  Issues for big data ($n<p$) to invert $\Sigma$.
+3.  qda allows for the most flexibility at the cost of many additional parameters.
+:::
+
+## QDA example
+
+```{r iris-qda}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+mod <- qda(Species ~ Petal.Length + Petal.Width, data = iris)
+
+# draw discrimination line
+np <- 500
+predictions <- expand_grid(
+  Petal.Length = seq(from = min(iris$Petal.Length), to = max(iris$Petal.Length), length.out = np),
+  Petal.Width = seq(from = min(iris$Petal.Width), to = max(iris$Petal.Width), length.out = np)
+)
+
+predictions$pred <- as.numeric(predict(mod, newdata = predictions)$class)
+
+p_iris +
+  geom_contour(aes(x = Petal.Length, y = Petal.Width, z = pred), data = predictions, colour = "grey30", alpha = 0.5) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+## `MASS::lda()`: Iris
+
+```{r iris-mass-lda}
+#| echo: true
+#| eval: true
+mod <- lda(Species ~ ., data = iris)
+mod
+```
+
+Equivalently use `qda(Species ~ ., data = iris)`
+
+## `MASS::lda()`: Iris
+
+```{r iris-mass-lda-predict}
+#| echo: true
+#| eval: true
+lda_pred <- predict(mod,
+                    newdata = data.frame(Sepal.Length = 1,
+                                         Sepal.Width = 2,
+                                         Petal.Length = 3,
+                                         Petal.Width = 2))
+lda_pred$class # predicted class
+lda_pred$posterior # posterior probabilities for group
+lda_pred$x # discriminant score
+```
+
+::: {style="font-size: 80%;"}
+## Shrinkage estimate
+
+-   Standard implementations of discriminant analysis use the sample covariance to estimate $\Sigma$.
+-   The computation of the discriminant function for lda and qda requires the inversion of $\Sigma$, a $p \times p$ matrix.
+-   In high-dimensional settings where $n<p$, $\Sigma$ cannot be inverted.
+-   Shrinkage estimates for $\Sigma$ ensure lda and qda can be computed for high-dimensional data.
+-   Implementation `sda` package in `R`.
+:::
+
+::: {style="font-size: 80%;"}
+## Application: Imaging data to predict breast cancer diagnosis
+
+-   Outcome: Diagnosis (M=malignant, B=benign)
+
+-   $n-569$ Breast cancer patients
+
+-   $p=30$ Predictors
+
+    -   Derived from digitized images to define characteristics of the cell nuclei present in the image
+
+    -   Ten real-valued features summarised in mean, se and worst (mean of the three largest values)
+
+-   [Dataset](http://archive.ics.uci.edu/ml/datasets/Breast+%20Cancer+Wisconsin+%28Diagnostic%29) from the UCI Machine Learning Repository
+
+```{r sda-1}
+#| echo: false
+#| eval: true
+
+breast.cancer <- read.table("data/wdbc.data", sep = ",")
+y <- breast.cancer$V2
+x <- breast.cancer
+x$V2 <- NULL
+table(y)
+```
+:::
+
+::: {style="font-size: 60%;"}
+## `sda` package in `R`
+
+-   dda: `sda(x, y, diagonal=TRUE)`
+
+```{r sda-2}
+#| echo: true
+#| eval: true
+
+dda.out <- sda(x %>% as.matrix(), y, diagonal = TRUE)
+dda.pred <- predict(dda.out, x %>% as.matrix(), verbose = FALSE)
+
+```
+
+-   `confusionMatrix` from the `crossval` package
+
+```{r sda-3}
+#| echo: true
+#| eval: true
+
+cM = crossval::confusionMatrix(y, dda.pred$class, negative = "B")
+cM
+TPR = cM[2]/(cM[2] + cM[4])
+TPR
+FPR = cM[1]/(cM[1] + cM[3])
+FPR
+```
+:::
+
+::: {style="font-size: 60%;"}
+## `sda` package in `R`
+
+-   lda: `sda(x, y, diagonal=FALSE)`
+
+```{r sda-4}
+#| echo: true
+#| eval: true
+
+lda.out <- sda(x %>% as.matrix(), y, diagonal = FALSE)
+lda.pred <- predict(lda.out, x %>% as.matrix(), verbose = FALSE)
+
+```
+
+-   `confusionMatrix` from the `crossval` package
+
+```{r sda-5}
+#| echo: true
+#| eval: true
+
+cM = crossval::confusionMatrix(y, lda.pred$class, negative = "B")
+cM
+TPR = cM[2]/(cM[2] + cM[4])
+TPR
+TNR = cM[1]/(cM[1] + cM[3])
+TNR
+```
+:::
+
+::: {style="font-size: 70%;"}
+## ROC curve
+
+1.  Define foreground (`fg`) and background (`bg`):
+
+```{r sda-6}
+#| echo: true
+#| eval: true
+
+fg = dda.pred$posterior[y == 'M', 2]
+bg = dda.pred$posterior[y == 'B', 2]
+roc.dda = roc.curve(fg, bg, curve=T)
+
+fg = lda.pred$posterior[y == 'M', 2]
+bg = lda.pred$posterior[y == 'B', 2]
+roc.lda = roc.curve(fg, bg, curve=T)
+```
+
+2.  Compute the ROC curve:
+
+```{r sda-7}
+#| echo: true
+#| eval: true
+#| fig-align: "center"
+
+par(mfrow = c(1, 2), mar = c(4, 4, 3, 0))
+plot(roc.dda, color = FALSE, main = "Diagonal discriminant analysis")
+plot(roc.dda, color = FALSE, main = "Linear discriminant analysis")
+
+```
+:::
+
+::: {style="font-size: 70%;"}
+## Precision-recall curve
+
+1.  Define foreground (`fg`) and background (`bg`):
+
+```{r sda-8}
+#| echo: true
+#| eval: true
+
+fg = dda.pred$posterior[y == 'M', 2]
+bg = dda.pred$posterior[y == 'B', 2]
+pr.dda = pr.curve(fg, bg, curve=T)
+
+fg = lda.pred$posterior[y == 'M', 2]
+bg = lda.pred$posterior[y == 'B', 2]
+pr.lda = pr.curve(fg, bg, curve=T)
+```
+
+2.  Compute the ROC curve:
+
+```{r sda-9}
+#| echo: true
+#| eval: true
+#| fig-align: "center"
+
+par(mfrow = c(1, 2), mar = c(4, 4, 3, 0))
+plot(pr.dda, color = FALSE, main = "Diagonal discriminant analysis")
+plot(pr.lda, color = FALSE, main = "Linear discriminant analysis")
+
+```
+:::
+
+::: {style="font-size: 80%;"}
+## An introduction to support vector machines
+
+Evolution of support vector machines:
+
+1.  **Hyperplanes** to introduce simple decision boundaries.
+2.  **Maximal margin classifier** as the *best* hyperplane.
+3.  **Support vector classifier** allowing for soft margins.
+4.  **Support vector machine** using kernels for non-linear decision boundaries.
+:::
+
+::: {style="font-size: 80%;"}
+## What is a hyperplane?
+
+In a $p$-dimensional space, a hyperplane is a flat affine subspace of dimension $p − 1$:
+
+-   In two dimensions, a hyperplane is a line.
+-   In three dimensions, a hyperplane is a plane.
+
+For example in two dimensions, a hyperplane is defined by
+
+$$
+\beta_0 + \beta_1 x_1 + \beta_2 x_2= 0
+$$ A hyperplane separates observations $x=(x_1, x_2)$ into two groups $$
+\beta_0 + \beta_1 x_1 + \beta_2 x_2 \begin{cases} > 0 \\
+< 0 \end{cases}
+$$
+:::
+
+## What is a hyperplane?
+
+$$
+1 + 2 x_1 + 3 x_2 \begin{cases} > 0 \quad \text{blue} \\
+< 0 \quad \text{red} \end{cases}
+$$
+
+```{r hyperplane-1}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+X1 <- seq(-1.5, 1.5, 0.1)
+X2 <- seq(-1.5, 1.5, 0.1)
+data <- expand_grid(X1, X2) |> mutate(y = ifelse(1 + 2 * X1 + 3 * X2 > 0, "blue", "red"))
+
+ggplot(data) +
+  geom_point(aes(x = X1, y = X2, colour = y)) +
+  geom_abline(intercept = -1 / 3, slope = -2 / 3) +
+  scale_colour_manual(values = c("blue", "red")) +
+  coord_fixed() +
+  lims(x = c(-1.5, 1.5), y = c(-1.5, 1.5)) +
+  theme_minimal()
+```
+
+## What is a hyperplane?
+
+If two classes are perfectly separable, there is not a unique solution for a hyperplane.
+
+```{r hyperplane-2}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+set.seed(805)
+norm2d <- as_tibble(
+  mlbench.2dnormals(
+    n = 100,
+    cl = 2,
+    r = 4,
+    sd = 1
+  )
+)
+names(norm2d) <- c("X1", "X2", "y")
+
+p_base <- ggplot(norm2d, aes(x = X1, y = X2)) +
+  geom_point(aes(colour = y), size = 3, alpha = 0.75) +
+  lims(x = c(-6, 6), y = c(-6, 6)) +
+  scale_colour_brewer(
+    palette = "Dark2",
+    breaks = c(1, 2)
+  ) +
+  coord_fixed() +
+  theme(legend.position = "none") +
+  theme_minimal()
+
+p_base +
+  geom_abline(intercept = -1 / 3, slope = -2 / 3) +
+  geom_abline(intercept = 1 / 4, slope = -1 / 4) +
+  geom_abline(intercept = 1 / 5, slope = -1 / 2)
+```
+
+::: {style="font-size: 80%;"}
+## Maximal Margin classifier
+
+-   Maximal margin classifier provide unique analytical solutions.
+-   This is the optimal separating hyperplane that has the highest minimum distance (margin) to the training data.
+
+```{r mmc-1}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+fit_hmc <- ksvm( # use ksvm() to find the OSH
+  x = data.matrix(norm2d[c("X1", "X2")]),
+  y = as.factor(norm2d$y),
+  kernel = "vanilladot", # no fancy kernel, just ordinary dot product
+  C = Inf, # to approximate maximal margin classifier
+  prob.model = TRUE # needed to obtain predicted probabilities
+)
+
+# Support vectors
+sv <- norm2d[fit_hmc@alphaindex[[1L]], c("X1", "X2")] # 16-th and 97-th observations
+
+# Compute the perpendicular bisector of the line segment joining the two support vectors
+slope <- -1 / ((sv[2L, 2L] - sv[1L, 2L]) / (sv[2L, 1L] - sv[1L, 1L])) |> as.numeric()
+midpoint <- apply(sv, 2, mean)
+
+p_mmc <- p_base +
+  # Decision boundary
+  geom_abline(
+    intercept = -slope * midpoint[1L] + midpoint[2L],
+    slope = slope
+  ) +
+  # Margin boundaries (shaded in)
+  geom_abline(
+    intercept = as.numeric(-slope * sv[1L, 1L] + sv[1L, 2L]),
+    slope = slope,
+    linetype = 2
+  ) +
+  geom_abline(
+    intercept = as.numeric(-slope * sv[2L, 1L] + sv[2L, 2L]),
+    slope = slope,
+    linetype = 2
+  ) +
+  # Arrows, labels, etc.
+  annotate("segment",
+    x = as.numeric(sv[1L, 1L]), y = as.numeric(sv[1L, 2L]), xend = as.numeric(sv[2L, 1L]), yend = as.numeric(sv[2L, 2L]),
+    # alpha = 0.5,
+    linetype = 3
+    # arrow = arrow(length = unit(0.03, units = "npc"), ends = "both")
+  ) +
+  # Support vectors
+  annotate("point",
+    x = sv$X1[1], y = sv$X2[1], shape = 17, color = "red",
+    size = 3
+  ) +
+  annotate("point",
+    x = sv$X1[2], y = sv$X2[2], shape = 16, color = "red",
+    size = 3
+  ) +
+  coord_fixed(xlim = c(-6, 6), ylim = c(-6, 6))
+p_mmc
+```
+
+-   Note: The maximal margin classifier only depends on the three observations closest to the decision boundary, not to the other observations.
+:::
+
+::: {style="font-size: 80%;"}
+## Maximal Margin classifier
+
+We need to define:
+
+1.  Separating hyperplane $\beta_0 + \beta_1X1 + \beta_2X_2$
+2.  Margin (distance to the closest data points from hyperplane)
+3.  Support vectors (points with distance equal to the margin from hyperplane)
+
+```{r mmc-2}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+p_mmc
+```
+:::
+
+::: {style="font-size: 80%;"}
+## Optimisation: Maximal margin classifier
+
+$$
+\max_{\beta_0, \beta_1, ..., \beta_p}  M \quad \text{subject to} \sum_{j=1}^p \beta_j^2 =1 \text{ forces unique solution}\\
+y_i (\beta_0 +  \beta_1 x_{i1} +  ... + \beta_p  x_{ip} ) \geq M \quad  \forall i \in 1,...,n
+$$
+
+-   $\beta_0, \beta_1, ..., \beta_p$ parameters to be fitted
+-   $i \in 1,...,n$ observations
+-   $M$ is the margin, distance of observation to decision boundary
+-   Outcome: $$
+    y_i = \begin{cases} 1 & \text{ if $i$ in group 1} \\
+    -1 & \text{ if $i$ in group 0} \end{cases}
+    $$
+:::
+
+## Maximal margin classifier
+
+-   Good for separating non-Gaussian data
+-   Is not possible if there is no linear separation
+
+::: {style="font-size: 80%;"}
+## Support vector classifier
+
+-   **Support vectors**: Observations which support the maximal margin hyperplane.
+-   In most application examples, there is no separating hyperplane that can separate two groups.
+
+Aim: Support vector or soft margin classifier:
+
+-   Develop a hyperplane that *almost* separates the classes.
+-   Better classification of majority of observations.
+-   Greater robustness to individual variation.
+-   Avoid overfitting to the training data.
+:::
+
+## Distinction: margin and hyperplane
+
+-   **Hyperplane**: Decision boundary (solid line)
+-   **Margin**: Optimised in maximal margin classifier (dashed line)
+
+```{r mmc-3}
+#| echo: false
+#| eval: true
+#| fig-align: "center"
+p_mmc
+```
+
+::: {style="font-size: 80%;"}
+## Optimisation: support vector classifier
+
+$$
+\max_{\beta_0, \beta_1, ..., \beta_p}  M \quad \text{subject to} \sum_{j=1}^p \beta_j^2 =1 \\
+y_i (\beta_0 +  \beta_1 x_{i1} +  ... + \beta_p  x_{ip} ) \geq M (1-\epsilon_i) \quad \forall i \in 1,...,n  \\
+\text{ where } \epsilon_i \geq 0  \text{ and  } \sum_{i=1}^n \epsilon_i \leq C
+$$
+
+-   **Slack variables** allow for a few observations to be on the wrong side of the margin or the hyperplane (missclassification)
+-   $C$: Budget for the amount that the margin can be violated.
+
+**Difference from maximal marginal classifier**: Regularisation in form of a tuning parameter $C$ and slack variables introduces bias but provides better generalisation.
+:::
+
+## Support vector classifier
+
+Effect of varying $C$.
+
+```{r svc}
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-align: "center"
+
+p_list <- list()
+for (C in c(0.000001, 10000)) {
+  fit_hmc <- ksvm(
+    x = data.matrix(norm2d[c("X1", "X2")]),
+    y = as.factor(norm2d$y),
+    kernel = "vanilladot",
+    C = C,
+    prob.model = TRUE
+  )
+
+  sv <- norm2d[fit_hmc@alphaindex[[1L]], c("X1", "X2")]
+  slope <- -1 / ((sv[2L, 2L] - sv[1L, 2L]) / (sv[2L, 1L] - sv[1L, 1L])) |> as.numeric()
+  midpoint <- apply(sv, 2, mean)
+
+  p_svc <- p_base +
+    geom_abline(
+      intercept = -slope * midpoint[1L] + midpoint[2L],
+      slope = slope
+    ) +
+    geom_abline(
+      intercept = as.numeric(-slope * sv[1L, 1L] + sv[1L, 2L]),
+      slope = slope,
+      linetype = 2
+    ) +
+    geom_abline(
+      intercept = as.numeric(-slope * sv[2L, 1L] + sv[2L, 2L]),
+      slope = slope,
+      linetype = 2
+    ) +
+    annotate("segment",
+      x = as.numeric(sv[1L, 1L]), y = as.numeric(sv[1L, 2L]), xend = as.numeric(sv[2L, 1L]), yend = as.numeric(sv[2L, 2L]),
+      linetype = 3
+    ) +
+    annotate("point",
+      x = sv$X1[1], y = sv$X2[1], shape = 17, color = "red",
+      size = 3
+    ) +
+    annotate("point",
+      x = sv$X1[2], y = sv$X2[2], shape = 16, color = "red",
+      size = 3
+    ) +
+    coord_fixed(xlim = c(-6, 6), ylim = c(-6, 6))
+
+  p_list[[str_c(C)]] <- p_svc
+}
+
+wrap_plots(p_list)
+```
+
+::: {style="font-size: 80%;"}
+## Support vector machines
+
+-   Support vector classifier assumes linear decision boundaries.
+
+-   How can we allow for more flexibility and non-linear decision boundaries?
+
+    1.  Include quadratic, cubic, or higher-order polynomial functions of the predictors.
+
+    -   Add the squared $x_1^2, ... , x_p^2$ or cubic predictors $x_1^3, ... , x_p^3$.
+
+    2.  Use kernel functions
+
+    -   The optimization algorithm of the support vector classifier is based on the dot product between two observations. $$
+          \langle x_i,x_{i'} \rangle  = \sum_{j=1}^{p} x_{ij} x_{i'j}
+          $$
+:::
+
+::: {style="font-size: 60%;"}
+## Kernel functions
+
+The dot product is also known as **linear** kernel
+
+$$
+K(x_i,x_{i'}) = \sum_{j=1}^{p} x_{ij} x_{i'j}.
+$$
+
+-   **Polynomial** kernel: $$
+    K(x_i,x_{i'}) = (1 + \sum_{j=1}^{p} x_{ij} x_{i'j})^d
+    $$
+
+-   **Radial basis**: $$
+    K(x_i,x_{i'}) = exp( -\gamma \sum_{j=1}^{p} (x_{ij}- x_{i'j})^2)
+    $$
+
+-   **Sigmoid** kernel: $$
+    K(x_i,x_{i'}) = \gamma \sum_{j=1}^{p} x_{ij} x_{i'j} + r
+    $$
+:::
+
+::: {style="font-size: 70%;"}
+## Polynomial kernel of degree 2 example
+
+Idea: Convert to higher dimension and separate using a hyperplane
+
+```{r svc-1}
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-align: "center"
+
+dat.plot.svm <- data.frame(x = -4:4,
+                           y = 0,
+                           class = c(rep(1, times = 3), rep(2, times = 3), rep(1, times = 3)) %>% as.factor(),
+                           y.pol = .1*c(-4:4)^2)
+dat.plot.svm %>%
+  ggplot() +
+  geom_point(aes(x=x, y=y, col = class), cex=3) +
+  theme_bw() + ylim(c(-.1, 2)) +
+  theme(legend.position = "none")
+```
+:::
+
+::: {style="font-size: 70%;"}
+## Polynomial kernel of degree 2 example
+
+```{r svc-2}
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-align: "center"
+
+dat.plot.svm %>%
+  ggplot() +
+  geom_point(aes(x=x, y=y, col = class), cex=3) +
+  geom_function(fun = function(x) .1*x^2, colour = "black") +
+  theme_bw() + ylim(c(-.1, 2)) +
+  theme(legend.position = "none")
+
+```
+:::
+
+::: {style="font-size: 70%;"}
+## Polynomial kernel of degree 2 example
+
+```{r svc-3}
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-align: "center"
+
+dat.plot.svm %>%
+  ggplot() +
+  geom_point(aes(x=x, y=y, col = class), cex=3) +
+  geom_function(fun = function(x) .1*x^2, colour = "black") +
+  theme_bw() + ylim(c(-.1, 2)) +
+  geom_point(aes(x=x, y=y.pol, col = class), cex=3) +
+  geom_segment(aes(x = x, y = y, yend = y.pol, xend = x), lty = 2) +
+  theme(legend.position = "none")
+
+```
+:::
+
+::: {style="font-size: 70%;"}
+## Polynomial kernel of degree 2 example
+
+```{r svc-4}
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-align: "center"
+
+dat.plot.svm %>%
+  ggplot() +
+  geom_point(aes(x=x, y=y, col = class), cex=3) +
+  geom_function(fun = function(x) .1*x^2, colour = "black") +
+  theme_bw() + ylim(c(-.1, 2)) +
+  geom_point(aes(x=x, y=y.pol, col = class), cex=3) +
+  geom_segment(aes(x = x, y = y, yend = y.pol, xend = x), lty = 2) +
+  theme(legend.position = "none") +
+  geom_hline(yintercept = 0.22, col = "red", lwd = 2)
+```
+:::
+
+## Kernel functions
+
+```{r kernel functions}
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-align: "center"
+
+set.seed(0841)
+spirals <- as_tibble(
+  mlbench.spirals(300, cycles = 2, sd = 0.09)
+)
+names(spirals) <- c("x1", "x2", "classes")
+
+set.seed(7256)
+spirals_poly <- ksvm(classes ~ x1 + x2,
+  data = spirals, kernel = "polydot", kpar = list(degree = 3),
+  C = 500, prob.model = TRUE
+)
+
+spirals_rbf <- ksvm(classes ~ x1 + x2,
+  data = spirals, kernel = "rbfdot",
+  C = 500, prob.model = TRUE
+)
+
+# Grid over which to evaluate decision boundaries
+npts <- 500
+xgrid <- expand_grid(
+  x1 = seq(from = -2, 2, length = npts),
+  x2 = seq(from = -2, 2, length = npts)
+)
+
+# Predicted probabilities (as a two-column matrix)
+prob_poly <- predict(spirals_poly, newdata = xgrid, type = "probabilities")
+prob_rbf <- predict(spirals_rbf, newdata = xgrid, type = "probabilities")
+
+# Add predicted class probabilities
+xgrid2 <- xgrid |>
+  cbind(
+    "Polynomial kernel" = prob_poly[, 1L],
+    "Radial kernel" = prob_rbf[, 1L]
+  ) |>
+  tidyr::gather(Model, Prob, -x1, -x2)
+
+ggplot(spirals, aes(x = x1, y = x2)) +
+  geom_point(aes(shape = classes, color = classes), size = 3, alpha = 0.75) +
+  labs(x = expression(X[1]), y = expression(X[2])) +
+  stat_contour(
+    data = xgrid2, aes(x = x1, y = x2, z = Prob),
+    breaks = 0.5, color = "black"
+  ) +
+  facet_wrap(~Model) +
+  xlim(-2, 2) +
+  ylim(-2, 2) +
+  coord_fixed() +
+  theme(legend.position = "none") +
+  theme_minimal()
+```
+
+## `e1071::svm()`
+
+```{r e1071-svm-1}
+#| echo: false
+#| eval: true
+set.seed(1)
+N <- 20
+X <- matrix(rnorm(n = N * 2), ncol = 2)
+y <- c(rep("A", N / 2), rep("B", N / 2))
+X[y == "A", ] <- X[y == "A", ] + 1
+
+data <- tibble(X1 = X[, 1], X2 = X[, 2], y = as.factor(y))
+```
+
+```{r e1071-svm-2}
+#| echo: true
+#| eval: true
+fit <- svm(
+  X, data$y,
+)
+fit
+
+pred <- predict(fit, X)
+table(pred)
+```
+
+## Confusion matrix in `caret` package
+
+```{r e1071-svm-3}
+#| echo: true
+#| eval: true
+caret::confusionMatrix(data$y, pred)
+```
+
+::: {style="font-size: 80%;"}
+## Take away: Machine learning: Classification
+
+-   Evaluation of classification performance based on parameters derived from the confusion matrix.
+-   Visualisation using ROC and precision-recall curves.
+-   Discriminant analysis is a parametric approach for classification.
+-   Diagonal, linear and quadratic discriminant analysis are based on different assumptions on the covariance matrix and allow for different flexibility in model fit.
+-   Support vector machines are non-parametric machine-learning type of approaches which offer the most flexibility.
+-   Support vector machines are optimized for prediction and operate in a black box type of implementation (hard to understand mechanics and interpret).
+:::

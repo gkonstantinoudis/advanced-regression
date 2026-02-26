@@ -1,7 +1,7 @@
 ---
 title: "Practical 3: Variable selection"
 author: "Garyfallos Konstantinoudis"
-date: "Spring Term 2025"
+date: "Spring Term 2026"
 output:
   pdf_document: default
 highlight: tango
@@ -309,7 +309,8 @@ Elastic net (with lambda and alpha as $\$$lambda.1se in Question 1.6)
 *Reply: Since all three methods essentially build on the glmnet function, it is actually possible to build a more general prediction function, that has both, lambda and alpha as free paramters.*
 
 ```{r message=FALSE, warning=FALSE}
-predfun.glmnet = function(train.x, train.y, test.x, test.y, lambda = lambda, alpha=alpha){
+predfun.glmnet = function(train.x, train.y, test.x, test.y, 
+                          lambda = lambda, alpha=alpha){
 
 	glmnet.fit = glmnet(x=train.x, y=train.y, lambda = lambda, alpha=alpha)
 	ynew = predict(glmnet.fit , test.x)
@@ -328,16 +329,20 @@ Use the crossval package to perform a $k$-fold cross validation with $k=5$ folds
 
 ```{r message=FALSE, warning=FALSE}
 set.seed(24)
-cv.out.ridge =  crossval(predfun.glmnet, x, y, lambda=ridge.cv$lambda.1se, alpha=0,
- K=5, B=20, verbose=FALSE)
-cv.out.lasso =  crossval(predfun.glmnet, x, y, lambda=lasso.cv$lambda.1se, alpha=1,
- K=5, B=20, verbose=FALSE)
-cv.out.enet  =  crossval(predfun.glmnet, x, y, lambda=elasticnet.cv$lambda.1se,
- alpha=elasticnet.cv$alpha, K=5, B=20, verbose=FALSE)
+cv.out.ridge =  crossval(predfun.glmnet, x, y, 
+                         lambda=ridge.cv$lambda.1se, alpha=0,
+                         K=5, B=20, verbose=FALSE)
+cv.out.lasso =  crossval(predfun.glmnet, x, y, 
+                         lambda=lasso.cv$lambda.1se, alpha=1,
+                         K=5, B=20, verbose=FALSE)
+cv.out.enet  =  crossval(predfun.glmnet, x, y, 
+                         lambda=elasticnet.cv$lambda.1se,
+                         alpha=elasticnet.cv$alpha, K=5, B=20, verbose=FALSE)
 
 #save to table
 table.out = rbind(c(cv.out.ridge$stat, cv.out.ridge$stat.se),
- c(cv.out.lasso$stat, cv.out.lasso$stat.se), c(cv.out.enet$stat, cv.out.enet$stat.se))
+ c(cv.out.lasso$stat, cv.out.lasso$stat.se), 
+ c(cv.out.enet$stat, cv.out.enet$stat.se))
 rownames(table.out) = c("ridge", "lasso", "elastic net")
 colnames(table.out) = c("mse", "se")
 table.out
@@ -380,7 +385,8 @@ row.names(results.uni.glm) = colnames(x_mat)
 colnames(results.uni.glm) = c("beta","se","z-score","p-val")
 
 for(i in 1:ncol(x_mat)){
-	results.uni.glm[i,] = summary(glm(y_bin~x_mat[,i], family="binomial"))$coefficients[2,]
+	results.uni.glm[i,] = summary(glm(y_bin~x_mat[,i], 
+	                                  family="binomial"))$coefficients[2,]
 }
 
 results.uni.glm
@@ -393,7 +399,8 @@ Question 4.2
 Rank your results by $p-$value add perform a multiple testing correction. To correct for multiple testing, check the function `p.adjust()` and select the `bonferroni` method. How many features are significant after multiple testing?
 
 ```{r message=FALSE, warning=FALSE}
-results.uni.glm = cbind(results.uni.glm, p.adjust(results.uni.glm[,4], method="bonferroni"),
+results.uni.glm = cbind(results.uni.glm, p.adjust(results.uni.glm[,4], 
+                                                  method="bonferroni"),
                         p.adjust(results.uni.glm[,4], method="BH"))
 colnames(results.uni.glm)[5:6] = c("p.adjust", "BH")
 results.uni.glm[order(results.uni.glm[,4]),]
@@ -419,7 +426,10 @@ Compute a glm using the following command.
 ```{r message=FALSE, warning=FALSE}
 x_mat = as.data.frame(x_mat)
 attach(x_mat)
-glm.out = glm(y_bin~age+duration+us_popularity_estimate+acousticness+beat_strength+danceability+dyn_range_mean+energy+flatness+instrumentalness+liveness+loudness+mechanism+speechiness+tempo+valence, family = "binomial")
+glm.out = glm(y_bin~age+duration+us_popularity_estimate+acousticness+
+                beat_strength+danceability+dyn_range_mean+energy+flatness+
+                instrumentalness+liveness+loudness+mechanism+speechiness+tempo+
+                valence, family = "binomial")
 ```
 Based on this glm compute the variance inflation factor (car package) and the condition number. Are there signs for multi-collinearity?
 
@@ -439,9 +449,11 @@ Now perform lasso using glmnet() to predict the binary outcome y_bin. Perform cr
 ```{r message=FALSE, warning=FALSE}
 set.seed(1)
 x_mat=as.matrix(x_mat)
-lasso.cv = cv.glmnet(x_mat,y_bin,family="binomial",alpha=1, type.measure="deviance")
+lasso.cv = cv.glmnet(x_mat,y_bin,family="binomial",alpha=1, 
+                     type.measure="deviance")
 lasso.cv$lambda.1se
-lasso.out.1se = glmnet(x_mat,y_bin,family="binomial",alpha=1,lambda=lasso.cv$lambda.1se)
+lasso.out.1se = glmnet(x_mat,y_bin,family="binomial",alpha=1,
+                       lambda=lasso.cv$lambda.1se)
 sum(abs(lasso.out.1se$beta)>0)
 lasso.out.1se$beta
 ```
@@ -457,12 +469,15 @@ Finally perform elastic net using glmnet() to predict the binary outcome y_bin. 
 set.seed(2)
 a = seq(0.05, 0.95, 0.05)
 search = foreach(i = a, .combine = rbind)%do%{
-  			cv = cv.glmnet(x_mat,y_bin,family = "binomial", type.measure = "deviance", alpha = i)
-  			data.frame(cvm = cv$cvm[cv$lambda == cv$lambda.1se], lambda.1se = cv$lambda.1se, alpha = i)
+  			cv = cv.glmnet(x_mat,y_bin,family = "binomial", 
+  			               type.measure = "deviance", alpha = i)
+  			data.frame(cvm = cv$cvm[cv$lambda == cv$lambda.1se], 
+  			           lambda.1se = cv$lambda.1se, alpha = i)
 }
 elasticnet.cv = search[search$cvm == min(search$cvm), ]
 elasticnet.cv
-enet.out = glmnet(x_mat, y_bin, family = "binomial", lambda = elasticnet.cv$lambda.1se, alpha = elasticnet.cv$alpha)
+enet.out = glmnet(x_mat, y_bin, family = "binomial", 
+                  lambda = elasticnet.cv$lambda.1se, alpha = elasticnet.cv$alpha)
 sum(abs(enet.out$beta)>0)
 enet.out$beta
 ```

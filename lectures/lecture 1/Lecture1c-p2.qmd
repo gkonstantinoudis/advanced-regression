@@ -1,0 +1,377 @@
+---
+title: "Advanced Regression: Random effects and hierarchical models II"
+author:
+  name: "Garyfallos Konstantinoudis"
+institute: "Imperial College London"
+editor: visual
+date: "02-27-2025"
+date-format: medium
+title-slide-attributes:
+  data-background-color: "#f3f4f4"
+  data-background-image: "../../assets/logo_trans.png"
+  data-background-size: 50%
+  data-background-position: 90% 120%
+format:
+    pdf
+---
+
+```{r load-packages-and-data, message=FALSE, warning=FALSE}
+#| echo: false
+
+library(tidyverse)
+library(nlme)
+
+data_chol <- read_csv("assets/cholesterol.csv")
+```
+
+## 4. Random effects
+
+:::: {style="font-size: 75%;"}
+1.  Random effect model with random intercept $$
+    y_i = (\alpha_0 + {\color{red}{u_k}}) + \beta x_i  + \epsilon_i,
+    $$ where $\color{red}{u_k \sim N(0, \sigma_u^2)}$.
+
+2.  Random effects model on both, the intercept and the slope $$
+    y_i = (\alpha_0 + {\color{red}{u_k}}) + (\beta + {\color{red}{w_k}}) x_i  + \epsilon_i,
+    $$ where $\color{red}{w_k \sim N(0, \sigma_w^2)}$.
+
+::: aside
+Group effects are also called random effects:
+
+1.  Random effect for the intercept $u_k \sim N(0, \sigma_u^2)$
+2.  Random effect for the slope $w_k \sim N(0, \sigma_w^2)$
+:::
+::::
+
+## Random intercept
+
+1.  Random effect model with random intercept
+
+$$
+y_i = (\alpha_0 + u_k) + \beta x_i + \epsilon_i, \\
+    = \alpha_0 + \beta x_i  + u_k + \epsilon_i,
+$$ where $\alpha_0$ is the intercept and $\beta$ the regression coefficient.
+
+-   There are two distinct error terms
+    1.  Group-specific error $u_k \sim N(0,\sigma_u^2)$
+    2.  Individual-specific error $\epsilon_i \sim N(0,\sigma^2)$
+-   Note that $u_k$ and $\epsilon_i$ are independent of each other.
+
+## Random effect model with random intercept
+
+Interpretation of random intercept $\alpha_k$: $$
+\alpha_k = (\alpha_0 + u_k)
+$$
+
+-   $\alpha_0$ is the global intercept
+-   $u_k$ group-level variations around the global intercept
+
+This is equivalent to assuming $\alpha_k$ is a **random variable** that follows a Normal distribution $$
+\alpha_k \sim N(\alpha_0, \sigma_u^2)
+$$
+
+## Random effect model with random intercept
+
+Multi-level interpretation (two levels of variability):
+
+1.  **First level**. Defined on the individual level for observation $i = 1,...,n$, similar to a standard linear regression $$
+    y_i = \alpha_k + \beta x_i  + \epsilon_i
+    $$
+
+2.  **Second level**. But the intercept is not fixed, it is a random variable $$
+    \alpha_k \sim N(\alpha_0, \sigma_u^2)
+    $$
+
+## Random effect model with random intercept
+
+::: {style="font-size: 75%;"}
+Assumptions:
+
+-   Slope of regression line is the same across all groups. Each group has a different intercept ($\alpha_k$).
+-   But $\alpha_k \sim N(\alpha_0, \sigma_u^2)$ has now a common distribution which is estimated from **all observations**, and not just from the observations in a specific group as in fixed effects.
+-   We pool information across groups.
+
+Consequences:
+
+-   We control for group characteristics by including the group-specific intercept.
+-   Number of group-specific parameters to estimate is much smaller than in the fixed effect models ($\sigma_u^2$ vs $k$ intercepts).
+:::
+
+## (Restricted) Maximum Likelihood estimation of random effect
+
+::: {style="font-size: 75%;"}
+$$
+y_i =  \alpha_0 + \beta x_i  + u_k + \epsilon_i
+$$
+
+Parameters to estimate are
+
+-   $\alpha_0, \beta$ intercept and regression coefficient
+-   $\sigma_u^2, \sigma^2$ variance components
+
+Maximum Likelihood estimation is based on the Normal distribution of $u_k$ and $\epsilon_i$
+
+-   ML estimate for $\sigma_u^2$ requires subtracting 2 empirical estimates of variance $\rightarrow$ ML estimates for $\sigma_u^2$ can be negative.
+-   Restricted Maximum Likelihood (REML): Imposes positivity constraints on the variance estimates.
+:::
+
+## Random effects in `R`: `nlme::lme()`
+
+Implementations of Restricted Maximum Likelihood (REML) in `R`:
+
+-   `lmer` function in the `lme4` package
+-   `lme` function in the `nlme` package
+
+Focus here is on `nlme::lme(fixed, random, data)`:
+
+-   `fixed`. Formula $y\sim x$
+-   `random`. Formula $\sim 1 \mid \text{factor}$
+-   `data`. Dataset to use
+
+## `R`: Random intercept using `lme()`
+
+```{r gp-data-model-random-intercept}
+#| echo: true
+#| eval: true
+model_random_intercept <- lme(chol ~ age, random = ~ 1 | doctor, data = data_chol)
+summary(model_random_intercept)
+```
+
+::: {style="font-size: 75%;"}
+## `R`: Random intercept using `lme()`
+
+```{r gp-data-model-random-intercept-plot}
+#| echo: true
+#| eval: true
+#| fig-align: "center"
+data_chol |>
+  mutate(
+    doctor_name = factor(str_c("Dr ", doctor), levels = str_c("Dr ", 1:12)),
+    .fitted = fitted(model_random_intercept)
+  ) |>
+  ggplot(aes(x = age)) +
+  geom_point(aes(y = chol)) +
+  geom_line(aes(y = .fitted)) +
+  facet_wrap(~doctor_name) +
+  theme_minimal()
+```
+:::
+
+## Random effect model and variance partition
+
+::: {style="font-size: 75%;"}
+Variance decomposition for observation $i$ in group $k$ \begin{align}
+\text{var}(y_i) &= \text{var}(u_k + \epsilon_i) \\
+         &= \text{var}(u_k) +  \text{var}(\epsilon_i) + 2 \text{cov}(u_k,\epsilon_i) \\
+     &= \sigma_u^2 +  \sigma^2 + 0
+\end{align}
+
+Further we can look at the covariance of observations
+
+-   $i$ and $i'$ within group $k$ $$
+    \text{cov}(y_i, y_{i'}) = \text{cov}(u_k + \epsilon_i, u_k + \epsilon_{i'}) = \sigma_u^2
+    $$
+
+-   $i$ and $i'$ from different groups $k$ and $k'$ $$
+    \text{cov}(y_i, y_{i'}) = \text{cov}(u_k + \epsilon_i, u_{k'} + \epsilon_{i'}) = 0
+    $$
+:::
+
+## Random effect model and variance partition
+
+::: {style="font-size: 75%;"}
+**Variability between and within groups**. Intra-class correlation coefficient $\rho$ $$
+\rho = \text{cor}(y_i, y_{i'})  =  \frac{\text{cov}(y_i, y_{i'}) }{\sqrt{\text{var}(y_i) \text{var}(y_{i'})}} = \frac{\sigma_u^2}{\sigma_u^2 +  \sigma^2}
+$$
+
+Interpretation:
+
+-   Intra-class correlation coefficient $\rho$ is the correlation between two observations $i$ and $i'$ in the same group.
+-   It is the ratio of between-group variance $\sigma_u^2$ over the total variance.
+-   If $\rho \rightarrow 0$ there is little variation explained by the grouping and we might consider a model without the random effect.
+-   Any restrictions?
+:::
+
+## Variance partition in `R`
+
+::: {style="font-size: 90%;"}
+```{r gp-data-model-random-intercept-variance}
+#| echo: true
+#| eval: true
+VarCorr(model_random_intercept)
+```
+
+$$
+\rho  = \frac{\sigma_u^2}{\sigma_u^2 +  \sigma^2} = \frac{0.6347908^2}{0.6347908^2 + 0.5764246^2} \approx 0.54  \nonumber
+$$
+
+Interpretation:
+
+-   There is substantial evidence for between-group heterogeneity.
+-   More than half of the total variance can be explained by the between-group variance.
+-   It is beneficial to include the random effects on the intercept.
+:::
+
+## Random effect model with random intercept and random slope
+
+::: {style="font-size: 60%;"}
+Random effects model on both the intercept and the slope $$
+y_i = (\alpha_0 + {\color{red}{u_k}}) + (\beta + {\color{red}{w_k}}) x_i  + \epsilon_i
+$$
+
+-   There are three distinct error terms
+    1.  Group-specific error of the intercept $$
+        u_k \sim N(0,\sigma_u^2)
+        $$
+    2.  Group-specific error of the regression slope $$
+        w_k \sim N(0,\sigma_w^2)
+        $$
+    3.  Individual-specific error $$
+        \epsilon_i \sim N(0,\sigma^2) \nonumber
+        $$
+-   Note that $u_k$ and $w_k$ are correlated and independent of $\epsilon_i$.
+:::
+
+## Random effect model with random intercept and random slope
+
+::: {style="font-size: 65%;"}
+Assumptions:
+
+-   Each group has a different intercept ($\alpha_k = \alpha_0 + u_k$) and a different regression slope ($\beta_k = \beta+w_k$).
+-   We allow for correlation between $\alpha_k$ and $\beta_k$.
+-   Both, $\alpha_k \sim N(\alpha_0, \sigma_u^2)$ and $\beta_k \sim N(\beta, \sigma_w^2)$ have a common distribution which is estimated from **all observations**, and not just from the observations in a given group as in fixed effects.
+-   We pool information across groups.
+
+Consequences:
+
+-   Including a random slope can be interpreted as creating an interaction between the group and the strength of association.
+-   We only have three additional parameters in the model: $\sigma_u^2, \sigma_w^2$ and $cor(\sigma_u, \sigma_w)$.
+:::
+
+## `R`: Random intercept and slope using `lme()`
+
+```{r gp-data-model-random-slope}
+#| echo: true
+#| eval: true
+model_random_slope <- lme(chol ~ age, random = ~ 1 + age | doctor, data = data_chol)
+summary(model_random_slope)
+```
+
+::: {style="font-size: 70%;"}
+## `R`: Random intercept and slope using `lme()`
+
+```{r gp-data-model-random-slope-plot}
+#| echo: true
+#| eval: true
+#| fig-align: "center"
+data_chol |>
+  mutate(
+    doctor_name = factor(str_c("Dr ", doctor), levels = str_c("Dr ", 1:12)),
+    .fitted = fitted(model_random_slope)
+  ) |>
+  ggplot(aes(x = age)) +
+  geom_point(aes(y = chol)) +
+  geom_line(aes(y = .fitted)) +
+  facet_wrap(~doctor_name) +
+  theme_minimal()
+```
+:::
+
+## Variables on individual and group level
+
+::: {style="font-size: 75%;"}
+When considering variables or predictors we need to distinguish:
+
+-   **Individual-level** variables
+-   **Group-level variables** that are the same for all observations in a group
+
+GP example:
+
+-   Individual-level variables: Age and sex of patient
+-   Group-level variables: Age of doctor
+
+```{r gp-data-head}
+#| echo: false
+#| eval: true
+head(data_chol)
+```
+:::
+
+::: {style="font-size: 75%;"}
+## Variables on individual and group level
+
+$$
+y_i = (\alpha_0 + u_k) + (\beta + w_k) x_i  + {\color{red}{\gamma x_g}} +\epsilon_i
+$$
+
+```{r gp-data-model-random-slope-cov}
+#| echo: true
+#| eval: true
+model_random_cov <- lme(chol ~ age + agedoc, random = ~ 1 + age | doctor, data = data_chol)
+summary(model_random_cov)
+```
+:::
+
+## Model comparison
+
+Likelihood-ratio test for nested models:
+
+-   Models must have the same fixed effects. Does not work with group-level covariates.
+-   Model with smaller - log likelihood is better (better model fit).
+
+Akaike information criterion (AIC):
+
+-   Model with the smaller AIC is better (less information loss).
+
+## Model comparison
+
+GP example:
+
+::: {style="font-size: 60%;"}
+-   Model A (Random intercept) `model_random_intercept = lme(chol ~ age, random = ~ 1 | doctor, data = data_chol)`
+-   Model B (Random intercept and slope) `model_random_slope = lme(chol ~ age, random = ~ 1 + age | doctor, data = data_chol)`
+-   Model C (Random intercept and slope and group covariate) `model_random_cov = lme(chol ~ age + agedoc, random = ~ 1 + age | doctor, data = data_chol)`
+:::
+
+## Model comparison
+
+Likelihood-ratio test for nested models:
+
+```{r gp-data-model-anova}
+#| echo: true
+#| eval: true
+anova(model_random_intercept, model_random_slope)
+```
+
+Akaike information criterion (AIC):
+
+```{r gp-data-model-AIC}
+#| echo: true
+#| eval: true
+anova(model_random_slope, model_random_cov)
+```
+
+## Generalised linear mixed models
+
+-   Generalised Linear Mixed models (GLMM) can be used to adapt linear mixed models to outcomes that do not follow a Normal distribution.
+-   The package `lme4` includes the function `glmer` that can fit GLMMs.
+
+```{r}
+#| echo: true
+#| eval: false
+glmer(formula = y ~ x + (1 + x | factor), family = gaussian)
+```
+
+## Take away: Fixed and random effects
+
+::: {style="font-size: 80%;"}
+-   Fixed effect models can account for group structure but many parameters need to be estimated and no information is shared between groups.
+-   Random effect models treat group-specific parameters as random variables.
+-   Instead of estimating one parameter for each group, random effect models only estimate the distribution parameter of the random variable.
+-   Thus, they pool information across groups.
+-   The intra-class coefficient gives a measure of how relevant the group structure is.
+-   Implementation in `R`: `lme()` function in the `nlme` package.
+-   Models including both, fixed and random effects, are often called linear mixed models.
+:::
+
+## Questions?
