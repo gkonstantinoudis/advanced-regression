@@ -24,9 +24,9 @@ Load the dataset, that contains the methylation matrix as predictor matrix and t
 
 ```{r message=FALSE, warning=FALSE, fig.height=3.2}
 load("../../data/data_epigenetic_clock_control")
-#alternatively try load("../../data/data_epigenetic_clock_control.dms")
-y = control_mice$y_control
-x = control_mice$x_control
+# alternatively try load("../../data/data_epigenetic_clock_control.dms")
+y <- control_mice$y_control
+x <- control_mice$x_control
 dim(x)
 ```
 
@@ -39,7 +39,7 @@ First compute a random forest with the options 'ntree=100' and 'importance = TRU
 *Reply: It is very easy to build a random forest: all we need to specify is x and y. Set 'ntree=100' for now and importance =TRUE allows us to assess which variables are important. See next question.*
 
 ```{r message=FALSE, warning=FALSE}
-rf.out = randomForest(x=x, y=y, ntree=100, importance=TRUE)
+rf.out <- randomForest(x = x, y = y, ntree = 100, importance = TRUE)
 ```
 
 
@@ -56,8 +56,8 @@ Alternatively, the mean decrease of impurity can be used to measure variable imp
  *
 
 ```{r message=FALSE, warning=FALSE, fig.height=5}
-importance=rf.out$importance
-importance[order(importance[,2], decreasing =TRUE),] [1:10,]
+importance <- rf.out$importance
+importance[order(importance[, 2], decreasing = TRUE), ][1:10, ]
 varImpPlot(rf.out)
 ```
 
@@ -68,7 +68,7 @@ How would you run bagging using the randomForest function? What is the interpret
 *Reply: mtry indicates how many predictors of x should be considered to split the tree. Setting mtry to the number of columns of the predictor matrix is basically a bagging approach and not a random forest. *
 
 ```{r message=FALSE, warning=FALSE}
-bagging.out = randomForest(x=x, y=y, ntree=100, importance =TRUE, mtry=ncol(x))
+bagging.out <- randomForest(x = x, y = y, ntree = 100, importance = TRUE, mtry = ncol(x))
 ```
 
 
@@ -78,29 +78,28 @@ Question 1.4
 Next step is to write a prediction function for the random forest algorithm. Re-use your code from last week (Practical 3 Question 2) and see the prediction function for a linear regression model below. Set the number of trees as an open parameter.
 
 ```{r message=FALSE, warning=FALSE}
-predfun.lm = function(train.x, train.y, test.x, test.y){
-	#fit the model and build a prediction rule
-	lm.fit = lm(train.y ~ ., data=train.x)
-	#predict the new observation based on the test data and the prediction rule
-	ynew = predict(lm.fit, test.x )
-	#compute mse as squared difference between predicted and observed outcome
-	out = mean( (ynew - test.y)^2 )
-	return( out )
+predfun.lm <- function(train.x, train.y, test.x, test.y) {
+  # fit the model and build a prediction rule
+  lm.fit <- lm(train.y ~ ., data = train.x)
+  # predict the new observation based on the test data and the prediction rule
+  ynew <- predict(lm.fit, test.x)
+  # compute mse as squared difference between predicted and observed outcome
+  out <- mean((ynew - test.y)^2)
+  return(out)
 }
 ```
 
 *Reply: The following code can be used as a prediction function. Adding ntree as open parameter allows us to compare the performance for different training length of the random forest algorithm. *
 
 ```{r message=FALSE, warning=FALSE}
-predfun.rf = function(train.x, train.y, test.x, test.y, ntree){
-
-	#fit the model and build a prediction rule
-	rf.fit = randomForest(x=train.x, y=train.y, ntree=ntree)
-	#predict the new observation based on the test data and the prediction rule
-	ynew = predict(rf.fit , newdata=test.x)
-	# compute squared error risk (MSE)
-	out = mean( (ynew - test.y)^2 )
-	return( out )
+predfun.rf <- function(train.x, train.y, test.x, test.y, ntree) {
+  # fit the model and build a prediction rule
+  rf.fit <- randomForest(x = train.x, y = train.y, ntree = ntree)
+  # predict the new observation based on the test data and the prediction rule
+  ynew <- predict(rf.fit, newdata = test.x)
+  # compute squared error risk (MSE)
+  out <- mean((ynew - test.y)^2)
+  return(out)
 }
 ```
 
@@ -117,10 +116,10 @@ package and compare the two parameters using $k$-fold cross-validation (cv) usin
 *Reply: We find that the random forest that was trained using more random trees performs better. It is recommended to use at least 500 or more trees. *
 ```{r message=FALSE, warning=FALSE}
 set.seed(14)
-cv.out.rf10  =  crossval(predfun.rf, x, y, ntree=10, K=5, B=10, verbose=FALSE)
+cv.out.rf10 <- crossval(predfun.rf, x, y, ntree = 10, K = 5, B = 10, verbose = FALSE)
 cv.out.rf10$stat
 cv.out.rf10$stat.se
-cv.out.rf100  =  crossval(predfun.rf, x, y, ntree=100, K=5, B=10, verbose=FALSE)
+cv.out.rf100 <- crossval(predfun.rf, x, y, ntree = 100, K = 5, B = 10, verbose = FALSE)
 cv.out.rf100$stat
 cv.out.rf100$stat.se
 ```
@@ -135,15 +134,14 @@ Finally, we want to know if random forests outperform regularised regression wit
 
 ```{r message=FALSE, warning=FALSE}
 library(glmnet)
-predfun.glmnet = function(train.x, train.y, test.x, test.y, lambda = lambda, alpha=alpha){
-
-	#fit glmnet prediction rule
-	glmnet.fit = glmnet(x=train.x, y=train.y, lambda = lambda, alpha=alpha)
-	#predict the new observation based on the test data and the prediction rule
-	ynew = predict(glmnet.fit , newx=test.x)
-	# compute squared error risk (MSE)
-	out = mean( (ynew - test.y)^2 )
-	return( out )
+predfun.glmnet <- function(train.x, train.y, test.x, test.y, lambda = lambda, alpha = alpha) {
+  # fit glmnet prediction rule
+  glmnet.fit <- glmnet(x = train.x, y = train.y, lambda = lambda, alpha = alpha)
+  # predict the new observation based on the test data and the prediction rule
+  ynew <- predict(glmnet.fit, newx = test.x)
+  # compute squared error risk (MSE)
+  out <- mean((ynew - test.y)^2)
+  return(out)
 }
 ```
 and perform cv to tune the regularisation parameter.
@@ -151,17 +149,19 @@ and perform cv to tune the regularisation parameter.
 ```{r message=FALSE, warning=FALSE}
 library(foreach)
 set.seed(12)
-lasso.cv = cv.glmnet(x,y,family="gaussian",alpha=1, type.measure="mse")
+lasso.cv <- cv.glmnet(x, y, family = "gaussian", alpha = 1, type.measure = "mse")
 set.seed(123)
-ridge.cv = cv.glmnet(x,y,family="gaussian",alpha=0, type.measure="mse")
+ridge.cv <- cv.glmnet(x, y, family = "gaussian", alpha = 0, type.measure = "mse")
 set.seed(1234)
-a = seq(0.05, 0.95, 0.05)
-search = foreach(i = a, .combine = rbind)%do%{
-  			cv = cv.glmnet(x,y,family = "gaussian", type.measure = "mse", alpha = i)
-  			data.frame(cvm = cv$cvm[cv$lambda == cv$lambda.1se],
-			 lambda.1se = cv$lambda.1se, alpha = i)
+a <- seq(0.05, 0.95, 0.05)
+search <- foreach(i = a, .combine = rbind) %do% {
+  cv <- cv.glmnet(x, y, family = "gaussian", type.measure = "mse", alpha = i)
+  data.frame(
+    cvm = cv$cvm[cv$lambda == cv$lambda.1se],
+    lambda.1se = cv$lambda.1se, alpha = i
+  )
 }
-elasticnet.cv = search[search$cvm == min(search$cvm), ]
+elasticnet.cv <- search[search$cvm == min(search$cvm), ]
 ```
 
 Finally, use cv as implemented in crossval() to determine if random forests (ntree = 100) is better than lasso and elastic net as implemented in the glmnet package.
@@ -175,16 +175,24 @@ http://jmlr.org/papers/volume15/delgado14a/delgado14a.pdf
 
 ```{r message=FALSE, warning=FALSE}
 set.seed(15)
-cv.out.ridge =  crossval(predfun.glmnet, x, y, lambda=ridge.cv$lambda.1se,
- alpha=0, K=5, B=10, verbose=FALSE)
-cv.out.lasso =  crossval(predfun.glmnet, x, y, lambda=lasso.cv$lambda.1se,
- alpha=1, K=5, B=10, verbose=FALSE)
-cv.out.enet  =  crossval(predfun.glmnet, x, y, lambda = elasticnet.cv$lambda.1se,
- alpha = elasticnet.cv$alpha, K=5, B=10, verbose=FALSE)
-table.out = rbind(c(cv.out.ridge$stat, cv.out.ridge$stat.se), c(cv.out.lasso$stat, cv.out.lasso$stat.se),
- c(cv.out.enet$stat, cv.out.enet$stat.se), c(cv.out.rf10$stat, cv.out.rf10$stat.se), c(cv.out.rf100$stat, cv.out.rf100$stat.se))
-rownames(table.out) = c("ridge", "lasso", "elastic net", "rf 10", "rf 100")
-colnames(table.out) = c("mse", "se")
+cv.out.ridge <- crossval(predfun.glmnet, x, y,
+  lambda = ridge.cv$lambda.1se,
+  alpha = 0, K = 5, B = 10, verbose = FALSE
+)
+cv.out.lasso <- crossval(predfun.glmnet, x, y,
+  lambda = lasso.cv$lambda.1se,
+  alpha = 1, K = 5, B = 10, verbose = FALSE
+)
+cv.out.enet <- crossval(predfun.glmnet, x, y,
+  lambda = elasticnet.cv$lambda.1se,
+  alpha = elasticnet.cv$alpha, K = 5, B = 10, verbose = FALSE
+)
+table.out <- rbind(
+  c(cv.out.ridge$stat, cv.out.ridge$stat.se), c(cv.out.lasso$stat, cv.out.lasso$stat.se),
+  c(cv.out.enet$stat, cv.out.enet$stat.se), c(cv.out.rf10$stat, cv.out.rf10$stat.se), c(cv.out.rf100$stat, cv.out.rf100$stat.se)
+)
+rownames(table.out) <- c("ridge", "lasso", "elastic net", "rf 10", "rf 100")
+colnames(table.out) <- c("mse", "se")
 table.out
 ```
 
@@ -198,10 +206,10 @@ An environmental research group gets in contact with us. They have measured the 
 
 ```{r message=FALSE, warning=FALSE, fig.height=3.2}
 load("../../data/data_epigenetic_clock_experimental")
-#alternatively try load("../../data_epigenetic_clock_experimental.dms")
-exposed = experimental_mice$exposed
+# alternatively try load("../../data_epigenetic_clock_experimental.dms")
+exposed <- experimental_mice$exposed
 table(exposed)
-x.test = experimental_mice$x_exp
+x.test <- experimental_mice$x_exp
 dim(x.test)
 ```
 The working hypothesis is that NO2 exposure reduces the biological age of mice and makes the exposed mice age more quickly. The environmental research group asks us to predict the biological age of the mice using our algorithms to determine the biological age of a mouse.
@@ -215,10 +223,10 @@ Predict the biological age of the $n=140$ new mice using the lasso model as impl
 *Reply: For completeness we repeat here the analysis from last week and save the lasso predictions of the new data (x.test) to the object lasso.hat.*
 
 ```{r message=FALSE, warning=FALSE}
-#building the prediction rule
-lasso.cv.out = glmnet(x,y,family="gaussian",alpha=1,lambda=lasso.cv$lambda.1se)
-#evaluating on the new data
-lasso.hat = predict(lasso.cv.out,newx=x.test, s=lasso.cv$lambda.1se)
+# building the prediction rule
+lasso.cv.out <- glmnet(x, y, family = "gaussian", alpha = 1, lambda = lasso.cv$lambda.1se)
+# evaluating on the new data
+lasso.hat <- predict(lasso.cv.out, newx = x.test, s = lasso.cv$lambda.1se)
 ```
 
 
@@ -232,10 +240,10 @@ Predict the biological age of the $n=131$ new mice using the ridge model. Use ag
 *Reply: In analogy, we perform first cv, then build the ridge prediction rule and finally make the predictions of the new data (x.test) and save them in the object ridge.hat.*
 
 ```{r message=FALSE, warning=FALSE}
-#building the prediction rule
-ridge.cv.out = glmnet(x,y,family="gaussian",alpha=0,lambda=ridge.cv$lambda.1se)
-#evaluating on the new data
-ridge.hat = predict(ridge.cv.out,newx=x.test, s=ridge.cv$lambda.1se)
+# building the prediction rule
+ridge.cv.out <- glmnet(x, y, family = "gaussian", alpha = 0, lambda = ridge.cv$lambda.1se)
+# evaluating on the new data
+ridge.hat <- predict(ridge.cv.out, newx = x.test, s = ridge.cv$lambda.1se)
 ```
 
 
@@ -249,12 +257,16 @@ Predict the biological age of the $n=131$ new mice using the elastic net model. 
 *Reply: And we repeat this for the elastic net as well and save the predictions in the elasticnet.hat object.*
 
 ```{r message=FALSE, warning=FALSE}
-#building the prediction rule
-enet.out = glmnet(x, y, family = "gaussian",
- lambda = elasticnet.cv$lambda.1se, alpha = elasticnet.cv$alpha)
-#evaluating on the new data
-enet.hat = predict(enet.out,newx=x.test,
- lambda = elasticnet.cv$lambda.1se, alpha = elasticnet.cv$alpha)
+# building the prediction rule
+enet.out <- glmnet(x, y,
+  family = "gaussian",
+  lambda = elasticnet.cv$lambda.1se, alpha = elasticnet.cv$alpha
+)
+# evaluating on the new data
+enet.hat <- predict(enet.out,
+  newx = x.test,
+  lambda = elasticnet.cv$lambda.1se, alpha = elasticnet.cv$alpha
+)
 ```
 
 
@@ -265,10 +277,10 @@ Predict the biological age of the $n=131$ new mice using the a random forest mod
 *Reply: Similarly we can use the random forest model from Question 1.1 for prediction and save the predictions in the rf.hat object.*
 
 ```{r message=FALSE, warning=FALSE}
-#building the prediction rule
-rf.out = randomForest(x=x, y=y, importance =TRUE, ntree=500)
-#evaluating on the new data
-rf.hat = predict(rf.out,newdata=x.test)
+# building the prediction rule
+rf.out <- randomForest(x = x, y = y, importance = TRUE, ntree = 500)
+# evaluating on the new data
+rf.hat <- predict(rf.out, newdata = x.test)
 ```
 
 Question 2.5
@@ -278,14 +290,14 @@ Can you confirm the working hypothesis that NO2 exposure reduces the biological 
 *Reply: We perform a $2$ group $t$-test for each epigenetic clock where we test if the biological (predicted) age differs between exposed and healthy control mice.*
 
 ```{r message=FALSE, warning=FALSE}
-#random forest
-t.test(rf.hat~as.factor(exposed))
-#ridge
-t.test(ridge.hat~as.factor(exposed))
-#lasso
-t.test(lasso.hat~as.factor(exposed))
-#elastic net
-t.test(enet.hat~as.factor(exposed))
+# random forest
+t.test(rf.hat ~ as.factor(exposed))
+# ridge
+t.test(ridge.hat ~ as.factor(exposed))
+# lasso
+t.test(lasso.hat ~ as.factor(exposed))
+# elastic net
+t.test(enet.hat ~ as.factor(exposed))
 ```
 
 *Interpretation: We do see a significant difference in biological age using the lasso and elastic net prediction rules. Given the cross-validation we performed in Section 1.5 we know that both lasso and elastic net have the best prediction performance. Since both lasso and  elastic net agree that the mice who have been exposed to NO2 did age quicker than the mice in the control group we are confident that NO2 exposure impacts the epigenetic clock of mice.
@@ -300,7 +312,7 @@ t.test(enet.hat~as.factor(exposed))
 The sinking of the titanic was one of the greatest disaster in navel history. After colliding with an iceberg, the titanic sank and 1,502 out of 2,224 passengers and crew were killed. The following data set has collected information on n=1,309 of the passengers and their survival.
 
 ```{r message=FALSE, warning=FALSE}
-titanic = read.csv("../../data/titanic.csv")
+titanic <- read.csv("../../data/titanic.csv")
 dim(titanic)
 table(titanic$survived)
 ```
@@ -318,18 +330,18 @@ Question 3.1
 Fit a decision tree on the titanic data using the following predictor matrix including passenger class, sex, age, number of siblings/spouses aboard, and number of parents/children aboard after excluding missing values.
 
 ```{r message=FALSE, warning=FALSE}
-x=cbind(titanic$pclass, titanic$sex, titanic$age, titanic$sibsp, titanic$parch)
-rm = which(is.na(titanic$age)==TRUE)
-#alternatively use rm = which(!is.na(titanic$age)==TRUE) or rm = which(is.na(titanic$age)==FALSE)
-x.input = x[-rm,]
+x <- cbind(titanic$pclass, titanic$sex, titanic$age, titanic$sibsp, titanic$parch)
+rm <- which(is.na(titanic$age) == TRUE)
+# alternatively use rm = which(!is.na(titanic$age)==TRUE) or rm = which(is.na(titanic$age)==FALSE)
+x.input <- x[-rm, ]
 dim(x.input)
-colnames(x.input) = c("pclass", "sex", "age", "sibsp", "parch")
-y.input = as.factor(titanic$survived[-rm])
+colnames(x.input) <- c("pclass", "sex", "age", "sibsp", "parch")
+y.input <- as.factor(titanic$survived[-rm])
 table(y.input)
 ```
 Use the function tree in the tree package.
 ```{r message=FALSE, warning=FALSE, fig.height =4.5}
-tree.out = tree(y.input ~ x.input)
+tree.out <- tree(y.input ~ x.input)
 plot(tree.out)
 text(tree.out)
 ```
@@ -346,13 +358,13 @@ Prune your tree using cross-validation (cv.tree) and use the option FUN = prune.
 
 ```{r message=FALSE, warning=FALSE}
 set.seed(33)
-cv.out = cv.tree(tree.out, FUN=prune.misclass)
+cv.out <- cv.tree(tree.out, FUN = prune.misclass)
 cv.out
 ```
 *Reply: The models with size 6 and 5 have the same missclassification error ($dev=211). We decide to use the smaller model of size 5.*
 
 ```{r message=FALSE, warning=FALSE, fig.height =4.5}
-pruned.tree = prune.tree(tree.out, best=5)
+pruned.tree <- prune.tree(tree.out, best = 5)
 plot(pruned.tree)
 text(pruned.tree)
 ```
@@ -372,8 +384,8 @@ x.input$age <- as.numeric(x.input$age)
 x.input$sibsp <- as.numeric(x.input$sibsp)
 x.input$parch <- as.numeric(x.input$parch)
 
-rf.out = randomForest(y=y.input, x=x.input)
-varImpPlot(rf.out, main="")
+rf.out <- randomForest(y = y.input, x = x.input)
+varImpPlot(rf.out, main = "")
 ```
 
 *Reply: The most important variables are sex and age, reinforcing the 'women and children first' hypothesis. Third important variable is passenger class. The other two variables, sibsp (Number of Siblings/Spouses Aboard) and parch (Number of Parents/Children Aboard) seem to have little effect compared to the other variables.*
@@ -388,13 +400,13 @@ load("../../data/spotify.Rdata")
 ```
 and consider the binary outcome data if a song is likely to be skipped
 ```{r message=FALSE, warning=FALSE}
-y_bin = spotify.data$y_bin
+y_bin <- spotify.data$y_bin
 table(y_bin)
 ```
 As predictors we consider the variables given in the x_mat matrix. For more information on the features, please see https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-features/.
 
 ```{r message=FALSE, warning=FALSE}
-x_mat = spotify.data$x_mat
+x_mat <- spotify.data$x_mat
 colnames(x_mat)
 ```
 
@@ -403,8 +415,8 @@ Question 4.1
 Fit a random forest model that uses x_mat as predictors. Which song features are important to predict if a song is likely to be skipped?
 
 ```{r message=FALSE, warning=FALSE}
-rf.out.bin = randomForest(y=y_bin, x=x_mat %>% as.matrix())
-varImpPlot(rf.out.bin, main="")
+rf.out.bin <- randomForest(y = y_bin, x = x_mat %>% as.matrix())
+varImpPlot(rf.out.bin, main = "")
 ```
 
 *Reply: The most important variable is duration, most other variables are equally important except for age, which is the least important variable. *

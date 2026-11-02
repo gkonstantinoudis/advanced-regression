@@ -139,10 +139,10 @@ data(chicagoNMMAPS)
 leg4coef <- legendre.polynomials(n = 5)
 
 # Get numeric coefficients of the first polynomial
-coef1 <- coef(leg4coef[[1]])     # a numeric vector
+coef1 <- coef(leg4coef[[1]]) # a numeric vector
 
 # If you just want the constant term (intercept):
-const1 <- coef1[1]               # numeric scalar
+const1 <- coef1[1] # numeric scalar
 
 ggplot() +
   geom_hline(yintercept = const1, linewidth = 1) +
@@ -209,7 +209,7 @@ $$\Phi(X) = (1 \; X \; X^2) \text{ ,thus } Y _i = \beta_0 + \beta_1 X + \beta_2 
 
 ggplot() +
   geom_abline(slope = 1, intercept = 1, col = cols[1], cex = .6, linewidth = 1) +
-  geom_hline(yintercept = coef(leg4coef[[1]]) , cex = .6, linewidth = 1) +
+  geom_hline(yintercept = coef(leg4coef[[1]]), cex = .6, linewidth = 1) +
   xlim(-1, 1) +
   ylim(-1, 2) +
   geom_line(aes(
@@ -244,7 +244,7 @@ y <- -1.5 * x.plot + 2.5 * x.plot^3
 
 ggplot() +
   geom_abline(slope = 1, intercept = 1, col = cols[1], cex = .6, linewidth = 1) +
-  geom_hline(yintercept = coef(leg4coef[[1]]) , cex = .6, linewidth = 1) +
+  geom_hline(yintercept = coef(leg4coef[[1]]), cex = .6, linewidth = 1) +
   xlim(-1, 1) +
   ylim(-1, 2) +
   geom_line(aes(
@@ -286,7 +286,7 @@ y.1 <- 0.375 - 3.75 * x.plot.1^2 + 4.375 * x.plot.1^4
 
 ggplot() +
   geom_abline(slope = 1, intercept = 1, col = cols[1], cex = .6, linewidth = 1) +
-  geom_hline(yintercept = coef(leg4coef[[1]]) , cex = .6, linewidth = 1) +
+  geom_hline(yintercept = coef(leg4coef[[1]]), cex = .6, linewidth = 1) +
   xlim(-1, 1) +
   ylim(-1, 2) +
   geom_line(aes(

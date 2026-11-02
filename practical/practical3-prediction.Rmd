@@ -21,10 +21,10 @@ In this practical we consider data on $n=409$ healthy mice and methylation of $p
 
 ```{r message=FALSE, warning=FALSE, fig.height=3.2}
 load("../data/data_epigenetic_clock_control")
-#alternatively try load("../data/data_epigenetic_clock_control.rds")
-y = control_mice$y_control
-hist(y,breaks=50)
-x = control_mice$x_control
+# alternatively try load("../data/data_epigenetic_clock_control.rds")
+y <- control_mice$y_control
+hist(y, breaks = 50)
+x <- control_mice$x_control
 dim(x)
 ```
 The first part is concerned with performing a ranking of methylation sites that have the strongest association with ageing.
@@ -39,7 +39,7 @@ Question 1.2
 
 In order to compute the massively univariate linear regression estimate, we need to automate this computation for all $p=3,663$ methylation sites. First initiate a vector where to save your $p-$values
 ```{r message=FALSE, warning=FALSE}
-pvec = rep(NaN, 3663)
+pvec <- rep(NaN, 3663)
 ```
 Write a 'for loop' to iterate through all variables. In case you are not familiar with the 'for loop', use this practical here for help https://www.r-bloggers.com/2021/09/r-for-loop/ In each iteration $j$ save the $p-$value of the respective regression into the pvec vector at position pvec[j].
 
@@ -58,10 +58,10 @@ Load the dataset, that contains the methylation matrix as predictor matrix and t
 
 ```{r message=FALSE, warning=FALSE, fig.height=3.2}
 load("../data/data_epigenetic_clock_control")
-#alternatively try load("../data/data_epigenetic_clock_control.dms")
-y = control_mice$y_control
-hist(y,breaks=50)
-x = control_mice$x_control
+# alternatively try load("../data/data_epigenetic_clock_control.dms")
+y <- control_mice$y_control
+hist(y, breaks = 50)
+x <- control_mice$x_control
 dim(x)
 ```
 
@@ -121,12 +121,12 @@ Fit a cv to define the two optimal regularisation parameter for elastic net regr
 ```{r message=FALSE, warning=FALSE}
 set.seed(1234)
 library("foreach")
-a = seq(0.05, 0.95, 0.05)
-search = foreach(i = a, .combine = rbind)%do%{
-  			cv = cv.glmnet(x,y,family = "gaussian", type.measure = "mse", alpha = i)
-  			data.frame(cvm = cv$cvm[cv$lambda == cv$lambda.1se], lambda.1se = cv$lambda.1se, alpha = i)
+a <- seq(0.05, 0.95, 0.05)
+search <- foreach(i = a, .combine = rbind) %do% {
+  cv <- cv.glmnet(x, y, family = "gaussian", type.measure = "mse", alpha = i)
+  data.frame(cvm = cv$cvm[cv$lambda == cv$lambda.1se], lambda.1se = cv$lambda.1se, alpha = i)
 }
-elasticnet.cv = search[search$cvm == min(search$cvm), ]
+elasticnet.cv <- search[search$cvm == min(search$cvm), ]
 elasticnet.cv
 ```
 Finally fit an elastic net model using the optimal lambda and alpha regularisation parameter.
@@ -146,14 +146,14 @@ library(crossval)
 package for which we need to write a prediction function. Please see here how to define a prediction function for a linear regression model.
 
 ```{r message=FALSE, warning=FALSE}
-predfun.lm = function(train.x, train.y, test.x, test.y){
-	#fit the model and build a prediction rule
-	lm.fit = lm(train.y ~ ., data=train.x)
-	#predict the new observation based on the test data and the prediction rule
-	ynew = predict(lm.fit, test.x )
-	#compute mse as squared difference between predicted and observed outcome
-	out = mean( (ynew - test.y)^2 )
-	return( out )
+predfun.lm <- function(train.x, train.y, test.x, test.y) {
+  # fit the model and build a prediction rule
+  lm.fit <- lm(train.y ~ ., data = train.x)
+  # predict the new observation based on the test data and the prediction rule
+  ynew <- predict(lm.fit, test.x)
+  # compute mse as squared difference between predicted and observed outcome
+  out <- mean((ynew - test.y)^2)
+  return(out)
 }
 ```
 
@@ -189,9 +189,9 @@ load("../data/spotify.Rdata")
 ```
 and familiarise yourself with the outcome variables
 ```{r message=FALSE, warning=FALSE, , fig.height = 3}
-y_perc = spotify.data$y_perc
+y_perc <- spotify.data$y_perc
 hist(y_perc)
-y_bin = spotify.data$y_bin
+y_bin <- spotify.data$y_bin
 table(y_bin)
 ```
 y_perc is the ratio of the number of skips divided by the number of plays.  A value close to one indicates that the song was skipped every time it was played. Please note that y_perc is a quantitative variable, but it is confined in the range of 0 and 1. Consequently, y_perc does not follow a Gaussian distribution. A beta-binomial distribution would be more appropriate. For this practical we are going to focus on y_bin, which is a binary indicator if a song is skipped more than half of the time (y_perc>0.5).
@@ -199,7 +199,7 @@ y_perc is the ratio of the number of skips divided by the number of plays.  A va
 As predictors we consider the variables given in the x_mat matrix. For more information on the features, please see https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-features/.
 
 ```{r message=FALSE, warning=FALSE}
-x_mat = spotify.data$x_mat
+x_mat <- spotify.data$x_mat
 colnames(x_mat)
 ```
 
@@ -222,12 +222,12 @@ Question 4.4
 
 Compute a glm using the following command.
 ```{r message=FALSE, warning=FALSE}
-x_mat = as.data.frame(x_mat)
+x_mat <- as.data.frame(x_mat)
 attach(x_mat)
-glm.out = glm(y_bin~age+duration+us_popularity_estimate+acousticness+
-                beat_strength+danceability+dyn_range_mean+energy+flatness+
-                instrumentalness+liveness+loudness+mechanism+speechiness+
-                tempo+valence, family = "binomial")
+glm.out <- glm(y_bin ~ age + duration + us_popularity_estimate + acousticness +
+  beat_strength + danceability + dyn_range_mean + energy + flatness +
+  instrumentalness + liveness + loudness + mechanism + speechiness +
+  tempo + valence, family = "binomial")
 ```
 Based on this glm compute the variance inflation factor (car package) and the condition number. Are there signs for multi-collinearity?
 

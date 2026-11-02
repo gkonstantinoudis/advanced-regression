@@ -127,7 +127,7 @@ Alternative representation:
 
 -   $x$: predictor matrix
 
-```         
+```
 -   clinical parameters: age, sex, bmi
 
 -   map: blood pressure
@@ -281,8 +281,10 @@ ggplot(data = data.frame(x = x1, y = y1), aes(x = x1, y = y1)) +
   theme_bw() +
   ylab("y-axis") +
   xlab("x-axis") +
-  geom_text(x = 0, y = 0.1, label = 'r[i] == hat(y)[i] - y[i]', 
-           parse = TRUE, size = 8) +
+  geom_text(
+    x = 0, y = 0.1, label = "r[i] == hat(y)[i] - y[i]",
+    parse = TRUE, size = 8
+  ) +
   geom_text(
     x = 0.9, y = 0.5,
     label = "paste('(', x[i], ',', y[i], ')')",
@@ -292,7 +294,7 @@ ggplot(data = data.frame(x = x1, y = y1), aes(x = x1, y = y1)) +
     x = 0.9, y = -0.4,
     label = "paste('(', x[i], ',', hat(y)[i], ')')",
     parse = TRUE, size = 8
-  )  +
+  ) +
   annotation_custom(br1, xmin = 0.5, xmax = 0.501, ymin = -0.35, ymax = 0.5) +
   theme(text = element_text(size = 20))
 ```
@@ -313,25 +315,25 @@ lm0 <- lm(y ~ glu, data = x)
     -   Regression coefficients
 
     ```{r}
-    #| echo: true
-    #| eval: true
-    lm0$coefficients
+#| echo: true
+#| eval: true
+lm0$coefficients
     ```
 
     -   Fitted values
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    lm0$fitted.values
+#| echo: true
+#| eval: false
+lm0$fitted.values
     ```
 
     -   Residuals
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    lm0$residuals
+#| echo: true
+#| eval: false
+lm0$residuals
     ```
 :::
 
@@ -535,42 +537,42 @@ ggplot(mod, aes(.hat, .stdresid)) +
 -   Linear relationship and outliers (Scatterplot of y against x)
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    plot(x, y)
-    abline(mod, col = "red")
+#| echo: true
+#| eval: false
+plot(x, y)
+abline(mod, col = "red")
     ```
 
 -   Linear relationship and outliers (Residuals against fitted values)
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    plot(mod, which = 1)
+#| echo: true
+#| eval: false
+plot(mod, which = 1)
     ```
 
 -   Homoscedasticity (Standardised residuals against fitted values)
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    plot(mod, which = 3)
+#| echo: true
+#| eval: false
+plot(mod, which = 3)
     ```
 
 -   Normal-distribution of residuals (Q-Q plots of observed residuals against theoretical values under the Normal distribution)
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    plot(mod, which = 2)
+#| echo: true
+#| eval: false
+plot(mod, which = 2)
     ```
 
 -   Influential variants: (Standardised residuals against Cook's distance)
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    plot(mod, which = 5)
+#| echo: true
+#| eval: false
+plot(mod, which = 5)
     ```
 :::
 
@@ -595,10 +597,10 @@ For a new case we only have the predictor matrix $x_{\text{new}}$, but not $y_{\
 -   Use the linear model to learn a prediction rule from the training data, where both $x$ and $y$ are observed on the same individuals.
 
     ```{r}
-    #| echo: true
-    #| eval: false
-    lm_train <-
-      lm(formula = y_train ~ age + sex + bmi + map + ltg, data = x_train)
+#| echo: true
+#| eval: false
+lm_train <-
+  lm(formula = y_train ~ age + sex + bmi + map + ltg, data = x_train)
     ```
 
 -   Predict the outcome based on the prediction rule and the predictors of the new data.
