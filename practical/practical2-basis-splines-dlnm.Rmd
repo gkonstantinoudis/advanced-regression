@@ -9,14 +9,16 @@ highlight: tango
 
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(message=FALSE, warning=FALSE, fig.align = 'center')
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.align = "center")
 ```
 
 You might need the following packages. If you have already downloaded them, skip the following line:
 
 ```{r eval=FALSE}
-install.packages(c("dplyr", "ggplot2", "patchwork", "splines", "blmeco", "mgcv", "dlnm",
-          "plotly"))
+install.packages(c(
+  "dplyr", "ggplot2", "patchwork", "splines", "blmeco", "mgcv", "dlnm",
+  "plotly"
+))
 ```
 
 ```{r}
@@ -84,15 +86,20 @@ str(b)
 b1 <- b[, 1] ## basis 1
 b2 <- b[, 2] ## basis 2
 
-data.frame(x=rep(triceps$age, times=2),
-      b=c(b1, b2),
-      basis=rep(c("basis 1", "basis 2"), each = triceps$age %>% length())) %>%
- ggplot() + geom_line(aes(x=x, y=b), cex=.8) + facet_grid(cols=vars(basis)) + theme_bw()
+data.frame(
+  x = rep(triceps$age, times = 2),
+  b = c(b1, b2),
+  basis = rep(c("basis 1", "basis 2"), each = triceps$age %>% length())
+) %>%
+  ggplot() +
+  geom_line(aes(x = x, y = b), cex = .8) +
+  facet_grid(cols = vars(basis)) +
+  theme_bw()
 ```
 
 and now run the following and compare again:
 ```{r message=FALSE, warning=FALSE}
-lm(triceps$triceps~b1+b2) %>% summary()
+lm(triceps$triceps ~ b1 + b2) %>% summary()
 ```
 
 What do the \texttt{ bs()} coefficients mean?
@@ -186,19 +193,23 @@ You can use the following code to define the heatwave variable:
 ```{r message=FALSE, warning=FALSE}
 threshold <- quantile(chicagoNMMAPS$temp, probs = 0.95)
 chicagoNMMAPS %>%
- dplyr::mutate(
-  heatwave = dplyr::case_when(temp >= threshold &
-                dplyr::lag(temp, 1) >= threshold &
-                dplyr::lag(temp, 2) >= threshold ~ 1,
-                TRUE ~ 0)
- ) -> chicagoNMMAPS
+  dplyr::mutate(
+    heatwave = dplyr::case_when(
+      temp >= threshold &
+        dplyr::lag(temp, 1) >= threshold &
+        dplyr::lag(temp, 2) >= threshold ~ 1,
+      TRUE ~ 0
+    )
+  ) -> chicagoNMMAPS
 
 chicagoNMMAPS %>%
- dplyr::mutate(
-  heatwave = dplyr::case_when(heatwave == 1 |
-                 dplyr::lead(heatwave, 1) == 1 |
-                 dplyr::lead(heatwave, 2) == 1 ~ 1,
-                TRUE ~ 0)
+  dplyr::mutate(
+    heatwave = dplyr::case_when(
+      heatwave == 1 |
+        dplyr::lead(heatwave, 1) == 1 |
+        dplyr::lead(heatwave, 2) == 1 ~ 1,
+      TRUE ~ 0
+    )
   ) -> chicagoNMMAPS
 ```
 
@@ -213,9 +224,11 @@ Question 5.4
 Fit a distributed non-linear model. Consider a linear threshold model with the threshold being the 95th percentile of the temperature and lags 1:10.
 
 ```{r message=FALSE, warning=FALSE}
-cb.heatwave <- crossbasis(chicagoNMMAPS$temp, lag=10,
-                          argvar=list(fun="thr", thr = threshold),
-                          arglag=list(fun="lin"))
+cb.heatwave <- crossbasis(chicagoNMMAPS$temp,
+  lag = 10,
+  argvar = list(fun = "thr", thr = threshold),
+  arglag = list(fun = "lin")
+)
 ```
 
 Use the function \texttt{gam()} accounting for time as spline, month as spline and adjust for day of week and PM10. Take the \texttt{summary()} of the model and interpret the slopes corresponding to the cross basis function. What is the difference of this estimate with the heatwave estimate?

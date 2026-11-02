@@ -19,8 +19,8 @@ As a first step we load the data and assign x as a data.frame of the predictors 
 ```{r message=FALSE, warning=FALSE}
 library(lars)
 data(diabetes)
-x = as.data.frame.matrix(diabetes$x)
-y = diabetes$y
+x <- as.data.frame.matrix(diabetes$x)
+y <- diabetes$y
 ```
 
 From the literature we know that the following 6 predictors are important for type 2 diabetes progression: sex, age, bmi, glu, map and ltg. We consider these 6 predictors as model 1.
@@ -46,13 +46,13 @@ Perform model diagnostics and outlier detection of model 1. Do you think this is
 Question 1.5
 Compute the OLS regression coefficient estimate using matrix multiplication $\hat{\beta}_{OLS}=(x^t x)^{-1} x^t y$. Use the solve() function to invert a matrix. R distinguishes between scalar multiplication ($\ast$) and matrix multiplication (%$\ast$%). Make sure to use the matrix multiplication (%$\ast$%) for this task and ensure that your matrices have the correct dimensions.  Add an intercept by including a row of ones like for example this.
 ```{r message=FALSE, warning=FALSE}
-x1 =  cbind(rep(1,nrow(diabetes$x)), x$sex, x$age, x$bmi, x$glu, x$map, x$ltg)
+x1 <- cbind(rep(1, nrow(diabetes$x)), x$sex, x$age, x$bmi, x$glu, x$map, x$ltg)
 ```
 
 Question 1.6
 Compute the regression coefficient estimate using the sample covariance based estimate, defined as $\hat{\beta}_{COV}=cov(x)^{-1} cov(xy)$. Use the solve() function to invert the covariance matrix cov(x) of dimension 6 x 6 and compute this estimate without the intercept using
 ```{r message=FALSE, warning=FALSE}
-x11 =  cbind(x$sex, x$age, x$bmi, x$glu, x$map, x$ltg)
+x11 <- cbind(x$sex, x$age, x$bmi, x$glu, x$map, x$ltg)
 ```
 
 Question 1.7
@@ -70,13 +70,13 @@ Fit model 2 that only includes glucose and compare how it differs from the  mult
 
 Assume we only observed the first 300 cases and use these cases as training data.
 ```{r message=FALSE, warning=FALSE}
-x_train = data.frame(x[1:300,])
-y_train = y[1:300]
+x_train <- data.frame(x[1:300, ])
+y_train <- y[1:300]
 ```
 Now we can consider the remaining 142 cases as new data points for whom we want to predict disease progression.
 ```{r message=FALSE, warning=FALSE}
-x_new = data.frame(x[301:442,])
-y_new = y[301:442]
+x_new <- data.frame(x[301:442, ])
+y_new <- y[301:442]
 ```
 
 
@@ -104,7 +104,7 @@ Is it good practise to evaluate the prediction performance on a single training 
 
 Doctors are particularly concerned with type 2 diabetes cases that have a bad disease progression, in particular cases that have a disease progression score larger than 200. Binarise your outcome like this:
 ```{r message=FALSE, warning=FALSE}
-y_binary = as.numeric(y>200)
+y_binary <- as.numeric(y > 200)
 ```
 
 
@@ -119,7 +119,7 @@ Consider now model 2 including only glucose. Fit a glm and see if glucose can di
 Question 3.3
 Look again at the training data (x_train and ybin_train) based on the first 300 cases, where
 ```{r message=FALSE, warning=FALSE}
-ybin_train = y_binary[1:300]
+ybin_train <- y_binary[1:300]
 ```
 Build a prediction rule based on model 1 using the training data (x_train and ybin_train) using the glm function. In a second step predict which of the new samples (using x_new as predictor matrix) are at high risk for having a bad diagnosis. How many of the 142 new observations have a probability larger than 0.5 to have bad progression?
 
@@ -144,9 +144,9 @@ This section considers exam scores of 3,935 students from 65 schools in Inner Lo
 ```{r message=FALSE, warning=FALSE, fig.height =3.5}
 load("../data/exam.London")
 dim(exam)
-par(mfrow=c(1,2))
-hist(exam$normexam, breaks =50, main="Final exam score (normalised)", cex.main=0.9, xlab="")
-hist(exam$standLRT, breaks =50, main="Reading (LR) score (normalised)", cex.main =0.9, xlab="")
+par(mfrow = c(1, 2))
+hist(exam$normexam, breaks = 50, main = "Final exam score (normalised)", cex.main = 0.9, xlab = "")
+hist(exam$standLRT, breaks = 50, main = "Reading (LR) score (normalised)", cex.main = 0.9, xlab = "")
 dev.off()
 ```
 
@@ -213,7 +213,7 @@ Compare the random intercept (Q5.4) and the one with the additional covariate (Q
 The sinking of the titanic was one of the greatest disaster in navel history. After colliding with an iceberg, the titanic sank and 1,502 out of 2,224 passengers and crew were killed. The following data set has collected information on n=1,309 of the passengers and their survival.
 
 ```{r message=FALSE, warning=FALSE}
-titanic = read.csv("../data/titanic.csv")
+titanic <- read.csv("../data/titanic.csv")
 dim(titanic)
 table(titanic$survived)
 ```

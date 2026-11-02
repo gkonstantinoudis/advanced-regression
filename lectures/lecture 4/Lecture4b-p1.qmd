@@ -21,7 +21,7 @@ format:
         buttons: false
 ---
 
-## 
+##
 
 -   Motivation for decision trees
 -   Technical definition
@@ -338,7 +338,7 @@ p_tree <- ggparty(py) +
   geom_node_label(aes(label = info, col = factor(level)), ids = "terminal", size = 4) +
   theme(legend.position = "none")
 
-p+p_tree
+p + p_tree
 ```
 
 ## Example 1
@@ -565,7 +565,7 @@ prune(fit, cp = 0.1)
 #| eval: true
 
 x <- cbind(df$x1, df$x2) %>% as.matrix()
-tree.out = tree(y ~ x)
+tree.out <- tree(y ~ x)
 plot(tree.out)
 text(tree.out)
 # tree.control(nobs, mincut = 5, minsize = 10, mindev = 0.01)
